@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Check, CreditCard, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-import { createPageUrl } from "./utils";
+
 
 export default function StartFreeTrial() {
   const [step, setStep] = useState(1);
@@ -59,7 +59,7 @@ export default function StartFreeTrial() {
     onSuccess: () => {
       toast.success('Trial started! Redirecting to intake form...');
       setTimeout(() => {
-        window.location.href = createPageUrl('WebsiteIntakeForm');
+        window.location.href = '/WebsiteIntakeForm';
       }, 2000);
     },
   });
@@ -106,7 +106,7 @@ export default function StartFreeTrial() {
           <CardContent>
             <Button 
               className="w-full" 
-              onClick={() => window.location.href = createPageUrl('ClientDashboard')}
+              onClick={() => window.location.href = '/ClientDashboard'}
             >
               Go to Dashboard
             </Button>

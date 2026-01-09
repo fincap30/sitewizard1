@@ -5,7 +5,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Zap, CheckCircle, Clock, Star, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "./utils";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 
@@ -67,13 +66,13 @@ export default function Home() {
             <span className="font-semibold text-white">No upfront cost. Hosting included. 14-day trial.</span>
           </p>
           <div className="flex gap-4 justify-center">
-            <Link to={createPageUrl('Pricing')}>
+            <Link to="/Pricing">
               <Button className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6">
                 Start Free Trial
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
-            <Link to={createPageUrl('HowItWorks')}>
+            <Link to="/HowItWorks">
               <Button variant="outline" className="text-lg px-8 py-6 border-slate-600 hover:border-blue-500">
                 How It Works
               </Button>

@@ -2,7 +2,6 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle, Sparkles, Globe, Rocket } from "lucide-react";
-import { createPageUrl } from "./utils";
 import { Link } from "react-router-dom";
 
 export default function HowItWorks() {
@@ -73,7 +72,7 @@ export default function HowItWorks() {
 
         {/* CTA */}
         <div className="text-center mt-16">
-          <Link to={createPageUrl('Pricing')}>
+          <Link to="/Pricing">
             <Button className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6">
               View Pricing & Start Free Trial
               <ArrowRight className="ml-2 w-5 h-5" />

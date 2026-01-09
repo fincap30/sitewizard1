@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Zap } from "lucide-react";
-import { createPageUrl } from "./utils";
 import { Link } from "react-router-dom";
 
 export default function Pricing() {
@@ -74,7 +73,7 @@ export default function Pricing() {
                     </li>
                   ))}
                 </ul>
-                <Link to={createPageUrl('StartFreeTrial', `package=${pkg.id}`)}>
+                <Link to={`/StartFreeTrial?package=${pkg.id}`}>
                   <Button className="w-full bg-blue-600 hover:bg-blue-700">
                     Start Free Trial
                   </Button>
