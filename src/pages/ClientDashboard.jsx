@@ -12,6 +12,7 @@ import SubscriptionDetails from "../components/dashboard/SubscriptionDetails";
 import WebsiteStatusCard from "../components/dashboard/WebsiteStatusCard";
 import RevisionRequestForm from "../components/dashboard/RevisionRequestForm";
 import RevisionRequestList from "../components/dashboard/RevisionRequestList";
+import ClientAnalytics from "../components/dashboard/ClientAnalytics";
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
@@ -192,9 +193,10 @@ export default function ClientDashboard() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="website">Website</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="revisions">Revisions</TabsTrigger>
             <TabsTrigger value="subscription">Subscription</TabsTrigger>
           </TabsList>
@@ -254,6 +256,19 @@ export default function ClientDashboard() {
               packageData={packageData}
               expanded
             />
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics">
+            {websiteIntake?.website_status === 'live' ? (
+              <ClientAnalytics websiteIntakeId={websiteIntake.id} />
+            ) : (
+              <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+                <CardContent className="py-12 text-center">
+                  <p className="text-slate-300 mb-2">Analytics will be available once your website is live</p>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           {/* Revisions Tab */}
