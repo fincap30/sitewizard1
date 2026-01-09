@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Zap, CheckCircle, Clock, Star, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "./utils";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 
@@ -60,10 +62,23 @@ export default function Home() {
             SiteWizard<span className="text-blue-400">.pro</span>
           </h1>
           <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-8">
-            From Facebook lead to delivered website in 30 days guaranteed.
+            Get a professional website <span className="text-blue-400 font-semibold">FREE</span>. Pay only for upgrades & growth.
             <br />
-            <span className="font-semibold text-white">Exclusive 5-Point Professional Analysis</span> included.
+            <span className="font-semibold text-white">No upfront cost. Hosting included. 14-day trial.</span>
           </p>
+          <div className="flex gap-4 justify-center">
+            <Link to={createPageUrl('Pricing')}>
+              <Button className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6">
+                Start Free Trial
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
+            <Link to={createPageUrl('HowItWorks')}>
+              <Button variant="outline" className="text-lg px-8 py-6 border-slate-600 hover:border-blue-500">
+                How It Works
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Features Grid */}
