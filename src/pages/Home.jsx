@@ -48,27 +48,27 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+    <div className="min-h-screen bg-transparent">
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+          <div className="inline-flex items-center gap-2 bg-blue-600/20 text-blue-400 px-4 py-2 rounded-full text-sm font-medium mb-6 border border-blue-500/30">
             <Zap className="w-4 h-4" />
             Professional Website Solutions
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6">
-            SiteWizard<span className="text-blue-600">.pro</span>
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
+            SiteWizard<span className="text-blue-400">.pro</span>
           </h1>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-8">
+          <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-8">
             From Facebook lead to delivered website in 30 days guaranteed.
             <br />
-            <span className="font-semibold text-slate-900">Exclusive 5-Point Professional Analysis</span> included.
+            <span className="font-semibold text-white">Exclusive 5-Point Professional Analysis</span> included.
           </p>
         </div>
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-3 gap-6 mb-16">
-          <Card className="border-2 hover:border-blue-300 transition-all">
+          <Card className="border-2 border-slate-700/50 hover:border-blue-500/50 transition-all bg-slate-800/50 backdrop-blur-sm">
             <CardHeader>
               <CheckCircle className="w-10 h-10 text-green-500 mb-3" />
               <CardTitle>5-Point Analysis</CardTitle>
@@ -78,9 +78,9 @@ export default function Home() {
             </CardHeader>
           </Card>
 
-          <Card className="border-2 hover:border-blue-300 transition-all">
+          <Card className="border-2 border-slate-700/50 hover:border-blue-500/50 transition-all bg-slate-800/50 backdrop-blur-sm">
             <CardHeader>
-              <Clock className="w-10 h-10 text-blue-500 mb-3" />
+              <Clock className="w-10 h-10 text-blue-400 mb-3" />
               <CardTitle>30-Day Guarantee</CardTitle>
               <CardDescription>
                 Your website delivered within 30 days or your money back
