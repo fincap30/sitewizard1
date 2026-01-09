@@ -21,11 +21,11 @@ export default function WebsitePreview({ intakeId }) {
   });
 
   const approveMutation = useMutation({
-    mutationFn: () => base44.entities.WebsiteIntake.update(intakeId, {
-      website_status: 'approved',
-      confirmed: true
-    }),
+    mutationFn: async () => {
+      await base44.functions.invoke('handleWebsiteApproval', { intake_id: intakeId });
+    },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['intake'] });
       toast.success('Website approved! Our team will start building it.');
       setTimeout(() => window.location.href = '/ClientDashboard', 2000);
     },

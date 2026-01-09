@@ -3,20 +3,18 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Clock, CheckCircle, AlertCircle, Plus } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Globe, Clock, CheckCircle, AlertCircle, CreditCard, TrendingUp, FileText, Zap } from "lucide-react";
 import { toast } from "sonner";
+import SubscriptionDetails from "../components/dashboard/SubscriptionDetails";
+import WebsiteStatusCard from "../components/dashboard/WebsiteStatusCard";
+import RevisionRequestForm from "../components/dashboard/RevisionRequestForm";
+import RevisionRequestList from "../components/dashboard/RevisionRequestList";
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
-  const [showRequestForm, setShowRequestForm] = useState(false);
-  const [requestData, setRequestData] = useState({
-    description: '',
-    request_type: 'content_change',
-    priority: 'medium'
-  });
-
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -25,44 +23,98 @@ export default function ClientDashboard() {
     });
   }, []);
 
-  const { data: projects = [], isLoading } = useQuery({
-    queryKey: ['client-projects', user?.email],
-    queryFn: () => base44.entities.Project.filter({ client_email: user.email }),
+  const { data: subscription, isLoading: loadingSub } = useQuery({
+    queryKey: ['my-subscription', user?.email],
+    queryFn: async () => {
+      const subs = await base44.entities.ClientSubscription.filter({ client_email: user.email });
+      return subs.sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0];
+    },
     enabled: !!user,
   });
 
-  const { data: modifications = [] } = useQuery({
-    queryKey: ['client-modifications', user?.email],
+  const { data: packageData } = useQuery({
+    queryKey: ['package', subscription?.package_id],
+    queryFn: () => base44.entities.Package.filter({ id: subscription.package_id }).then(p => p[0]),
+    enabled: !!subscription?.package_id,
+  });
+
+  const { data: websiteIntake } = useQuery({
+    queryKey: ['my-website', user?.email],
+    queryFn: async () => {
+      const intakes = await base44.entities.WebsiteIntake.filter({ client_email: user.email });
+      return intakes.sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0];
+    },
+    enabled: !!user,
+  });
+
+  const { data: revisions = [] } = useQuery({
+    queryKey: ['my-revisions', user?.email],
     queryFn: () => base44.entities.ModificationRequest.filter({ client_email: user.email }),
     enabled: !!user,
   });
 
-  const submitRequestMutation = useMutation({
-    mutationFn: (data) => base44.entities.ModificationRequest.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['client-modifications'] });
-      toast.success('Modification request submitted!');
-      setShowRequestForm(false);
-      setRequestData({ description: '', request_type: 'content_change', priority: 'medium' });
-    },
+  const { data: allPackages = [] } = useQuery({
+    queryKey: ['all-packages'],
+    queryFn: () => base44.entities.Package.list('display_order'),
   });
 
-  const statusColors = {
-    new_lead: 'bg-blue-100 text-blue-800',
-    analysis_pending: 'bg-yellow-100 text-yellow-800',
-    in_progress: 'bg-purple-100 text-purple-800',
-    review: 'bg-orange-100 text-orange-800',
-    completed: 'bg-green-100 text-green-800',
-    cancelled: 'bg-gray-100 text-gray-800'
+  const getTrialDaysRemaining = () => {
+    if (!subscription?.trial_ends) return 0;
+    const now = new Date();
+    const trialEnd = new Date(subscription.trial_ends);
+    const diffTime = trialEnd - now;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return Math.max(0, diffDays);
   };
 
-  if (!user) {
+  const getStatusInfo = () => {
+    if (!websiteIntake) return { icon: Clock, color: 'text-slate-400', text: 'Not Started', bgColor: 'bg-slate-100' };
+    
+    switch (websiteIntake.website_status) {
+      case 'pending':
+        return { icon: Clock, color: 'text-yellow-600', text: 'Intake Submitted', bgColor: 'bg-yellow-100' };
+      case 'generating':
+        return { icon: Zap, color: 'text-blue-600', text: 'AI Generating', bgColor: 'bg-blue-100' };
+      case 'review':
+        return { icon: FileText, color: 'text-purple-600', text: 'Awaiting Your Review', bgColor: 'bg-purple-100' };
+      case 'approved':
+        return { icon: TrendingUp, color: 'text-orange-600', text: 'Building Website', bgColor: 'bg-orange-100' };
+      case 'live':
+        return { icon: CheckCircle, color: 'text-green-600', text: 'Live', bgColor: 'bg-green-100' };
+      default:
+        return { icon: Clock, color: 'text-slate-400', text: 'Unknown', bgColor: 'bg-slate-100' };
+    }
+  };
+
+  if (!user || loadingSub) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
+
+  if (!subscription) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-transparent px-4">
+        <Card className="max-w-md border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle>No Active Subscription</CardTitle>
+            <CardDescription>You don't have an active subscription yet.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => window.location.href = '/Pricing'} className="w-full">
+              View Pricing Plans
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  const trialDays = getTrialDaysRemaining();
+  const statusInfo = getStatusInfo();
+  const StatusIcon = statusInfo.icon;
 
   return (
     <div className="min-h-screen bg-transparent">
@@ -72,175 +124,159 @@ export default function ClientDashboard() {
           <h1 className="text-3xl font-bold text-white mb-2">
             Welcome back, {user.full_name || user.email}
           </h1>
-          <p className="text-slate-300">Track your projects and request modifications</p>
+          <p className="text-slate-300">Manage your website and subscription</p>
         </div>
 
-        {/* Projects Section */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-            <FileText className="w-6 h-6 text-blue-600" />
-            Your Projects
-          </h2>
+        {/* Trial Alert */}
+        {subscription.status === 'trial' && (
+          <Alert className="mb-6 bg-blue-600/10 border-blue-500/30">
+            <Clock className="w-4 h-4 text-blue-400" />
+            <AlertDescription className="text-blue-300">
+              <strong>{trialDays} days remaining</strong> in your free trial. 
+              {trialDays < 3 && ' Your card will be charged after the trial ends unless you cancel.'}
+            </AlertDescription>
+          </Alert>
+        )}
 
-          {isLoading ? (
-            <div className="text-center py-8">Loading projects...</div>
-          ) : projects.length === 0 ? (
-            <Card>
-              <CardContent className="py-8 text-center text-slate-500">
-                No projects yet. Submit a request on the homepage to get started!
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-4">
-              {projects.map((project) => (
-                <Card key={project.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle>{project.business_name}</CardTitle>
-                        <CardDescription>{project.website_type?.replace(/_/g, ' ')}</CardDescription>
-                      </div>
-                      <Badge className={statusColors[project.status]}>
-                        {project.status?.replace(/_/g, ' ')}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-slate-500" />
-                        <span>Started: {new Date(project.created_date).toLocaleDateString()}</span>
-                      </div>
-                      {project.deadline && (
-                        <div className="flex items-center gap-2">
-                          <AlertCircle className="w-4 h-4 text-slate-500" />
-                          <span>Deadline: {new Date(project.deadline).toLocaleDateString()}</span>
-                        </div>
-                      )}
-                      {project.analysis_completed && (
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span className="text-green-600 font-medium">5-Point Analysis Completed</span>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
+        {/* Key Stats */}
+        <div className="grid md:grid-cols-4 gap-4 mb-8">
+          <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-slate-300">Subscription</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-white">{packageData?.name}</div>
+              <p className="text-sm text-slate-400">${packageData?.price}/month</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-slate-300">Website Status</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <StatusIcon className={`w-6 h-6 ${statusInfo.color}`} />
+                <span className="text-lg font-semibold text-white">{statusInfo.text}</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-slate-300">Revision Requests</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-white">{revisions.length}</div>
+              <p className="text-sm text-slate-400">
+                {revisions.filter(r => r.status === 'pending').length} pending
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-slate-300">Account Status</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Badge className={
+                subscription.status === 'active' ? 'bg-green-100 text-green-800' :
+                subscription.status === 'trial' ? 'bg-blue-100 text-blue-800' :
+                'bg-yellow-100 text-yellow-800'
+              }>
+                {subscription.status}
+              </Badge>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Modification Requests Section */}
-        <div>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold flex items-center gap-2">
-              Modification Requests
-            </h2>
-            {projects.length > 0 && (
-              <Button onClick={() => setShowRequestForm(!showRequestForm)}>
-                <Plus className="w-4 h-4 mr-2" />
-                New Request
-              </Button>
-            )}
-          </div>
+        {/* Main Content Tabs */}
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="website">Website</TabsTrigger>
+            <TabsTrigger value="revisions">Revisions</TabsTrigger>
+            <TabsTrigger value="subscription">Subscription</TabsTrigger>
+          </TabsList>
 
-          {showRequestForm && (
-            <Card className="mb-4">
-              <CardHeader>
-                <CardTitle>Submit Modification Request</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium mb-1 block">Project</label>
-                  <select
-                    className="w-full border rounded-md px-3 py-2"
-                    onChange={(e) => setRequestData({...requestData, project_id: e.target.value})}
-                  >
-                    <option value="">Select a project</option>
-                    {projects.map(p => (
-                      <option key={p.id} value={p.id}>{p.business_name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium mb-1 block">Request Type</label>
-                  <select
-                    className="w-full border rounded-md px-3 py-2"
-                    value={requestData.request_type}
-                    onChange={(e) => setRequestData({...requestData, request_type: e.target.value})}
-                  >
-                    <option value="content_change">Content Change</option>
-                    <option value="design_change">Design Change</option>
-                    <option value="functionality">New Functionality</option>
-                    <option value="bug_fix">Bug Fix</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium mb-1 block">Description</label>
-                  <Textarea
-                    value={requestData.description}
-                    onChange={(e) => setRequestData({...requestData, description: e.target.value})}
-                    placeholder="Describe what you'd like changed..."
-                    rows={4}
-                  />
-                </div>
-
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => submitRequestMutation.mutate({
-                      ...requestData,
-                      client_email: user.email
-                    })}
-                    disabled={!requestData.project_id || !requestData.description}
-                  >
-                    Submit Request
-                  </Button>
-                  <Button variant="outline" onClick={() => setShowRequestForm(false)}>
-                    Cancel
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          <div className="grid gap-4">
-            {modifications.map((mod) => (
-              <Card key={mod.id}>
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-6">
+            <WebsiteStatusCard 
+              websiteIntake={websiteIntake}
+              subscription={subscription}
+              packageData={packageData}
+            />
+            
+            <div className="grid lg:grid-cols-2 gap-6">
+              <SubscriptionDetails 
+                subscription={subscription}
+                packageData={packageData}
+                allPackages={allPackages}
+              />
+              
+              <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
                 <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="text-lg">{mod.request_type?.replace(/_/g, ' ')}</CardTitle>
-                      <CardDescription>
-                        {new Date(mod.created_date).toLocaleDateString()}
-                      </CardDescription>
-                    </div>
-                    <Badge className={
-                      mod.status === 'completed' ? 'bg-green-100 text-green-800' :
-                      mod.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
-                      mod.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                      'bg-yellow-100 text-yellow-800'
-                    }>
-                      {mod.status}
-                    </Badge>
-                  </div>
+                  <CardTitle>Recent Revisions</CardTitle>
+                  <CardDescription>Your latest modification requests</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-slate-600 mb-2">{mod.description}</p>
-                  {mod.admin_response && (
-                    <div className="mt-3 p-3 bg-blue-50 rounded-md">
-                      <p className="text-sm font-medium text-blue-900 mb-1">Admin Response:</p>
-                      <p className="text-sm text-blue-800">{mod.admin_response}</p>
+                  {revisions.length === 0 ? (
+                    <p className="text-sm text-slate-400 text-center py-4">No revision requests yet</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {revisions.slice(0, 3).map(rev => (
+                        <div key={rev.id} className="flex items-start justify-between p-3 bg-slate-700/30 rounded-lg">
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-white capitalize">{rev.request_type?.replace(/_/g, ' ')}</p>
+                            <p className="text-xs text-slate-400 mt-1">{new Date(rev.created_date).toLocaleDateString()}</p>
+                          </div>
+                          <Badge className={
+                            rev.status === 'completed' ? 'bg-green-100 text-green-800' :
+                            rev.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
+                            'bg-yellow-100 text-yellow-800'
+                          }>
+                            {rev.status}
+                          </Badge>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        </div>
+            </div>
+          </TabsContent>
+
+          {/* Website Tab */}
+          <TabsContent value="website">
+            <WebsiteStatusCard 
+              websiteIntake={websiteIntake}
+              subscription={subscription}
+              packageData={packageData}
+              expanded
+            />
+          </TabsContent>
+
+          {/* Revisions Tab */}
+          <TabsContent value="revisions" className="space-y-6">
+            {websiteIntake?.website_status === 'live' && (
+              <RevisionRequestForm 
+                websiteIntake={websiteIntake}
+                userEmail={user.email}
+              />
+            )}
+            <RevisionRequestList revisions={revisions} />
+          </TabsContent>
+
+          {/* Subscription Tab */}
+          <TabsContent value="subscription">
+            <SubscriptionDetails 
+              subscription={subscription}
+              packageData={packageData}
+              allPackages={allPackages}
+              expanded
+            />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
