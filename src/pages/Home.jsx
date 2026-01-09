@@ -88,9 +88,9 @@ export default function Home() {
             </CardHeader>
           </Card>
 
-          <Card className="border-2 hover:border-blue-300 transition-all">
+          <Card className="border-2 border-slate-700/50 hover:border-blue-500/50 transition-all bg-slate-800/50 backdrop-blur-sm">
             <CardHeader>
-              <Star className="w-10 h-10 text-yellow-500 mb-3" />
+              <Star className="w-10 h-10 text-yellow-400 mb-3" />
               <CardTitle>Apple-Level Design</CardTitle>
               <CardDescription>
                 Professional, mobile-responsive design that looks stunning
@@ -101,7 +101,7 @@ export default function Home() {
 
         {/* Registration Form */}
         <div className="max-w-2xl mx-auto">
-          <Card className="border-2 border-blue-200 shadow-xl">
+          <Card className="border-2 border-slate-700/50 shadow-xl bg-slate-800/50 backdrop-blur-sm">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl">Get Started Today</CardTitle>
               <CardDescription>
@@ -111,7 +111,7 @@ export default function Home() {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-slate-700 mb-1 block">
+                  <label className="text-sm font-medium text-slate-300 mb-1 block">
                     Your Name *
                   </label>
                   <Input
@@ -123,7 +123,7 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-slate-700 mb-1 block">
+                  <label className="text-sm font-medium text-slate-300 mb-1 block">
                     Email Address *
                   </label>
                   <Input
@@ -136,7 +136,7 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-slate-700 mb-1 block">
+                  <label className="text-sm font-medium text-slate-300 mb-1 block">
                     Business Name *
                   </label>
                   <Input
@@ -148,7 +148,7 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-slate-700 mb-1 block">
+                  <label className="text-sm font-medium text-slate-300 mb-1 block">
                     Phone Number
                   </label>
                   <Input
@@ -160,7 +160,7 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-slate-700 mb-1 block">
+                  <label className="text-sm font-medium text-slate-300 mb-1 block">
                     Website Type *
                   </label>
                   <select
@@ -179,7 +179,7 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-slate-700 mb-1 block">
+                  <label className="text-sm font-medium text-slate-300 mb-1 block">
                     Tell Us About Your Project
                   </label>
                   <Textarea
@@ -205,7 +205,7 @@ export default function Home() {
                   )}
                 </Button>
 
-                <p className="text-xs text-center text-slate-500">
+                <p className="text-xs text-center text-slate-400">
                   By submitting, you agree to receive communications about your project.
                 </p>
               </form>
