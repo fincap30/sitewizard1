@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Globe, Clock, Sparkles, Eye, Rocket, CheckCircle } from "lucide-react";
+import { Globe, Clock, Sparkles, Eye, Rocket, CheckCircle, Settings } from "lucide-react";
 import { toast } from "sonner";
+import BuildTaskManager from "./BuildTaskManager";
 
 export default function AdminWebsiteManager({ websites }) {
   const [selectedWebsite, setSelectedWebsite] = useState(null);
+  const [showTasks, setShowTasks] = useState(null);
   const [liveUrl, setLiveUrl] = useState('');
   const queryClient = useQueryClient();
 
@@ -106,6 +108,16 @@ export default function AdminWebsiteManager({ websites }) {
                           )}
                         </div>
                         <div className="flex gap-2">
+                          {(website.website_status === 'approved' || website.website_status === 'live') && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setShowTasks(website)}
+                            >
+                              <Settings className="w-4 h-4 mr-1" />
+                              Tasks
+                            </Button>
+                          )}
                           {website.website_status === 'approved' && !website.live_url && (
                             <Button
                               size="sm"
@@ -178,6 +190,16 @@ export default function AdminWebsiteManager({ websites }) {
               {markLiveMutation.isPending ? 'Updating...' : 'Mark Live & Notify Client'}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Build Tasks Dialog */}
+      <Dialog open={!!showTasks} onOpenChange={() => setShowTasks(null)}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>{showTasks?.company_name} - Build Tasks</DialogTitle>
+          </DialogHeader>
+          {showTasks && <BuildTaskManager websiteIntakeId={showTasks.id} />}
         </DialogContent>
       </Dialog>
     </>

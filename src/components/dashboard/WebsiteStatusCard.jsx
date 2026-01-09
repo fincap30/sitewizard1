@@ -39,8 +39,8 @@ export default function WebsiteStatusCard({ websiteIntake, subscription, package
           color: 'bg-purple-100 text-purple-800',
           icon: Eye,
           title: 'Ready for Review',
-          description: 'Your website preview is ready. Please review and approve.',
-          action: { label: 'Review Website', href: `/WebsiteIntakeForm?intake=${websiteIntake.id}` }
+          description: 'Your website preview is ready. Edit and customize it!',
+          action: { label: 'Edit Website', href: `/WebsiteEditor` }
         };
       case 'approved':
         return {
