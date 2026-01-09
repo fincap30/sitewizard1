@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Pricing from './pages/Pricing';
 import HowItWorks from './pages/HowItWorks';
 import StartFreeTrial from './pages/StartFreeTrial';
+import WebsiteIntakeForm from './pages/WebsiteIntakeForm';
 import __Layout from './Layout.jsx';
 
 
@@ -14,6 +15,7 @@ export const PAGES = {
     "Pricing": Pricing,
     "HowItWorks": HowItWorks,
     "StartFreeTrial": StartFreeTrial,
+    "WebsiteIntakeForm": WebsiteIntakeForm,
 }
 
 export const pagesConfig = {
