@@ -131,24 +131,17 @@ ${websiteContent}
 ${facebookContent}
 
 CRITICAL REQUIREMENTS:
-- ALL fields in the response are REQUIRED - never omit any field
-- If website/Facebook URLs are provided, visit them and provide SPECIFIC analysis
-- DO NOT return "N/A" or leave fields empty
+- Package recommendation and value proposition fields are REQUIRED
+- Only analyze website/social media if URLs are provided
 - Be specific and detailed in your analysis
 
 Provide comprehensive analysis:
 
-1. Current Website Assessment:
-   ${formData.current_website ? 'ANALYZE THE ACTUAL WEBSITE - check design, UX, mobile responsiveness, loading speed, SEO elements' : 'No website exists - note this as a major weakness'}
-   - Design quality: Rate 1-10 with specific reasons
-   - Mobile friendly: Yes/No with details
-   - SEO score: Rate 1-10 with specific issues found
-   - Key issues: List 3-5 specific problems you see
+1. Current Website Assessment (${formData.current_website ? 'REQUIRED' : 'SKIP THIS - return has_website: false'}):
+   ${formData.current_website ? 'ANALYZE THE ACTUAL WEBSITE - check design, UX, mobile responsiveness, loading speed, SEO elements' : ''}
    
-2. Social Media Analysis:
-   ${formData.facebook_page ? 'ANALYZE THE ACTUAL FACEBOOK PAGE - check branding, content quality, engagement' : 'No Facebook presence detected'}
-   - Quality rating with reasoning
-   - Engagement assessment
+2. Social Media Analysis (${formData.facebook_page ? 'REQUIRED' : 'SKIP THIS - return empty object'}):
+   ${formData.facebook_page ? 'ANALYZE THE ACTUAL FACEBOOK PAGE - check branding, content quality, engagement' : ''}
    
 3. Competitive Ranking:
    - Current level: Beginner/Developing/Average/Strong/Leading
