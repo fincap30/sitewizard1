@@ -4,11 +4,12 @@ import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Sparkles, Loader2, MessageSquare } from "lucide-react";
+import { Sparkles, Loader2, MessageSquare, FileText } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AIFeedbackAnalyzer({ websiteIntakeId }) {
   const [analysis, setAnalysis] = useState(null);
+  const [reportGenerated, setReportGenerated] = useState(false);
 
   const { data: comments = [] } = useQuery({
     queryKey: ['all-comments', websiteIntakeId],
@@ -75,6 +76,66 @@ Return as JSON with structured recommendations.`;
     onSuccess: (data) => {
       setAnalysis(data);
       toast.success('Feedback analysis complete!');
+    },
+  });
+
+  const generateReportMutation = useMutation({
+    mutationFn: async () => {
+      const prompt = `Generate structured project team report from client feedback.
+
+Comments:
+${comments.slice(0, 20).map(c => `
+- ${c.comment_type}: ${c.comment_text}
+  Section: ${c.section_reference}
+  Status: ${c.status}
+  ${c.admin_response ? `Response: ${c.admin_response}` : ''}
+`).join('\n')}
+
+Revision Requests:
+${revisions.slice(0, 20).map(r => `
+- ${r.request_type}: ${r.description}
+  Priority: ${r.priority}
+  Status: ${r.status}
+`).join('\n')}
+
+Generate comprehensive team report including:
+1. Executive Summary
+2. Common Themes/Patterns
+3. Priority Issues
+4. Action Items by Department
+5. Timeline Recommendations
+6. Resource Requirements
+
+Return as JSON.`;
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            executive_summary: { type: "string" },
+            common_themes: { type: "array", items: { type: "string" } },
+            priority_issues: { type: "array", items: { type: "string" } },
+            action_items: {
+              type: "object",
+              properties: {
+                development: { type: "array", items: { type: "string" } },
+                design: { type: "array", items: { type: "string" } },
+                content: { type: "array", items: { type: "string" } }
+              }
+            },
+            timeline_recommendations: { type: "string" },
+            resource_requirements: { type: "array", items: { type: "string" } }
+          }
+        }
+      });
+
+      return response;
+    },
+    onSuccess: (data) => {
+      setReportGenerated(true);
+      setAnalysis(data);
+      toast.success('Team report generated!');
     },
   });
 
