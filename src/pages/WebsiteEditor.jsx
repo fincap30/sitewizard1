@@ -13,6 +13,7 @@ import CustomCodeEditor from "../components/editor/CustomCodeEditor";
 import CommentingSystem from "../components/collaboration/CommentingSystem";
 import VersionHistory from "../components/editor/VersionHistory";
 import AIFeedbackAnalyzer from "../components/collaboration/AIFeedbackAnalyzer";
+import UserJourneySimulator from "../components/collaboration/UserJourneySimulator";
 import AIChatbot from "../components/shared/AIChatbot";
 
 export default function WebsiteEditor() {
@@ -67,13 +68,14 @@ export default function WebsiteEditor() {
         <p className="text-slate-300 mb-8">Edit your website content, add images, and generate AI content</p>
 
         <Tabs defaultValue="editor" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-9 lg:w-auto">
+          <TabsList className="flex-wrap h-auto">
             <TabsTrigger value="editor">Visual Editor</TabsTrigger>
             <TabsTrigger value="ai-customize">AI Customize</TabsTrigger>
             <TabsTrigger value="ai-content">AI Content</TabsTrigger>
             <TabsTrigger value="marketing">Marketing</TabsTrigger>
             <TabsTrigger value="media">Media</TabsTrigger>
             <TabsTrigger value="feedback">Feedback</TabsTrigger>
+            <TabsTrigger value="journey">User Journey</TabsTrigger>
             <TabsTrigger value="versions">Versions</TabsTrigger>
             <TabsTrigger value="ai-analysis">AI Analysis</TabsTrigger>
             <TabsTrigger value="code">Custom Code</TabsTrigger>
@@ -126,6 +128,10 @@ export default function WebsiteEditor() {
               pageReference="editor-view"
               sectionReference="general"
             />
+          </TabsContent>
+
+          <TabsContent value="journey">
+            <UserJourneySimulator websiteIntakeId={websiteIntake.id} />
           </TabsContent>
 
           <TabsContent value="versions">

@@ -23,6 +23,12 @@ export default function AIFeedbackAnalyzer({ websiteIntakeId }) {
     enabled: !!websiteIntakeId,
   });
 
+  const { data: revisions = [] } = useQuery({
+    queryKey: ['revisions-feedback', websiteIntakeId],
+    queryFn: () => base44.entities.ModificationRequest.filter({ project_id: websiteIntakeId }),
+    enabled: !!websiteIntakeId,
+  });
+
   const analyzeFeedbackMutation = useMutation({
     mutationFn: async () => {
       const openComments = comments.filter(c => c.status === 'open');
@@ -147,13 +153,14 @@ Return as JSON.`;
     <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
       <CardHeader>
         <div className="flex justify-between items-start">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <MessageSquare className="w-5 h-5 text-blue-400" />
-              AI Feedback Analysis
-            </CardTitle>
-            <CardDescription>Analyze client comments and suggest improvements</CardDescription>
-          </div>
+        <div>
+          <CardTitle className="flex items-center gap-2">
+            <MessageSquare className="w-5 h-5 text-blue-400" />
+            AI Feedback Analysis
+          </CardTitle>
+          <CardDescription>Analyze client comments and suggest improvements</CardDescription>
+        </div>
+        <div className="flex gap-2">
           <Button
             onClick={() => analyzeFeedbackMutation.mutate()}
             disabled={analyzeFeedbackMutation.isPending || comments.length === 0}
@@ -163,6 +170,16 @@ Return as JSON.`;
             {analyzeFeedbackMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Sparkles className="w-4 h-4 mr-2" />}
             Analyze Feedback
           </Button>
+          <Button
+            onClick={() => generateReportMutation.mutate()}
+            disabled={generateReportMutation.isPending || (comments.length === 0 && revisions.length === 0)}
+            size="sm"
+            variant="outline"
+          >
+            {generateReportMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <FileText className="w-4 h-4 mr-2" />}
+            Generate Team Report
+          </Button>
+        </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -219,6 +236,48 @@ Return as JSON.`;
           </div>
         ) : (
           <p className="text-center text-slate-400 py-4">{comments.length} comments available for analysis</p>
+        )}
+
+        {reportGenerated && analysis.executive_summary && (
+          <div className="space-y-3 mt-6 pt-6 border-t border-slate-700">
+            <h4 className="font-semibold text-white">Project Team Report</h4>
+            
+            <Alert className="bg-blue-600/10 border-blue-500/30">
+              <AlertDescription className="text-blue-300">
+                <strong>Executive Summary:</strong>
+                <p className="mt-1 text-sm">{analysis.executive_summary}</p>
+              </AlertDescription>
+            </Alert>
+
+            <Alert className="bg-purple-600/10 border-purple-500/30">
+              <AlertDescription className="text-purple-300">
+                <strong>Action Items - Development:</strong>
+                <ul className="list-disc list-inside mt-1 text-sm">
+                  {analysis.action_items?.development?.map((item, idx) => (
+                    <li key={idx}>{item}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+
+            <Alert className="bg-green-600/10 border-green-500/30">
+              <AlertDescription className="text-green-300">
+                <strong>Action Items - Design:</strong>
+                <ul className="list-disc list-inside mt-1 text-sm">
+                  {analysis.action_items?.design?.map((item, idx) => (
+                    <li key={idx}>{item}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+
+            <Alert className="bg-yellow-600/10 border-yellow-500/30">
+              <AlertDescription className="text-yellow-300">
+                <strong>Timeline:</strong>
+                <p className="mt-1 text-sm">{analysis.timeline_recommendations}</p>
+              </AlertDescription>
+            </Alert>
+          </div>
         )}
       </CardContent>
     </Card>
