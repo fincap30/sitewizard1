@@ -124,48 +124,64 @@ export default function Home() {
 
       const analysisPrompt = `You are a professional website analyst. Analyze this business's online presence and provide detailed, specific recommendations.
 
-Business Name: ${formData.business_name}
-Business Type: ${formData.website_type}
-Requirements: ${formData.requirements || 'Not specified'}
-${websiteContent}
-${facebookContent}
+      Business Name: ${formData.business_name}
+      Business Type: ${formData.website_type}
+      Requirements: ${formData.requirements || 'Not specified'}
+      ${websiteContent}
+      ${facebookContent}
 
-CRITICAL REQUIREMENTS:
-- Package recommendation and value proposition fields are REQUIRED
-- Only analyze website/social media if URLs are provided
-- Be specific and detailed in your analysis
+      CRITICAL REQUIREMENTS:
+      - Package recommendation and value proposition fields are REQUIRED
+      - Only analyze website/social media if URLs are provided
+      - Be specific and detailed in your analysis
 
-Provide comprehensive analysis:
+      Provide comprehensive analysis:
 
-1. Current Website Assessment (${formData.current_website ? 'REQUIRED' : 'SKIP THIS - return has_website: false'}):
-   ${formData.current_website ? 'ANALYZE THE ACTUAL WEBSITE - check design, UX, mobile responsiveness, loading speed, SEO elements' : ''}
-   
-2. Social Media Analysis (${formData.facebook_page ? 'REQUIRED' : 'SKIP THIS - return empty object'}):
-   ${formData.facebook_page ? 'ANALYZE THE ACTUAL FACEBOOK PAGE - check branding, content quality, engagement' : ''}
-   
-3. Competitive Ranking:
-   - Current level: Beginner/Developing/Average/Strong/Leading
-   - Detailed ranking summary (2-3 sentences)
-   - 3 main weaknesses holding them back
-   
-4. Growth Opportunities:
-   - List 4-5 specific, actionable opportunities for their business
-   
-5. Quick Wins (ABSOLUTELY REQUIRED - ALWAYS PROVIDE):
-   - List 3-4 benefits/improvements a NEW professional website will bring them
-   - Examples: "Increase credibility with professional design", "Capture leads 24/7 with contact forms", "Rank higher on Google with SEO optimization", "Look great on mobile devices"
-   - Focus on what OUR website will do for THEM
-   
-6. Package Recommendation (ABSOLUTELY REQUIRED - ALWAYS PROVIDE):
-   - recommended_package: MUST ALWAYS be "Growth" (this is the default recommendation)
-   - recommendation_reason: "The Growth plan offers the perfect balance of features and affordability for businesses looking to establish a strong online presence. It includes everything you need to succeed without overwhelming complexity."
-   - alternative_plans: "We also offer a Starter plan for basic needs and a Premium plan for advanced features and priority support."
-   
-7. Value Proposition (ABSOLUTELY REQUIRED - NEVER SKIP):
-   - whats_included: 5-6 items like "14-day free trial", "AI design", "Mobile responsive", "Hosting", "SSL"
-   - ai_benefits: 3-4 items like "10x faster delivery", "Auto SEO content", "Predictive analytics"  
-   - market_comparison: "Traditional agencies: $3,000-$10,000. We start at $0."
-   - why_choose_us: One sentence about AI advantage`;
+      1. Current Website Assessment (${formData.current_website ? 'REQUIRED' : 'SKIP THIS - return has_website: false'}):
+      ${formData.current_website ? `ANALYZE THE ACTUAL WEBSITE:
+      - Design & UX: Rate visual appeal, navigation clarity, call-to-action placement (provide 2-3 concrete improvement examples)
+      - Mobile responsiveness: Check layout, touch targets, readability
+      - Loading speed: Assess performance
+      - SEO breakdown:
+      * On-page: Title tags, meta descriptions, headers, keyword usage, content quality
+      * Off-page: Backlink profile, domain authority, social signals
+      - Content analysis: Evaluate homepage messaging, clarity of value proposition, content types used` : ''}
+
+      2. Social Media Analysis (${formData.facebook_page ? 'REQUIRED' : 'SKIP THIS - return empty object'}):
+      ${formData.facebook_page ? 'ANALYZE THE ACTUAL FACEBOOK PAGE - check branding consistency, post frequency, content variety, engagement rates, visual quality' : ''}
+
+      3. Competitive Ranking:
+      - Current level: Beginner/Developing/Average/Strong/Leading
+      - Detailed ranking summary (2-3 sentences)
+      - 3 main weaknesses holding them back
+      - Competitive strengths: What they're doing better than competitors
+      - Competitive gaps: What competitors have that they lack
+
+      4. Growth Opportunities:
+      - List 5-6 specific, actionable opportunities with implementation details
+
+      5. Quick Wins (ABSOLUTELY REQUIRED - ALWAYS PROVIDE):
+      - List 4-5 benefits/improvements a NEW professional website will bring them
+      - Examples: "Increase credibility with professional design", "Capture leads 24/7 with contact forms", "Rank higher on Google with SEO optimization", "Look great on mobile devices"
+      - Focus on what OUR website will do for THEM
+
+      6. Package Recommendation (ABSOLUTELY REQUIRED - ALWAYS PROVIDE):
+      - recommended_package: MUST ALWAYS be "Growth" (this is the default recommendation)
+      - recommendation_reason: "The Growth plan offers the perfect balance of features and affordability for businesses looking to establish a strong online presence. It includes everything you need to succeed without overwhelming complexity."
+      - alternative_plans: "We also offer a Starter plan for basic needs and a Premium plan for advanced features and priority support."
+
+      7. Value Proposition (ABSOLUTELY REQUIRED - NEVER SKIP):
+      - whats_included: 5-6 items like "14-day free trial", "AI design", "Mobile responsive", "Hosting", "SSL"
+      - ai_benefits: 3-4 items like "10x faster delivery", "Auto SEO content", "Predictive analytics"  
+      - market_comparison: "Traditional agencies: $3,000-$10,000. We start at $0."
+      - why_choose_us: One sentence about AI advantage
+
+      8. Content Strategy (ABSOLUTELY REQUIRED - ALWAYS PROVIDE):
+      - Homepage content suggestions: 3-4 specific content types (hero section, trust signals, features grid, testimonials, FAQ)
+      - Blog post ideas: 5-7 relevant topics for their business type
+      - Social media content: 4-5 post ideas to boost engagement
+      - Landing page copy: 2-3 compelling headline options and value propositions
+      - Target audience: Define their ideal customer profile`;
 
       const analysisResult = await base44.integrations.Core.InvokeLLM({
         prompt: analysisPrompt,
