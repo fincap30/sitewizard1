@@ -13,6 +13,7 @@ import WebsiteStatusCard from "../components/dashboard/WebsiteStatusCard";
 import RevisionRequestForm from "../components/dashboard/RevisionRequestForm";
 import RevisionRequestList from "../components/dashboard/RevisionRequestList";
 import ClientAnalytics from "../components/dashboard/ClientAnalytics";
+import ProjectMilestones from "../components/collaboration/ProjectMilestones";
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
@@ -209,42 +210,46 @@ export default function ClientDashboard() {
               packageData={packageData}
             />
             
-            <div className="grid lg:grid-cols-2 gap-6">
-              <SubscriptionDetails 
-                subscription={subscription}
-                packageData={packageData}
-                allPackages={allPackages}
-              />
-              
-              <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle>Recent Revisions</CardTitle>
-                  <CardDescription>Your latest modification requests</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {revisions.length === 0 ? (
-                    <p className="text-sm text-slate-400 text-center py-4">No revision requests yet</p>
-                  ) : (
-                    <div className="space-y-3">
-                      {revisions.slice(0, 3).map(rev => (
-                        <div key={rev.id} className="flex items-start justify-between p-3 bg-slate-700/30 rounded-lg">
-                          <div className="flex-1">
-                            <p className="text-sm font-medium text-white capitalize">{rev.request_type?.replace(/_/g, ' ')}</p>
-                            <p className="text-xs text-slate-400 mt-1">{new Date(rev.created_date).toLocaleDateString()}</p>
+            <div className="space-y-6">
+              <ProjectMilestones websiteIntakeId={websiteIntake?.id} />
+
+              <div className="grid lg:grid-cols-2 gap-6">
+                <SubscriptionDetails 
+                  subscription={subscription}
+                  packageData={packageData}
+                  allPackages={allPackages}
+                />
+
+                <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle>Recent Revisions</CardTitle>
+                    <CardDescription>Your latest modification requests</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {revisions.length === 0 ? (
+                      <p className="text-sm text-slate-400 text-center py-4">No revision requests yet</p>
+                    ) : (
+                      <div className="space-y-3">
+                        {revisions.slice(0, 3).map(rev => (
+                          <div key={rev.id} className="flex items-start justify-between p-3 bg-slate-700/30 rounded-lg">
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-white capitalize">{rev.request_type?.replace(/_/g, ' ')}</p>
+                              <p className="text-xs text-slate-400 mt-1">{new Date(rev.created_date).toLocaleDateString()}</p>
+                            </div>
+                            <Badge className={
+                              rev.status === 'completed' ? 'bg-green-100 text-green-800' :
+                              rev.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
+                              'bg-yellow-100 text-yellow-800'
+                            }>
+                              {rev.status}
+                            </Badge>
                           </div>
-                          <Badge className={
-                            rev.status === 'completed' ? 'bg-green-100 text-green-800' :
-                            rev.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
-                            'bg-yellow-100 text-yellow-800'
-                          }>
-                            {rev.status}
-                          </Badge>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </TabsContent>
 

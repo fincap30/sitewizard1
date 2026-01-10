@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import AIContentGenerator from "../components/editor/AIContentGenerator";
 import AICustomizer from "../components/editor/AICustomizer";
+import AIMarketingTools from "../components/marketing/AIMarketingTools";
 import MediaLibrary from "../components/editor/MediaLibrary";
 import VisualEditor from "../components/editor/VisualEditor";
 import CustomCodeEditor from "../components/editor/CustomCodeEditor";
+import CommentingSystem from "../components/collaboration/CommentingSystem";
 
 export default function WebsiteEditor() {
   const [user, setUser] = useState(null);
@@ -62,11 +64,13 @@ export default function WebsiteEditor() {
         <p className="text-slate-300 mb-8">Edit your website content, add images, and generate AI content</p>
 
         <Tabs defaultValue="editor" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto">
+          <TabsList className="grid w-full grid-cols-7 lg:w-auto">
             <TabsTrigger value="editor">Visual Editor</TabsTrigger>
             <TabsTrigger value="ai-customize">AI Customize</TabsTrigger>
             <TabsTrigger value="ai-content">AI Content</TabsTrigger>
+            <TabsTrigger value="marketing">Marketing</TabsTrigger>
             <TabsTrigger value="media">Media</TabsTrigger>
+            <TabsTrigger value="feedback">Feedback</TabsTrigger>
             <TabsTrigger value="code">Custom Code</TabsTrigger>
           </TabsList>
 
@@ -98,10 +102,24 @@ export default function WebsiteEditor() {
             <AIContentGenerator websiteIntake={websiteIntake} />
           </TabsContent>
 
+          <TabsContent value="marketing">
+            <AIMarketingTools websiteIntake={websiteIntake} />
+          </TabsContent>
+
           <TabsContent value="media">
             <MediaLibrary
               websiteIntakeId={websiteIntake.id}
               clientEmail={user.email}
+            />
+          </TabsContent>
+
+          <TabsContent value="feedback">
+            <CommentingSystem
+              websiteIntakeId={websiteIntake.id}
+              userEmail={user.email}
+              userName={user.full_name}
+              pageReference="editor-view"
+              sectionReference="general"
             />
           </TabsContent>
 

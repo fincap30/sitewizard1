@@ -16,6 +16,38 @@ export default function AdminRevisionManager({ revisions }) {
   const [newStatus, setNewStatus] = useState('');
   const queryClient = useQueryClient();
 
+  const autoCategorizeMutation = useMutation({
+    mutationFn: async (revision) => {
+      const prompt = `Analyze this revision request and categorize it:
+
+Request: ${revision.description}
+Type: ${revision.request_type}
+
+Determine:
+1. Priority (low/medium/high/urgent)
+2. Estimated complexity (simple/moderate/complex)
+3. Suggested action (approve/needs_clarification/reject)
+4. AI-generated draft response
+
+Return JSON.`;
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            priority: { type: "string" },
+            complexity: { type: "string" },
+            suggested_action: { type: "string" },
+            draft_response: { type: "string" }
+          }
+        }
+      });
+
+      return response;
+    },
+  });
+
   const updateRevisionMutation = useMutation({
     mutationFn: async ({ revision_id, status, admin_response }) => {
       await base44.functions.invoke('updateRevisionStatus', {
@@ -122,16 +154,35 @@ export default function AdminRevisionManager({ revisions }) {
                             {new Date(revision.created_date).toLocaleDateString()} at {new Date(revision.created_date).toLocaleTimeString()}
                           </p>
                         </div>
-                        <Button
-                          size="sm"
-                          onClick={() => {
-                            setSelectedRevision(revision);
-                            setNewStatus(revision.status);
-                            setAdminResponse(revision.admin_response || '');
-                          }}
-                        >
-                          Manage
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              autoCategorizeMutation.mutate(revision, {
+                                onSuccess: (result) => {
+                                  setSelectedRevision(revision);
+                                  setNewStatus(result.suggested_action === 'approve' ? 'in_progress' : revision.status);
+                                  setAdminResponse(result.draft_response);
+                                  toast.success('AI analysis complete!');
+                                }
+                              });
+                            }}
+                            disabled={autoCategorizeMutation.isPending}
+                          >
+                            AI Analyze
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              setSelectedRevision(revision);
+                              setNewStatus(revision.status);
+                              setAdminResponse(revision.admin_response || '');
+                            }}
+                          >
+                            Manage
+                          </Button>
+                        </div>
                       </div>
                       <p className="text-sm text-white bg-slate-700/30 p-3 rounded-lg">
                         {revision.description}
