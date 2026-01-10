@@ -408,29 +408,9 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
 
   const handleContinueToIntake = async () => {
     if (formData.business_name && formData.client_email) {
-      try {
-        const intakeData = {
-          client_email: formData.client_email,
-          company_name: formData.business_name,
-          contact_person: formData.client_name,
-          phone: formData.phone,
-          country: formData.country || '',
-          current_website: formData.current_website || '',
-          facebook_page: formData.facebook_page || '',
-          goal_description: formData.requirements || '',
-          website_status: 'pending',
-          analysis_data: JSON.stringify(analysis)
-        };
-        
-        const intake = await base44.entities.WebsiteIntake.create(intakeData);
-        sessionStorage.setItem('intake_id', intake.id);
-        window.location.href = '/WebsiteIntakeForm';
-      } catch (error) {
-        console.log('Intake creation skipped, proceeding to form...', error);
-        window.location.href = '/WebsiteIntakeForm';
-      }
-    } else {
       window.location.href = '/WebsiteIntakeForm';
+    } else {
+      toast.error('Please fill in business name and email');
     }
   };
 
