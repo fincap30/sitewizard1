@@ -161,7 +161,9 @@ Provide comprehensive analysis:
    - 3-4 immediate actions they can take
    
 6. Package Recommendation:
-   - Recommend Starter/Growth/Premium based on their needs and current state
+   - DEFAULT to recommending the Growth plan (middle tier) unless there's a very strong reason otherwise
+   - Mention that cheaper (Starter) and more expensive (Premium) plans are available
+   - Explain why Growth is the best starting point for most businesses
    - Detailed reason (2-3 sentences)
 
 Be specific, detailed, and provide REAL analysis, not generic responses.`;
