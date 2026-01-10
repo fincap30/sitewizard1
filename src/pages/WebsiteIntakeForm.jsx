@@ -46,10 +46,41 @@ export default function WebsiteIntakeForm() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    base44.auth.me()
-      .then(setUser)
-      .catch(() => base44.auth.redirectToLogin());
-  }, []);
+      base44.auth.me()
+        .then(async (userData) => {
+          setUser(userData);
+
+          // Check if there's a pre-created intake from Home page
+          const savedIntakeId = sessionStorage.getItem('intake_id');
+          if (savedIntakeId) {
+            const intakes = await base44.entities.WebsiteIntake.filter({ id: savedIntakeId });
+            if (intakes[0]) {
+              const intake = intakes[0];
+              // Pre-fill form with existing data
+              setFormData({
+                company_name: intake.company_name || '',
+                contact_person: intake.contact_person || '',
+                phone: intake.phone || '',
+                country: intake.country || '',
+                city: intake.city || '',
+                current_website: intake.current_website || '',
+                facebook_page: intake.facebook_page || '',
+                instagram_page: intake.instagram_page || '',
+                other_platforms: intake.other_platforms || '',
+                logo_url: intake.logo_url || '',
+                brand_colors: intake.brand_colors || '',
+                style_preference: intake.style_preference || 'modern',
+                business_goals: intake.business_goals || [],
+                goal_description: intake.goal_description || '',
+                competitor_urls: intake.competitor_urls || ['', '', '']
+              });
+              setIntakeId(savedIntakeId);
+            }
+            sessionStorage.removeItem('intake_id');
+          }
+        })
+        .catch(() => base44.auth.redirectToLogin());
+    }, []);
 
   const { data: subscription } = useQuery({
     queryKey: ['my-subscription', user?.email],
