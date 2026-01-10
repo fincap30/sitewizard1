@@ -11,6 +11,7 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { GripVertical, Edit2, Save, Plus, Trash2, Eye, Palette, Type } from "lucide-react";
 import { toast } from "sonner";
 import AICopywritingAssistant from './AICopywritingAssistant';
+import SEOPageOptimizer from '../seo/SEOPageOptimizer';
 
 export default function AdvancedWebsiteEditor({ websiteIntake, websiteData }) {
   const [editingSection, setEditingSection] = useState(null);
@@ -109,11 +110,12 @@ export default function AdvancedWebsiteEditor({ websiteIntake, websiteData }) {
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="content">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="content">Content Editor</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="content">Content</TabsTrigger>
             <TabsTrigger value="copywriting">✨ Copywriter</TabsTrigger>
-            <TabsTrigger value="design">Design Settings</TabsTrigger>
-            <TabsTrigger value="seo">SEO Optimizer</TabsTrigger>
+            <TabsTrigger value="seo">🔍 SEO Pro</TabsTrigger>
+            <TabsTrigger value="design">Design</TabsTrigger>
+            <TabsTrigger value="advanced">Advanced</TabsTrigger>
           </TabsList>
 
           <TabsContent value="content" className="space-y-4">
@@ -296,7 +298,25 @@ export default function AdvancedWebsiteEditor({ websiteIntake, websiteData }) {
             </Card>
           </TabsContent>
 
-          <TabsContent value="seo">
+          <TabsContent value="seo" className="space-y-4">
+            {pages.map((page, idx) => (
+              <SEOPageOptimizer
+                key={idx}
+                page={page}
+                websiteIntake={websiteIntake}
+                onUpdate={(seoData) => {
+                  const newPages = [...pages];
+                  newPages[idx] = {
+                    ...newPages[idx],
+                    seo: seoData
+                  };
+                  setPages(newPages);
+                }}
+              />
+            ))}
+          </TabsContent>
+
+          <TabsContent value="advanced">
             <SEOOptimizer websiteData={websiteData} pages={pages} />
           </TabsContent>
         </Tabs>
