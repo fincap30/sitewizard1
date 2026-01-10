@@ -121,20 +121,32 @@ export default function WebsiteIntakeForm() {
   };
 
   const submitIntakeMutation = useMutation({
-    mutationFn: async (data) => {
-      return await base44.entities.WebsiteIntake.create({
-        ...data,
-        subscription_id: subscription.id,
-        client_email: user.email,
-        website_status: 'pending',
-        competitor_urls: data.competitor_urls.filter(u => u.trim())
-      });
-    },
-    onSuccess: (intake) => {
-      setIntakeId(intake.id);
-      checkIfQuestionsNeeded(intake);
-    },
-  });
+      mutationFn: async (data) => {
+        // If we already have an intake ID, update it instead of creating new
+        if (intakeId) {
+          await base44.entities.WebsiteIntake.update(intakeId, {
+            ...data,
+            subscription_id: subscription.id,
+            website_status: 'pending',
+            competitor_urls: data.competitor_urls.filter(u => u.trim())
+          });
+          const updated = await base44.entities.WebsiteIntake.filter({ id: intakeId });
+          return updated[0];
+        } else {
+          return await base44.entities.WebsiteIntake.create({
+            ...data,
+            subscription_id: subscription.id,
+            client_email: user.email,
+            website_status: 'pending',
+            competitor_urls: data.competitor_urls.filter(u => u.trim())
+          });
+        }
+      },
+      onSuccess: (intake) => {
+        setIntakeId(intake.id);
+        checkIfQuestionsNeeded(intake);
+      },
+    });
 
   const checkIfQuestionsNeeded = async (intake) => {
     setStep('analyzing');
