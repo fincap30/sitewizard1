@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart as CartIcon, Trash2, Plus, Minus, CreditCard } from "lucide-react";
-import { loadStripe } from '@stripe/stripe-js';
+import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 
 export default function ShoppingCart({ products }) {
@@ -42,12 +42,18 @@ export default function ShoppingCart({ products }) {
   const handleCheckout = async () => {
     setLoading(true);
     try {
-      // This would call your Stripe backend function
-      toast.success('Redirecting to checkout...');
-      // const stripe = await loadStripe('your_publishable_key');
-      // await stripe.redirectToCheckout({ sessionId: 'session_id' });
+      const response = await base44.functions.invoke('createStripeCheckout', {
+        cart,
+        websiteIntakeId: products[0]?.website_intake_id
+      });
+
+      if (response.data.approvalUrl) {
+        window.location.href = response.data.approvalUrl;
+      } else {
+        toast.error('Checkout failed');
+      }
     } catch (error) {
-      toast.error('Checkout failed');
+      toast.error('Checkout failed: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -155,10 +161,10 @@ export default function ShoppingCart({ products }) {
                 <Button
                   onClick={handleCheckout}
                   disabled={loading}
-                  className="w-full bg-green-600 hover:bg-green-700"
+                  className="w-full bg-blue-600 hover:bg-blue-700"
                 >
                   <CreditCard className="w-4 h-4 mr-2" />
-                  {loading ? 'Processing...' : 'Checkout with Stripe'}
+                  {loading ? 'Processing...' : 'Checkout with PayPal'}
                 </Button>
               </>
             )}

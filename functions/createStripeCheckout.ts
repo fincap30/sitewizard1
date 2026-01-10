@@ -1,9 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import Stripe from 'npm:stripe@17.5.0';
-
-const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'), {
-  apiVersion: '2024-12-18.acacia',
-});
 
 Deno.serve(async (req) => {
   try {
@@ -16,36 +11,62 @@ Deno.serve(async (req) => {
 
     const { cart, websiteIntakeId } = await req.json();
 
-    // Create line items for Stripe
-    const lineItems = cart.map(item => ({
-      price_data: {
-        currency: 'usd',
-        product_data: {
+    // Calculate total
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+    // Create PayPal order payload
+    const paypalOrder = {
+      intent: 'CAPTURE',
+      purchase_units: [{
+        amount: {
+          currency_code: 'USD',
+          value: total.toFixed(2),
+          breakdown: {
+            item_total: {
+              currency_code: 'USD',
+              value: total.toFixed(2)
+            }
+          }
+        },
+        items: cart.map(item => ({
           name: item.name,
           description: item.short_description,
-        },
-        unit_amount: Math.round(item.price * 100), // Convert to cents
-      },
-      quantity: item.quantity,
-    }));
-
-    // Create Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: lineItems,
-      mode: 'payment',
-      success_url: `${req.headers.get('origin')}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get('origin')}/checkout/cancel`,
-      customer_email: user.email,
-      metadata: {
-        user_email: user.email,
-        website_intake_id: websiteIntakeId
+          unit_amount: {
+            currency_code: 'USD',
+            value: item.price.toFixed(2)
+          },
+          quantity: item.quantity.toString()
+        }))
+      }],
+      application_context: {
+        return_url: `${req.headers.get('origin')}/checkout/success`,
+        cancel_url: `${req.headers.get('origin')}/checkout/cancel`,
+        user_action: 'PAY_NOW'
       }
+    };
+
+    // Create PayPal order
+    const paypalResponse = await fetch('https://api-m.paypal.com/v2/checkout/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${btoa(`${Deno.env.get('PAYPAL_CLIENT_ID')}:${Deno.env.get('PAYPAL_SECRET')}`)}`,
+      },
+      body: JSON.stringify(paypalOrder)
     });
 
-    return Response.json({ sessionId: session.id, url: session.url });
+    const order = await paypalResponse.json();
+
+    if (!paypalResponse.ok) {
+      throw new Error(order.message || 'PayPal order creation failed');
+    }
+
+    return Response.json({ 
+      orderId: order.id, 
+      approvalUrl: order.links.find(link => link.rel === 'approve')?.href 
+    });
   } catch (error) {
-    console.error('Stripe checkout error:', error);
+    console.error('PayPal checkout error:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
