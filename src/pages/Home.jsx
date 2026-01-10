@@ -689,6 +689,8 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
                     </div>
                   )}
                 </div>
+                </>
+                )}
               </div>
 
               {/* Opportunities */}
