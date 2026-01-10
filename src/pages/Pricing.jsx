@@ -22,6 +22,21 @@ export default function Pricing() {
     }
   };
 
+  const getAllFeatures = (currentPkg, allPackages) => {
+    const tierOrder = ['starter', 'growth', 'premium'];
+    const currentTierIndex = tierOrder.indexOf(currentPkg.tier);
+    
+    let allFeatures = [];
+    for (let i = 0; i <= currentTierIndex; i++) {
+      const pkg = allPackages.find(p => p.tier === tierOrder[i]);
+      if (pkg?.features) {
+        allFeatures = [...allFeatures, ...pkg.features];
+      }
+    }
+    
+    return [...new Set(allFeatures)];
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -40,9 +55,15 @@ export default function Pricing() {
             Free Website. Paid Growth.
           </div>
           <h1 className="text-5xl font-bold text-white mb-4">
-            Choose Your Growth Plan
+            Websites Built for Business Growth
           </h1>
-          <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+          <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-6">
+            We don't just build beautiful websites. We create digital assets designed to drive business growth and contribute to your profitability.
+          </p>
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Choose Your Growth Plan
+          </h2>
+          <p className="text-lg text-slate-300 max-w-2xl mx-auto">
             Start with a free 14-day trial. No upfront cost. Cancel anytime.
           </p>
         </div>
@@ -71,7 +92,7 @@ export default function Pricing() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <ul className="space-y-3">
-                  {pkg.features?.map((feature, idx) => (
+                  {getAllFeatures(pkg, packages).map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-2 text-sm text-slate-300">
                       <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
                       <span>{feature}</span>
