@@ -151,14 +151,15 @@ Provide comprehensive analysis:
 4. Growth Opportunities:
    - List 4-5 specific, actionable opportunities for their business
    
-5. Quick Wins:
-   - List 3-4 immediate actions they can implement right now to improve their online presence
-   - Examples: "Add customer testimonials to homepage", "Optimize page speed", "Set up Google My Business"
+5. Quick Wins (ABSOLUTELY REQUIRED - ALWAYS PROVIDE):
+   - List 3-4 benefits/improvements a NEW professional website will bring them
+   - Examples: "Increase credibility with professional design", "Capture leads 24/7 with contact forms", "Rank higher on Google with SEO optimization", "Look great on mobile devices"
+   - Focus on what OUR website will do for THEM
    
-6. Package Recommendation (ABSOLUTELY REQUIRED - NEVER SKIP):
-   - recommended_package: MUST be "Growth" (default for most businesses)
-   - recommendation_reason: 2-3 sentences explaining why
-   - alternative_plans: "Also available: Starter (budget option) and Premium (advanced features)"
+6. Package Recommendation (ABSOLUTELY REQUIRED - ALWAYS PROVIDE):
+   - recommended_package: MUST ALWAYS be "Growth" (this is the default recommendation)
+   - recommendation_reason: "The Growth plan offers the perfect balance of features and affordability for businesses looking to establish a strong online presence. It includes everything you need to succeed without overwhelming complexity."
+   - alternative_plans: "We also offer a Starter plan for basic needs and a Premium plan for advanced features and priority support."
    
 7. Value Proposition (ABSOLUTELY REQUIRED - NEVER SKIP):
    - whats_included: 5-6 items like "14-day free trial", "AI design", "Mobile responsive", "Hosting", "SSL"
