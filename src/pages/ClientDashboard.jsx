@@ -20,6 +20,9 @@ import PredictiveAnalytics from "../components/analytics/PredictiveAnalytics";
 import CollaborationHub from "../components/collaboration/CollaborationHub";
 import AIChatbot from "../components/shared/AIChatbot";
 import MarketingDashboard from "../components/marketing/MarketingDashboard";
+import SocialMediaScheduler from "../components/marketing/SocialMediaScheduler";
+import EmailMarketingTool from "../components/marketing/EmailMarketingTool";
+import PerformanceTracker from "../components/marketing/PerformanceTracker";
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
@@ -299,7 +302,32 @@ export default function ClientDashboard() {
           {/* Marketing Tab */}
           <TabsContent value="marketing">
             {websiteIntake ? (
-              <MarketingDashboard websiteIntakeId={websiteIntake.id} />
+              <div className="space-y-6">
+                <Tabs defaultValue="dashboard">
+                  <TabsList className="grid w-full grid-cols-4">
+                    <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+                    <TabsTrigger value="social">Social Media</TabsTrigger>
+                    <TabsTrigger value="email">Email</TabsTrigger>
+                    <TabsTrigger value="performance">Performance</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="dashboard">
+                    <MarketingDashboard websiteIntakeId={websiteIntake.id} />
+                  </TabsContent>
+
+                  <TabsContent value="social">
+                    <SocialMediaScheduler websiteIntakeId={websiteIntake.id} />
+                  </TabsContent>
+
+                  <TabsContent value="email">
+                    <EmailMarketingTool websiteIntakeId={websiteIntake.id} />
+                  </TabsContent>
+
+                  <TabsContent value="performance">
+                    <PerformanceTracker websiteIntakeId={websiteIntake.id} />
+                  </TabsContent>
+                </Tabs>
+              </div>
             ) : (
               <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
                 <CardContent className="py-12 text-center">

@@ -7,8 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Sparkles, Loader2, CheckCircle, Layout, Palette, FileText, Search } from "lucide-react";
+import { Sparkles, Loader2, CheckCircle, Layout, Palette, FileText, Search, Eye } from "lucide-react";
 import { toast } from "sonner";
+import ReactDOM from 'react-dom/client';
+import GeneratedWebsite from './GeneratedWebsite';
 
 export default function AIWebsiteBuilder({ websiteIntake, onComplete }) {
   const [buildProgress, setBuildProgress] = useState(0);
@@ -276,6 +278,22 @@ Return as JSON design tokens.`;
                     </div>
                     <Badge className="bg-green-600">Ready</Badge>
                   </div>
+
+                  <Button
+                    onClick={() => {
+                      const modal = document.createElement('div');
+                      modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:9999;overflow:auto;';
+                      modal.innerHTML = '<div id="preview-root"></div><button onclick="this.parentElement.remove()" style="position:fixed;top:20px;right:20px;padding:10px 20px;background:#3b82f6;color:white;border:none;border-radius:8px;cursor:pointer;z-index:10000;">Close Preview</button>';
+                      document.body.appendChild(modal);
+                      
+                      const root = ReactDOM.createRoot(document.getElementById('preview-root'));
+                      root.render(<GeneratedWebsite websiteData={generatedWebsite} />);
+                    }}
+                    className="w-full mb-4 bg-green-600 hover:bg-green-700"
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    Preview Full Website
+                  </Button>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-slate-800/50 p-3 rounded-lg">
