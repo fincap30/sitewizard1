@@ -434,7 +434,7 @@ export default function Home() {
               {analysis.value_proposition && (
                 <div className="bg-blue-600/10 border border-blue-500/30 rounded-lg p-4">
                   <h3 className="font-semibold text-white mb-3">What You Get with SiteWizard.pro</h3>
-                  
+
                   <div className="mb-4">
                     <p className="text-sm font-medium text-blue-300 mb-2">Included for FREE:</p>
                     <ul className="space-y-1 text-sm text-slate-300">
@@ -472,6 +472,80 @@ export default function Home() {
                       {analysis.value_proposition.why_choose_us}
                     </p>
                   )}
+                </div>
+              )}
+
+              {/* Content Strategy */}
+              {analysis.content_strategy && (
+                <div className="bg-purple-600/10 border border-purple-500/30 rounded-lg p-4">
+                  <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-purple-400" />
+                    Your Custom Content Strategy
+                  </h3>
+
+                  {analysis.content_strategy.target_audience && (
+                    <div className="mb-4 bg-purple-900/20 rounded-lg p-3">
+                      <p className="text-sm font-medium text-purple-300 mb-1">Target Audience:</p>
+                      <p className="text-sm text-slate-300">{analysis.content_strategy.target_audience}</p>
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    {analysis.content_strategy.homepage_suggestions && (
+                      <div>
+                        <p className="text-sm font-medium text-white mb-2">Homepage Content:</p>
+                        <ul className="space-y-1 text-sm text-slate-300">
+                          {analysis.content_strategy.homepage_suggestions.map((item, idx) => (
+                            <li key={idx} className="flex items-start gap-2">
+                              <CheckCircle className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {analysis.content_strategy.blog_topics && (
+                      <div>
+                        <p className="text-sm font-medium text-white mb-2">Blog Post Ideas:</p>
+                        <ul className="space-y-1 text-sm text-slate-300">
+                          {analysis.content_strategy.blog_topics.map((topic, idx) => (
+                            <li key={idx} className="flex items-start gap-2">
+                              <Star className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
+                              <span>{topic}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {analysis.content_strategy.social_media_ideas && (
+                      <div>
+                        <p className="text-sm font-medium text-white mb-2">Social Media Content:</p>
+                        <ul className="space-y-1 text-sm text-slate-300">
+                          {analysis.content_strategy.social_media_ideas.map((idea, idx) => (
+                            <li key={idx} className="flex items-start gap-2">
+                              <ArrowRight className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
+                              <span>{idea}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {analysis.content_strategy.landing_page_headlines && (
+                      <div>
+                        <p className="text-sm font-medium text-white mb-2">Landing Page Headlines:</p>
+                        <div className="space-y-2">
+                          {analysis.content_strategy.landing_page_headlines.map((headline, idx) => (
+                            <div key={idx} className="bg-slate-700/30 rounded p-2 text-sm text-slate-200 italic">
+                              "{headline}"
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
