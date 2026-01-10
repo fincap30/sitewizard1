@@ -14,6 +14,7 @@ import RevisionRequestForm from "../components/dashboard/RevisionRequestForm";
 import RevisionRequestList from "../components/dashboard/RevisionRequestList";
 import ClientAnalytics from "../components/dashboard/ClientAnalytics";
 import ProjectMilestones from "../components/collaboration/ProjectMilestones";
+import WebsiteAudit from "../components/dashboard/WebsiteAudit";
 import AIChatbot from "../components/shared/AIChatbot";
 
 export default function ClientDashboard() {
@@ -195,10 +196,11 @@ export default function ClientDashboard() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto">
+          <TabsList className="grid w-full grid-cols-6 lg:w-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="website">Website</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="audit">Website Audit</TabsTrigger>
             <TabsTrigger value="revisions">Revisions</TabsTrigger>
             <TabsTrigger value="subscription">Subscription</TabsTrigger>
           </TabsList>
@@ -275,6 +277,11 @@ export default function ClientDashboard() {
                 </CardContent>
               </Card>
             )}
+          </TabsContent>
+
+          {/* Website Audit Tab */}
+          <TabsContent value="audit">
+            <WebsiteAudit websiteIntake={websiteIntake} />
           </TabsContent>
 
           {/* Revisions Tab */}
