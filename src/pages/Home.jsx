@@ -553,12 +553,13 @@ export default function Home() {
             <span className="font-semibold text-white">No upfront cost. Hosting included. 14-day trial.</span>
           </p>
           <div className="flex gap-4 justify-center">
-            <Link to="/Pricing">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6">
-                Start Free Trial
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
+            <Button 
+              onClick={() => document.getElementById('analysis-form').scrollIntoView({ behavior: 'smooth' })}
+              className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6"
+            >
+              Start Free Trial
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
             <Link to="/HowItWorks">
               <Button variant="outline" className="text-lg px-8 py-6 border-slate-600 hover:border-blue-500">
                 How It Works
@@ -601,7 +602,7 @@ export default function Home() {
         </div>
 
         {/* Registration Form */}
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-2xl mx-auto" id="analysis-form">
           <Card className="border-2 border-slate-700/50 shadow-xl bg-slate-800/50 backdrop-blur-sm">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl">Get Your Free Analysis</CardTitle>
