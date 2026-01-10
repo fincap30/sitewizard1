@@ -335,12 +335,19 @@ Be specific, detailed, and provide REAL analysis, not generic responses.`;
               {/* Recommendation */}
               <div className="bg-purple-600/10 border border-purple-500/30 rounded-lg p-4">
                 <h3 className="font-semibold text-white mb-3">Our Recommendation</h3>
-                <Badge className="mb-3 bg-purple-600 text-lg px-4 py-1">
-                  {analysis.recommended_package} Plan
-                </Badge>
-                <p className="text-slate-300 mb-3">{analysis.recommendation_reason}</p>
+                {analysis.recommended_package && (
+                  <Badge className="mb-3 bg-purple-600 text-lg px-4 py-1">
+                    {analysis.recommended_package}
+                  </Badge>
+                )}
+                {analysis.recommendation_reason && (
+                  <p className="text-slate-300 mb-3">{analysis.recommendation_reason}</p>
+                )}
                 {analysis.alternative_plans && (
                   <p className="text-sm text-slate-400 italic">{analysis.alternative_plans}</p>
+                )}
+                {!analysis.recommended_package && !analysis.recommendation_reason && (
+                  <p className="text-slate-400">Loading recommendation...</p>
                 )}
               </div>
 
