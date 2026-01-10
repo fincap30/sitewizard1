@@ -13,6 +13,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import AIQuestionsFlow from "../components/intake/AIQuestionsFlow";
 import WebsitePreview from "../components/intake/WebsitePreview";
 import TemplateSelector from "../components/builder/TemplateSelector";
+import TemplateLibrary from "../components/builder/TemplateLibrary";
 import AIWebsiteBuilder from "../components/builder/AIWebsiteBuilder";
 import AdvancedWebsiteEditor from "../components/builder/AdvancedWebsiteEditor";
 import ProjectRoadmap from "../components/onboarding/ProjectRoadmap";
@@ -326,7 +327,7 @@ Return JSON:
     return (
       <div className="min-h-screen bg-transparent py-12 px-4">
         <div className="container mx-auto max-w-6xl">
-          <TemplateSelector
+          <TemplateLibrary
             websiteIntake={websiteIntake}
             onTemplateSelected={(data) => {
               setCustomizedTemplate(data);
