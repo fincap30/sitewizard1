@@ -650,46 +650,44 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
                       {analysis.competitive_ranking.current_level || 'Assessment pending'}
                     </Badge>
                     <p className="text-slate-300 mb-3">{analysis.competitive_ranking.ranking_summary || 'Analysis in progress...'}</p>
+
+                    <div className="space-y-3">
+                      {analysis.competitive_ranking?.competitive_strengths && (
+                        <div>
+                          <strong className="text-green-400">Your Strengths:</strong>
+                          <ul className="list-disc list-inside mt-1 text-sm text-slate-300">
+                            {analysis.competitive_ranking.competitive_strengths.map((strength, idx) => (
+                              <li key={idx}>{strength}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {analysis.competitive_ranking?.main_weaknesses && (
+                        <div>
+                          <strong className="text-orange-400">Areas to Improve:</strong>
+                          <ul className="list-disc list-inside mt-1 text-sm text-slate-300">
+                            {analysis.competitive_ranking.main_weaknesses.map((weakness, idx) => (
+                              <li key={idx}>{weakness}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {analysis.competitive_ranking?.competitive_gaps && (
+                        <div>
+                          <strong className="text-red-400">Competitive Gaps:</strong>
+                          <ul className="list-disc list-inside mt-1 text-sm text-slate-300">
+                            {analysis.competitive_ranking.competitive_gaps.map((gap, idx) => (
+                              <li key={idx}>{gap}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
                   </>
                 ) : (
                   <p className="text-slate-400">Analyzing competitive position...</p>
-                )}
-
-                <div className="space-y-3">
-                  {analysis.competitive_ranking?.competitive_strengths && (
-                    <div>
-                      <strong className="text-green-400">Your Strengths:</strong>
-                      <ul className="list-disc list-inside mt-1 text-sm text-slate-300">
-                        {analysis.competitive_ranking.competitive_strengths.map((strength, idx) => (
-                          <li key={idx}>{strength}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {analysis.competitive_ranking?.main_weaknesses && (
-                    <div>
-                      <strong className="text-orange-400">Areas to Improve:</strong>
-                      <ul className="list-disc list-inside mt-1 text-sm text-slate-300">
-                        {analysis.competitive_ranking.main_weaknesses.map((weakness, idx) => (
-                          <li key={idx}>{weakness}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {analysis.competitive_ranking?.competitive_gaps && (
-                    <div>
-                      <strong className="text-red-400">Competitive Gaps:</strong>
-                      <ul className="list-disc list-inside mt-1 text-sm text-slate-300">
-                        {analysis.competitive_ranking.competitive_gaps.map((gap, idx) => (
-                          <li key={idx}>{gap}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-                </>
                 )}
               </div>
 
