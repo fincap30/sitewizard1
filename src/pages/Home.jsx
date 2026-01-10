@@ -130,9 +130,10 @@ Requirements: ${formData.requirements || 'Not specified'}
 ${websiteContent}
 ${facebookContent}
 
-IMPORTANT: 
-- If website/Facebook URLs are provided, YOU MUST visit them and provide SPECIFIC analysis based on what you see
-- DO NOT return "N/A" - provide actual assessment based on the URLs or industry standards
+CRITICAL REQUIREMENTS:
+- ALL fields in the response are REQUIRED - never omit any field
+- If website/Facebook URLs are provided, visit them and provide SPECIFIC analysis
+- DO NOT return "N/A" or leave fields empty
 - Be specific and detailed in your analysis
 
 Provide comprehensive analysis:
@@ -155,24 +156,24 @@ Provide comprehensive analysis:
    - 3 main weaknesses holding them back
    
 4. Growth Opportunities:
-   - List 4-5 specific, actionable opportunities
+   - List 4-5 specific, actionable opportunities for their business
    
 5. Quick Wins:
-   - 3-4 immediate actions they can take
+   - List 3-4 immediate actions they can implement right now to improve their online presence
+   - Examples: "Add customer testimonials to homepage", "Optimize page speed", "Set up Google My Business"
    
-6. Package Recommendation:
-   - DEFAULT to recommending the Growth plan (middle tier) unless there's a very strong reason otherwise
-   - Mention that cheaper (Starter) and more expensive (Premium) plans are available
-   - Explain why Growth is the best starting point for most businesses
-   - Detailed reason (2-3 sentences)
+6. Package Recommendation (REQUIRED):
+   - recommended_package: MUST be exactly "Growth" (unless extremely compelling reason for Starter or Premium)
+   - recommendation_reason: Explain in 2-3 sentences why Growth plan is best for them
+   - alternative_plans: Mention "Starter plan available at lower cost, Premium for advanced features"
    
-7. What You Get (Value Proposition):
-   - List 5-6 specific features/services included for free in the recommended plan
-   - Explain how our AI specialization benefits them specifically
-   - Compare: "Traditional agencies charge $X-$X for similar services"
-   - Highlight AI advantages: faster delivery, smarter optimization, predictive analytics, automated content
+7. Value Proposition (ALL FIELDS REQUIRED):
+   - whats_included: List 5-6 specific features (e.g., "14-day free trial", "AI-powered design", "Mobile-responsive website", "Basic SEO optimization", "Hosting included", "SSL certificate")
+   - ai_benefits: List 3-4 AI advantages (e.g., "Website delivered 10x faster than traditional agencies", "AI generates SEO-optimized content automatically", "Predictive analytics forecast traffic growth")
+   - market_comparison: Compare costs (e.g., "Traditional web agencies charge $3,000-$10,000 upfront. We start at $0 with 14-day trial.")
+   - why_choose_us: One compelling sentence about AI specialization
 
-Be specific, detailed, and provide REAL analysis, not generic responses.`;
+REMEMBER: Include ALL fields with real content. No empty fields allowed.`;
 
       const analysisResult = await base44.integrations.Core.InvokeLLM({
         prompt: analysisPrompt,
