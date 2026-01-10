@@ -165,6 +165,12 @@ Provide comprehensive analysis:
    - Mention that cheaper (Starter) and more expensive (Premium) plans are available
    - Explain why Growth is the best starting point for most businesses
    - Detailed reason (2-3 sentences)
+   
+7. What You Get (Value Proposition):
+   - List 5-6 specific features/services included for free in the recommended plan
+   - Explain how our AI specialization benefits them specifically
+   - Compare: "Traditional agencies charge $X-$X for similar services"
+   - Highlight AI advantages: faster delivery, smarter optimization, predictive analytics, automated content
 
 Be specific, detailed, and provide REAL analysis, not generic responses.`;
 
@@ -322,8 +328,56 @@ Be specific, detailed, and provide REAL analysis, not generic responses.`;
                 <Badge className="mb-3 bg-purple-600 text-lg px-4 py-1">
                   {analysis.recommended_package} Plan
                 </Badge>
-                <p className="text-slate-300">{analysis.recommendation_reason}</p>
+                <p className="text-slate-300 mb-3">{analysis.recommendation_reason}</p>
+                {analysis.recommendation?.alternative_plans && (
+                  <p className="text-sm text-slate-400 italic">{analysis.recommendation.alternative_plans}</p>
+                )}
               </div>
+
+              {/* Value Proposition */}
+              {analysis.value_proposition && (
+                <div className="bg-blue-600/10 border border-blue-500/30 rounded-lg p-4">
+                  <h3 className="font-semibold text-white mb-3">What You Get with SiteWizard.pro</h3>
+                  
+                  <div className="mb-4">
+                    <p className="text-sm font-medium text-blue-300 mb-2">Included for FREE:</p>
+                    <ul className="space-y-1 text-sm text-slate-300">
+                      {analysis.value_proposition.whats_included?.map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="mb-4">
+                    <p className="text-sm font-medium text-blue-300 mb-2">AI-Powered Advantages:</p>
+                    <ul className="space-y-1 text-sm text-slate-300">
+                      {analysis.value_proposition.ai_benefits?.map((benefit, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <Zap className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
+                          <span>{benefit}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {analysis.value_proposition.market_comparison && (
+                    <div className="bg-green-600/10 border border-green-500/30 rounded-lg p-3 mb-3">
+                      <p className="text-sm text-green-300">
+                        <strong>Market Comparison:</strong> {analysis.value_proposition.market_comparison}
+                      </p>
+                    </div>
+                  )}
+
+                  {analysis.value_proposition.why_choose_us && (
+                    <p className="text-sm text-slate-300 italic">
+                      {analysis.value_proposition.why_choose_us}
+                    </p>
+                  )}
+                </div>
+              )}
 
               <Button
                 onClick={handleContinueToIntake}
