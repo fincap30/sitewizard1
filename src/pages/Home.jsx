@@ -24,23 +24,23 @@ export default function Home() {
     setIsSubmitting(true);
 
     try {
-      await base44.entities.Project.create({
-        ...formData,
-        status: 'new_lead',
+      await base44.entities.Lead.create({
+        name: formData.client_name,
+        email: formData.client_email,
+        phone: formData.phone,
+        business_name: formData.business_name,
+        website_type: formData.website_type,
+        requirements: formData.requirements,
         source: 'website',
-        analysis_completed: false
+        status: 'new'
       });
 
-      toast.success('Request submitted! We\'ll contact you within 24 hours.');
+      toast.success('Thanks! Redirecting you to complete your website details...');
       
-      setFormData({
-        client_name: '',
-        client_email: '',
-        business_name: '',
-        phone: '',
-        requirements: '',
-        website_type: 'business'
-      });
+      // Redirect to intake form after 1.5 seconds
+      setTimeout(() => {
+        window.location.href = '/WebsiteIntakeForm';
+      }, 1500);
     } catch (error) {
       toast.error('Something went wrong. Please try again.');
     } finally {
@@ -117,9 +117,9 @@ export default function Home() {
         <div className="max-w-2xl mx-auto">
           <Card className="border-2 border-slate-700/50 shadow-xl bg-slate-800/50 backdrop-blur-sm">
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Get Started Today</CardTitle>
+              <CardTitle className="text-2xl">Get Your Free Analysis</CardTitle>
               <CardDescription>
-                Fill out the form below and we'll contact you within 24 hours
+                Step 1: Basic info → Step 2: Detailed questionnaire → Step 3: AI generates your website
               </CardDescription>
             </CardHeader>
             <CardContent>
