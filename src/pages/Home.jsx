@@ -115,8 +115,7 @@ export default function Home() {
           current_website: formData.current_website || '',
           facebook_page: formData.facebook_page || '',
           goal_description: formData.requirements || '',
-          website_status: 'pending',
-          subscription_id: subscription?.id || ''
+          website_status: 'pending'
         };
 
         const createdIntake = await base44.entities.WebsiteIntake.create(intakeData);
