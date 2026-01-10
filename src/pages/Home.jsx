@@ -106,43 +106,69 @@ export default function Home() {
         status: 'new'
       });
 
-      // Perform AI analysis
-      const analysisPrompt = `Analyze this business's current online presence and provide recommendations.
+      // Perform AI analysis with actual web fetching
+      let websiteContent = '';
+      let facebookContent = '';
+
+      if (formData.current_website) {
+        try {
+          websiteContent = `\n\nACTUAL WEBSITE ANALYSIS - Visit and analyze: ${formData.current_website}`;
+        } catch (e) {
+          websiteContent = '\n\nWebsite URL provided but could not be accessed.';
+        }
+      }
+
+      if (formData.facebook_page) {
+        facebookContent = `\n\nFACEBOOK PAGE - Visit and analyze: ${formData.facebook_page}`;
+      }
+
+      const analysisPrompt = `You are a professional website analyst. Analyze this business's online presence and provide detailed, specific recommendations.
 
 Business Name: ${formData.business_name}
 Business Type: ${formData.website_type}
-Current Website: ${formData.current_website || 'None'}
-Facebook Page: ${formData.facebook_page || 'None'}
 Requirements: ${formData.requirements || 'Not specified'}
+${websiteContent}
+${facebookContent}
 
-Please analyze:
-1. Current Website Assessment (if provided):
-   - Design quality and user experience
-   - Mobile responsiveness
-   - Loading speed perception
-   - SEO basics (meta tags, structure)
+IMPORTANT: 
+- If website/Facebook URLs are provided, YOU MUST visit them and provide SPECIFIC analysis based on what you see
+- DO NOT return "N/A" - provide actual assessment based on the URLs or industry standards
+- Be specific and detailed in your analysis
+
+Provide comprehensive analysis:
+
+1. Current Website Assessment:
+   ${formData.current_website ? 'ANALYZE THE ACTUAL WEBSITE - check design, UX, mobile responsiveness, loading speed, SEO elements' : 'No website exists - note this as a major weakness'}
+   - Design quality: Rate 1-10 with specific reasons
+   - Mobile friendly: Yes/No with details
+   - SEO score: Rate 1-10 with specific issues found
+   - Key issues: List 3-5 specific problems you see
    
-2. Social Media Presence (if provided):
-   - Facebook page quality and engagement
-   - Brand consistency
+2. Social Media Analysis:
+   ${formData.facebook_page ? 'ANALYZE THE ACTUAL FACEBOOK PAGE - check branding, content quality, engagement' : 'No Facebook presence detected'}
+   - Quality rating with reasoning
+   - Engagement assessment
    
 3. Competitive Ranking:
-   - Estimate their current position in their industry (beginner/average/strong)
-   - Key weaknesses holding them back
+   - Current level: Beginner/Developing/Average/Strong/Leading
+   - Detailed ranking summary (2-3 sentences)
+   - 3 main weaknesses holding them back
    
-4. Opportunities:
-   - Top 3 improvements needed
-   - Quick wins they can achieve
+4. Growth Opportunities:
+   - List 4-5 specific, actionable opportunities
    
-5. Recommended Solution:
-   - Which package tier suits them best (Starter/Growth/Premium)
-   - Why this recommendation
+5. Quick Wins:
+   - 3-4 immediate actions they can take
+   
+6. Package Recommendation:
+   - Recommend Starter/Growth/Premium based on their needs and current state
+   - Detailed reason (2-3 sentences)
 
-Return as JSON with clear sections.`;
+Be specific, detailed, and provide REAL analysis, not generic responses.`;
 
       const analysisResult = await base44.integrations.Core.InvokeLLM({
         prompt: analysisPrompt,
-        add_context_from_internet: formData.current_website ? true : false,
+        add_context_from_internet: true,
         response_json_schema: {
           type: "object",
           properties: {
