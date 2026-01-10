@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Zap, CheckCircle, Clock, Star, ArrowRight } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Zap, CheckCircle, Clock, Star, ArrowRight, Quote, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
@@ -12,7 +13,8 @@ import { toast } from "sonner";
 export default function Home() {
   const [user, setUser] = useState(null);
   const [existingProject, setExistingProject] = useState(null);
-  const [projectChoice, setProjectChoice] = useState(null); // 'existing' or 'new'
+  const [projectChoice, setProjectChoice] = useState(null);
+  const [showAllFaqs, setShowAllFaqs] = useState(false);
   const [formData, setFormData] = useState({
     client_name: '',
     client_email: '',
@@ -22,6 +24,35 @@ export default function Home() {
     website_type: 'business'
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const faqs = [
+    { q: "What's included in the free trial?", a: "You get full access to all features for 14 days, including AI website generation, hosting, and basic support." },
+    { q: "How long does it take to build my website?", a: "Most websites are delivered within 7-14 days, with a maximum of 30 days guaranteed or your money back." },
+    { q: "Can I make changes after the website is live?", a: "Yes! You can request unlimited revisions based on your subscription plan, and our team will implement them." },
+    { q: "Do you provide hosting?", a: "Yes, all plans include secure, fast hosting with 99.9% uptime guarantee." },
+    { q: "What if I need custom features?", a: "We can develop custom features for your website. Contact us to discuss your specific requirements and pricing." },
+    { q: "Is my website mobile-friendly?", a: "Absolutely! All our websites are fully responsive and optimized for mobile, tablet, and desktop devices." },
+    { q: "Can I cancel anytime?", a: "Yes, you can cancel your subscription at any time. No long-term contracts or hidden fees." },
+    { q: "Do you offer SEO services?", a: "Yes! Higher-tier plans include advanced SEO optimization, keyword research, and ongoing SEO support." },
+    { q: "What payment methods do you accept?", a: "We accept all major credit cards, PayPal, and bank transfers for annual subscriptions." },
+    { q: "Can you migrate my existing website?", a: "Yes, we can migrate your content from your existing website. This service is included in Premium plans." },
+    { q: "Do you provide content writing?", a: "Yes! Our AI can generate initial content, and our team can write professional copy based on your plan level." },
+    { q: "What about domain names?", a: "You can use your existing domain or purchase a new one. We'll help you connect it to your website." },
+    { q: "Is e-commerce supported?", a: "Yes! Our Growth and Premium plans include full e-commerce functionality with payment processing." },
+    { q: "How secure are the websites?", a: "All websites include SSL certificates, regular security updates, and DDoS protection as standard." },
+    { q: "Can I have multiple team members access the site?", a: "Yes, you can add team members with different permission levels based on your subscription plan." },
+    { q: "What kind of support do you offer?", a: "We provide email support for all plans, with priority support and phone/video calls for Premium subscribers." },
+    { q: "Can you integrate third-party tools?", a: "Yes, we can integrate various tools like CRM, email marketing, analytics, and payment gateways." },
+    { q: "Do you offer training?", a: "Yes! All plans include basic training. Premium plans include comprehensive video tutorials and one-on-one sessions." },
+    { q: "What happens to my data if I cancel?", a: "You can export all your data before canceling. We retain backups for 30 days after cancellation." },
+    { q: "Can you redesign my website later?", a: "Yes! You can request a redesign at any time. Major redesigns may incur additional fees depending on scope." }
+  ];
+
+  const testimonials = [
+    { name: "Sarah Johnson", company: "Tech Solutions Inc", text: "SiteWizard delivered our website in just 10 days! The AI-powered design exceeded our expectations.", rating: 5 },
+    { name: "Michael Chen", company: "Urban Fitness", text: "The automated SEO tools helped us rank on Google's first page within 2 months. Incredible value!", rating: 5 },
+    { name: "Emily Rodriguez", company: "Bloom Boutique", text: "Our e-commerce site is beautiful and easy to manage. Sales increased by 40% in the first month!", rating: 5 }
+  ];
 
   useEffect(() => {
     base44.auth.me().then(async (userData) => {
@@ -290,7 +321,116 @@ export default function Home() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Testimonials */}
+        <div className="max-w-6xl mx-auto mt-24 mb-16">
+          <h2 className="text-3xl font-bold text-white text-center mb-12">What Our Clients Say</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map((testimonial, idx) => (
+              <Card key={idx} className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+                <CardContent className="pt-6">
+                  <div className="flex gap-1 mb-3">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <Quote className="w-8 h-8 text-blue-400 mb-3" />
+                  <p className="text-slate-300 mb-4">{testimonial.text}</p>
+                  <div className="border-t border-slate-700 pt-4">
+                    <p className="font-semibold text-white">{testimonial.name}</p>
+                    <p className="text-sm text-slate-400">{testimonial.company}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* FAQ Section */}
+        <div className="max-w-4xl mx-auto mt-24 mb-16">
+          <h2 className="text-3xl font-bold text-white text-center mb-12">Frequently Asked Questions</h2>
+          <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+            <CardContent className="pt-6">
+              <Accordion type="single" collapsible className="space-y-2">
+                {faqs.slice(0, showAllFaqs ? faqs.length : 5).map((faq, idx) => (
+                  <AccordionItem key={idx} value={`item-${idx}`} className="border-slate-700">
+                    <AccordionTrigger className="text-white hover:text-blue-400">
+                      {faq.q}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-slate-300">
+                      {faq.a}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+              {!showAllFaqs && (
+                <Button
+                  onClick={() => setShowAllFaqs(true)}
+                  variant="outline"
+                  className="w-full mt-4 border-blue-500/30 hover:bg-blue-600/10"
+                >
+                  Show {faqs.length - 5} More Questions
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-slate-900/50 border-t border-slate-700 mt-24">
+        <div className="container mx-auto px-4 py-12">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <h3 className="text-xl font-bold text-white mb-4">SiteWizard<span className="text-blue-400">.pro</span></h3>
+              <p className="text-slate-400 text-sm">Professional websites built by AI, perfected by humans.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Services</h4>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li><Link to="/Pricing" className="hover:text-blue-400">Pricing</Link></li>
+                <li><Link to="/HowItWorks" className="hover:text-blue-400">How It Works</Link></li>
+                <li><a href="#" className="hover:text-blue-400">Portfolio</a></li>
+                <li><a href="#" className="hover:text-blue-400">Templates</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Company</h4>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li><a href="#" className="hover:text-blue-400">About Us</a></li>
+                <li><a href="#" className="hover:text-blue-400">Blog</a></li>
+                <li><a href="#" className="hover:text-blue-400">Careers</a></li>
+                <li><a href="#" className="hover:text-blue-400">Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Contact</h4>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li className="flex items-center gap-2">
+                  <Mail className="w-4 h-4" />
+                  <a href="mailto:hello@sitewizard.pro" className="hover:text-blue-400">hello@sitewizard.pro</a>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  <a href="tel:+1234567890" className="hover:text-blue-400">+1 (234) 567-890</a>
+                </li>
+                <li className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  <span>San Francisco, CA</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-slate-700 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-slate-400 text-sm mb-4 md:mb-0">© 2026 SiteWizard.pro. All rights reserved.</p>
+            <div className="flex gap-6 text-sm text-slate-400">
+              <a href="#" className="hover:text-blue-400">Privacy Policy</a>
+              <a href="#" className="hover:text-blue-400">Terms of Service</a>
+              <a href="#" className="hover:text-blue-400">Cookie Policy</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
