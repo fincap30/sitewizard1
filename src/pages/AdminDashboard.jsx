@@ -14,8 +14,10 @@ import AIOnboardingFlow from "../components/admin/AIOnboardingFlow";
 import PredictiveAnalytics from "../components/analytics/PredictiveAnalytics";
 import AIPersonalizationEngine from "../components/personalization/AIPersonalizationEngine";
 import AIProductManager from "../components/ecommerce/AIProductManager";
+import DynamicPricingEngine from "../components/ecommerce/DynamicPricingEngine";
 import AIMarketingAutomation from "../components/marketing/AIMarketingAutomation";
 import AIWorkflowAutomation from "../components/admin/AIWorkflowAutomation";
+import AdvancedSEOStrategy from "../components/seo/AdvancedSEOStrategy";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
@@ -185,7 +187,9 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="ecommerce">
-            {websites[0] && <AIProductManager websiteIntakeId={websites[0].id} />}
+            <div className="space-y-6">
+              {websites[0] && <AIProductManager websiteIntakeId={websites[0].id} />}
+            </div>
           </TabsContent>
 
           <TabsContent value="marketing">
@@ -197,7 +201,10 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="seo">
-            <AdminSEOTools />
+            <div className="space-y-6">
+              {websites[0] && <AdvancedSEOStrategy websiteIntakeId={websites[0].id} />}
+              <AdminSEOTools />
+            </div>
           </TabsContent>
 
           <TabsContent value="ai-automation">

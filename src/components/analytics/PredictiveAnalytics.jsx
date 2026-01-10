@@ -103,7 +103,19 @@ Return as JSON with detailed predictions.`;
             emerging_trends: { type: "array", items: { type: "string" } },
             risk_factors: { type: "array", items: { type: "string" } },
             growth_opportunities: { type: "array", items: { type: "string" } },
-            recommended_actions: { type: "array", items: { type: "string" } }
+            recommended_actions: { type: "array", items: { type: "string" } },
+            potential_bottlenecks: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  bottleneck: { type: "string" },
+                  impact: { type: "string" },
+                  mitigation: { type: "string" }
+                }
+              }
+            },
+            resource_conflicts: { type: "array", items: { type: "string" } }
           }
         }
       });
@@ -248,6 +260,39 @@ Return as JSON with detailed predictions.`;
                 </ul>
               </AlertDescription>
             </Alert>
+
+            {/* Potential Bottlenecks */}
+            {predictions.potential_bottlenecks && predictions.potential_bottlenecks.length > 0 && (
+              <Alert className="bg-orange-600/10 border-orange-500/30">
+                <AlertTriangle className="w-4 h-4 text-orange-400" />
+                <AlertDescription className="text-orange-300">
+                  <strong className="text-orange-200">Potential Bottlenecks:</strong>
+                  <div className="mt-2 space-y-2">
+                    {predictions.potential_bottlenecks.map((bottleneck, idx) => (
+                      <div key={idx} className="p-2 bg-slate-700/30 rounded">
+                        <p className="font-semibold text-sm">{bottleneck.bottleneck}</p>
+                        <p className="text-xs mt-1">Impact: {bottleneck.impact}</p>
+                        <p className="text-xs text-green-300 mt-1">Mitigation: {bottleneck.mitigation}</p>
+                      </div>
+                    ))}
+                  </div>
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {/* Resource Conflicts */}
+            {predictions.resource_conflicts && predictions.resource_conflicts.length > 0 && (
+              <Alert className="bg-red-600/10 border-red-500/30">
+                <AlertDescription className="text-red-300">
+                  <strong className="text-red-200">Resource Conflicts Detected:</strong>
+                  <ul className="list-disc list-inside mt-1 space-y-0.5">
+                    {predictions.resource_conflicts.map((conflict, idx) => (
+                      <li key={idx}>{conflict}</li>
+                    ))}
+                  </ul>
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
         )}
       </CardContent>
