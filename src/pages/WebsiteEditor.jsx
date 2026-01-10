@@ -5,8 +5,10 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import AIContentGenerator from "../components/editor/AIContentGenerator";
+import AICustomizer from "../components/editor/AICustomizer";
 import MediaLibrary from "../components/editor/MediaLibrary";
 import VisualEditor from "../components/editor/VisualEditor";
+import CustomCodeEditor from "../components/editor/CustomCodeEditor";
 
 export default function WebsiteEditor() {
   const [user, setUser] = useState(null);
@@ -60,10 +62,12 @@ export default function WebsiteEditor() {
         <p className="text-slate-300 mb-8">Edit your website content, add images, and generate AI content</p>
 
         <Tabs defaultValue="editor" className="space-y-6">
-          <TabsList>
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto">
             <TabsTrigger value="editor">Visual Editor</TabsTrigger>
+            <TabsTrigger value="ai-customize">AI Customize</TabsTrigger>
             <TabsTrigger value="ai-content">AI Content</TabsTrigger>
-            <TabsTrigger value="media">Media Library</TabsTrigger>
+            <TabsTrigger value="media">Media</TabsTrigger>
+            <TabsTrigger value="code">Custom Code</TabsTrigger>
           </TabsList>
 
           <TabsContent value="editor">
@@ -79,6 +83,17 @@ export default function WebsiteEditor() {
             )}
           </TabsContent>
 
+          <TabsContent value="ai-customize">
+            <AICustomizer
+              websiteIntake={websiteIntake}
+              currentStructure={websiteStructure}
+              onApplyChanges={(changes) => {
+                // Handle applying AI suggestions
+                toast.success(`Applied ${changes.type} changes!`);
+              }}
+            />
+          </TabsContent>
+
           <TabsContent value="ai-content">
             <AIContentGenerator websiteIntake={websiteIntake} />
           </TabsContent>
@@ -87,6 +102,13 @@ export default function WebsiteEditor() {
             <MediaLibrary
               websiteIntakeId={websiteIntake.id}
               clientEmail={user.email}
+            />
+          </TabsContent>
+
+          <TabsContent value="code">
+            <CustomCodeEditor
+              websiteIntakeId={websiteIntake.id}
+              currentCustomCode={websiteStructure?.custom_code}
             />
           </TabsContent>
         </Tabs>

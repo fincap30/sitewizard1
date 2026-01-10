@@ -3,10 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Users, FileText, TrendingUp, Zap, MessageSquare, Globe } from "lucide-react";
+import { Users, FileText, TrendingUp, Zap, MessageSquare, Globe, Search } from "lucide-react";
 import AdminRevisionManager from "../components/admin/AdminRevisionManager";
 import AdminWebsiteManager from "../components/admin/AdminWebsiteManager";
 import AdminAnalyticsDashboard from "../components/admin/AdminAnalyticsDashboard";
+import AdminSEOTools from "../components/admin/AdminSEOTools";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
@@ -138,6 +139,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="websites">Websites ({websites.length})</TabsTrigger>
             <TabsTrigger value="revisions">Revisions ({modifications.length})</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="seo">SEO Tools</TabsTrigger>
             <TabsTrigger value="projects">Projects ({projects.length})</TabsTrigger>
             <TabsTrigger value="leads">Leads ({leads.length})</TabsTrigger>
           </TabsList>
@@ -152,6 +154,10 @@ export default function AdminDashboard() {
 
           <TabsContent value="analytics">
             <AdminAnalyticsDashboard />
+          </TabsContent>
+
+          <TabsContent value="seo">
+            <AdminSEOTools />
           </TabsContent>
 
           <TabsContent value="projects">
