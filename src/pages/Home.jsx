@@ -287,19 +287,43 @@ export default function Home() {
                     <CheckCircle className="w-5 h-5 text-blue-400" />
                     Current Website Assessment
                   </h3>
-                  <div className="space-y-2 text-sm text-slate-300">
-                    <p><strong>Design Quality:</strong> {analysis.website_assessment.design_score}</p>
+                  <div className="space-y-3 text-sm text-slate-300">
+                    <div>
+                      <p><strong>Design Quality:</strong> {analysis.website_assessment.design_score}</p>
+                      {analysis.website_assessment.design_improvements && (
+                        <ul className="list-disc list-inside mt-1 ml-4 text-xs">
+                          {analysis.website_assessment.design_improvements.map((imp, idx) => (
+                            <li key={idx}>{imp}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
                     <p><strong>Mobile Friendly:</strong> {analysis.website_assessment.mobile_friendly}</p>
-                    <p><strong>SEO Score:</strong> {analysis.website_assessment.seo_score}</p>
-                    {analysis.website_assessment.key_issues && (
+                    {analysis.website_assessment.loading_speed && (
+                      <p><strong>Loading Speed:</strong> {analysis.website_assessment.loading_speed}</p>
+                    )}
+                    {analysis.website_assessment.seo_onpage && (
                       <div>
-                        <strong>Key Issues:</strong>
-                        <ul className="list-disc list-inside mt-1">
-                          {analysis.website_assessment.key_issues.map((issue, idx) => (
+                        <strong>SEO On-Page Issues:</strong>
+                        <ul className="list-disc list-inside mt-1 ml-4 text-xs">
+                          {analysis.website_assessment.seo_onpage.map((issue, idx) => (
                             <li key={idx}>{issue}</li>
                           ))}
                         </ul>
                       </div>
+                    )}
+                    {analysis.website_assessment.seo_offpage && (
+                      <div>
+                        <strong>SEO Off-Page Factors:</strong>
+                        <ul className="list-disc list-inside mt-1 ml-4 text-xs">
+                          {analysis.website_assessment.seo_offpage.map((issue, idx) => (
+                            <li key={idx}>{issue}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {analysis.website_assessment.content_quality && (
+                      <p><strong>Content Quality:</strong> {analysis.website_assessment.content_quality}</p>
                     )}
                   </div>
                 </div>
