@@ -194,8 +194,12 @@ export default function Home() {
               properties: {
                 has_website: { type: "boolean" },
                 design_score: { type: "string" },
+                design_improvements: { type: "array", items: { type: "string" } },
                 mobile_friendly: { type: "string" },
-                seo_score: { type: "string" },
+                loading_speed: { type: "string" },
+                seo_onpage: { type: "array", items: { type: "string" } },
+                seo_offpage: { type: "array", items: { type: "string" } },
+                content_quality: { type: "string" },
                 key_issues: { type: "array", items: { type: "string" } }
               }
             },
@@ -203,7 +207,8 @@ export default function Home() {
               type: "object",
               properties: {
                 facebook_quality: { type: "string" },
-                engagement_level: { type: "string" }
+                engagement_level: { type: "string" },
+                content_variety: { type: "string" }
               }
             },
             competitive_ranking: {
@@ -211,7 +216,9 @@ export default function Home() {
               properties: {
                 current_level: { type: "string" },
                 ranking_summary: { type: "string" },
-                main_weaknesses: { type: "array", items: { type: "string" } }
+                main_weaknesses: { type: "array", items: { type: "string" } },
+                competitive_strengths: { type: "array", items: { type: "string" } },
+                competitive_gaps: { type: "array", items: { type: "string" } }
               }
             },
             opportunities: { type: "array", items: { type: "string" } },
@@ -228,9 +235,20 @@ export default function Home() {
                 why_choose_us: { type: "string" }
               },
               required: ["whats_included", "ai_benefits", "market_comparison", "why_choose_us"]
+            },
+            content_strategy: {
+              type: "object",
+              properties: {
+                homepage_suggestions: { type: "array", items: { type: "string" } },
+                blog_topics: { type: "array", items: { type: "string" } },
+                social_media_ideas: { type: "array", items: { type: "string" } },
+                landing_page_headlines: { type: "array", items: { type: "string" } },
+                target_audience: { type: "string" }
+              },
+              required: ["homepage_suggestions", "blog_topics", "social_media_ideas", "landing_page_headlines", "target_audience"]
             }
           },
-          required: ["quick_wins", "recommended_package", "recommendation_reason", "alternative_plans", "value_proposition"]
+          required: ["quick_wins", "recommended_package", "recommendation_reason", "alternative_plans", "value_proposition", "content_strategy"]
         }
       });
 
