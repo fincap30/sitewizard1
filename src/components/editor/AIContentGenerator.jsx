@@ -18,9 +18,11 @@ export default function AIContentGenerator({ websiteIntake, onContentGenerated }
     pageType: 'home',
     keywords: '',
     blogTopic: '',
-    tone: 'professional'
+    tone: 'professional',
+    variationCount: 3
   });
   const [generatedContent, setGeneratedContent] = useState('');
+  const [variations, setVariations] = useState([]);
 
   const generateMutation = useMutation({
     mutationFn: async (type) => {
@@ -337,6 +339,26 @@ Return as JSON with actionable suggestions.`;
               rows={15}
               className="font-mono text-sm"
             />
+            <div className="flex gap-2">
+              <Button
+                onClick={() => generateVariationsMutation.mutate()}
+                disabled={generateVariationsMutation.isPending}
+                variant="outline"
+                className="flex-1"
+              >
+                {generateVariationsMutation.isPending ? <Loader2 className="w-3 h-3 animate-spin mr-2" /> : <Sparkles className="w-3 h-3 mr-2" />}
+                Generate Variations
+              </Button>
+              <Button
+                onClick={() => analyzeMutation.mutate()}
+                disabled={analyzeMutation.isPending}
+                variant="outline"
+                className="flex-1"
+              >
+                {analyzeMutation.isPending ? <Loader2 className="w-3 h-3 animate-spin mr-2" /> : <Search className="w-3 h-3 mr-2" />}
+                Analyze Content
+              </Button>
+            </div>
             {onContentGenerated && (
               <Button
                 onClick={() => onContentGenerated(generatedContent)}
@@ -345,6 +367,56 @@ Return as JSON with actionable suggestions.`;
                 Use This Content
               </Button>
             )}
+          </div>
+        )}
+
+        {variations.length > 0 && (
+          <div className="mt-6 space-y-3 pt-4 border-t">
+            <h4 className="font-semibold text-white">Content Variations</h4>
+            {variations.map((variation, idx) => (
+              <Card key={idx} className="bg-slate-700/30">
+                <CardContent className="pt-4">
+                  <div className="mb-2">
+                    <span className="text-xs font-semibold text-purple-300">{variation.angle}</span>
+                  </div>
+                  <p className="text-sm text-slate-300 whitespace-pre-wrap mb-2">{variation.content}</p>
+                  <p className="text-xs text-blue-300 italic">CTA: {variation.cta}</p>
+                  <Button
+                    size="sm"
+                    onClick={() => setGeneratedContent(variation.content)}
+                    className="mt-2 w-full"
+                  >
+                    Use This Variation
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {analyzeMutation.data && (
+          <div className="mt-6 space-y-3 pt-4 border-t">
+            <h4 className="font-semibold text-white">Content Analysis</h4>
+            <Alert className="bg-blue-600/10 border-blue-500/30">
+              <AlertDescription className="text-blue-300">
+                <strong>New Sections to Add:</strong>
+                <ul className="list-disc list-inside mt-1 text-sm">
+                  {analyzeMutation.data.new_sections?.map((section, idx) => (
+                    <li key={idx}>{section}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+            <Alert className="bg-green-600/10 border-green-500/30">
+              <AlertDescription className="text-green-300">
+                <strong>Blog Post Ideas:</strong>
+                <ul className="list-disc list-inside mt-1 text-sm">
+                  {analyzeMutation.data.blog_ideas?.map((idea, idx) => (
+                    <li key={idx}>{idea}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
           </div>
         )}
       </CardContent>
