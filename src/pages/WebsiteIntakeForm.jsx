@@ -14,16 +14,18 @@ import AIQuestionsFlow from "../components/intake/AIQuestionsFlow";
 import WebsitePreview from "../components/intake/WebsitePreview";
 import TemplateSelector from "../components/builder/TemplateSelector";
 import AIWebsiteBuilder from "../components/builder/AIWebsiteBuilder";
+import AdvancedWebsiteEditor from "../components/builder/AdvancedWebsiteEditor";
 import ProjectRoadmap from "../components/onboarding/ProjectRoadmap";
 import AutomatedSetup from "../components/onboarding/AutomatedSetup";
 import ProgressTracker from "../components/onboarding/ProgressTracker";
 
 export default function WebsiteIntakeForm() {
   const [user, setUser] = useState(null);
-  const [step, setStep] = useState('form'); // form, questions, generating, preview, template, builder, roadmap
+  const [step, setStep] = useState('form'); // form, questions, generating, preview, template, builder, edit, roadmap
   const [intakeId, setIntakeId] = useState(null);
   const [websiteIntake, setWebsiteIntake] = useState(null);
   const [customizedTemplate, setCustomizedTemplate] = useState(null);
+  const [generatedWebsite, setGeneratedWebsite] = useState(null);
   const [formData, setFormData] = useState({
     company_name: '',
     contact_person: '',
@@ -343,9 +345,29 @@ Return JSON:
           <AIWebsiteBuilder
             websiteIntake={websiteIntake}
             onComplete={(website) => {
-              setStep('roadmap');
+              setGeneratedWebsite(website);
+              setStep('edit');
             }}
           />
+        </div>
+      </div>
+    );
+  }
+
+  if (step === 'edit' && generatedWebsite) {
+    return (
+      <div className="min-h-screen bg-transparent py-12 px-4">
+        <div className="container mx-auto max-w-6xl space-y-6">
+          <AdvancedWebsiteEditor
+            websiteIntake={websiteIntake}
+            websiteData={generatedWebsite}
+          />
+          <Button
+            onClick={() => setStep('roadmap')}
+            className="w-full bg-blue-600 hover:bg-blue-700"
+          >
+            Continue to Project Roadmap
+          </Button>
         </div>
       </div>
     );

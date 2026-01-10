@@ -23,6 +23,8 @@ import MarketingDashboard from "../components/marketing/MarketingDashboard";
 import SocialMediaScheduler from "../components/marketing/SocialMediaScheduler";
 import EmailMarketingTool from "../components/marketing/EmailMarketingTool";
 import PerformanceTracker from "../components/marketing/PerformanceTracker";
+import ProductManager from "../components/ecommerce/ProductManager";
+import ShoppingCart from "../components/ecommerce/ShoppingCart";
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
@@ -203,9 +205,10 @@ export default function ClientDashboard() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 md:grid-cols-9 lg:w-auto">
+          <TabsList className="grid w-full grid-cols-5 md:grid-cols-10 lg:w-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="website">Website</TabsTrigger>
+            <TabsTrigger value="ecommerce">E-Commerce</TabsTrigger>
             <TabsTrigger value="collaboration">Collaboration</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="marketing">Marketing</TabsTrigger>
@@ -276,6 +279,31 @@ export default function ClientDashboard() {
               packageData={packageData}
               expanded
             />
+          </TabsContent>
+
+          {/* E-Commerce Tab */}
+          <TabsContent value="ecommerce">
+            {websiteIntake && packageData?.ecommerce_enabled ? (
+              <Tabs defaultValue="products">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="products">Products</TabsTrigger>
+                  <TabsTrigger value="store">Store Preview</TabsTrigger>
+                </TabsList>
+                <TabsContent value="products">
+                  <ProductManager websiteIntakeId={websiteIntake.id} />
+                </TabsContent>
+                <TabsContent value="store">
+                  <ShoppingCart products={[]} />
+                </TabsContent>
+              </Tabs>
+            ) : (
+              <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+                <CardContent className="py-12 text-center">
+                  <p className="text-slate-300 mb-2">E-commerce features not available in your plan</p>
+                  <Button onClick={() => window.location.href = '/Pricing'}>Upgrade Plan</Button>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           {/* Collaboration Tab */}
