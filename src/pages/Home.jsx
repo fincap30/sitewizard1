@@ -94,36 +94,24 @@ export default function Home() {
     setIsSubmitting(true);
 
     try {
-        // Create lead
+        let createdIntake = null;
+        
+        // Try to create intake
         try {
-          await base44.entities.Lead.create({
-            name: formData.client_name,
-            email: formData.client_email,
+          const intakeData = {
+            client_email: formData.client_email,
+            company_name: formData.business_name,
+            contact_person: formData.client_name,
             phone: formData.phone,
-            business_name: formData.business_name,
-            website_type: formData.website_type,
-            requirements: formData.requirements,
-            source: 'website',
-            status: 'new'
-          });
-        } catch (leadError) {
-          console.log('Lead creation failed, continuing...', leadError);
+            current_website: formData.current_website || '',
+            facebook_page: formData.facebook_page || '',
+            goal_description: formData.requirements || '',
+            website_status: 'pending'
+          };
+          createdIntake = await base44.entities.WebsiteIntake.create(intakeData);
+        } catch (intakeError) {
+          console.log('Intake creation skipped, continuing with analysis...', intakeError);
         }
-
-        // Create initial WebsiteIntake with basic info
-        const intakeData = {
-          client_email: formData.client_email,
-          company_name: formData.business_name,
-          contact_person: formData.client_name,
-          phone: formData.phone,
-          current_website: formData.current_website || '',
-          facebook_page: formData.facebook_page || '',
-          goal_description: formData.requirements || '',
-          website_status: 'pending'
-        };
-
-        const createdIntake = await base44.entities.WebsiteIntake.create(intakeData);
-        console.log('Intake created:', createdIntake);
 
       // Perform AI analysis with actual web fetching
       let websiteContent = '';
@@ -202,50 +190,15 @@ export default function Home() {
       - Landing page copy: 2-3 compelling headline options and value propositions
       - Target audience: Define their ideal customer profile`;
 
-      console.log('Starting AI analysis...');
       const analysisResult = await base44.integrations.Core.InvokeLLM({
         prompt: analysisPrompt,
         add_context_from_internet: true,
         response_json_schema: {
           type: "object",
           properties: {
-            website_assessment: {
-              type: "object",
-              properties: {
-                has_website: { type: "boolean" },
-                design_score: { type: "string" },
-                design_improvements: { type: "array", items: { type: "string" } },
-                mobile_friendly: { type: "string" },
-                loading_speed: { type: "string" },
-                seo_onpage: { type: "array", items: { type: "string" } },
-                seo_offpage: { type: "array", items: { type: "string" } },
-                content_quality: { type: "string" },
-                key_issues: { type: "array", items: { type: "string" } }
-              }
-            },
-            social_media: {
-              type: "object",
-              properties: {
-                facebook_quality: { type: "string" },
-                engagement_level: { type: "string" },
-                content_variety: { type: "string" }
-              }
-            },
-            competitive_ranking: {
-              type: "object",
-              properties: {
-                current_level: { type: "string" },
-                ranking_summary: { type: "string" },
-                main_weaknesses: { type: "array", items: { type: "string" } },
-                competitive_strengths: { type: "array", items: { type: "string" } },
-                competitive_gaps: { type: "array", items: { type: "string" } }
-              }
-            },
-            opportunities: { type: "array", items: { type: "string" } },
             quick_wins: { type: "array", items: { type: "string" } },
             recommended_package: { type: "string" },
             recommendation_reason: { type: "string" },
-            alternative_plans: { type: "string" },
             value_proposition: {
               type: "object",
               properties: {
@@ -253,29 +206,24 @@ export default function Home() {
                 ai_benefits: { type: "array", items: { type: "string" } },
                 market_comparison: { type: "string" },
                 why_choose_us: { type: "string" }
-              },
-              required: ["whats_included", "ai_benefits", "market_comparison", "why_choose_us"]
+              }
             },
             content_strategy: {
               type: "object",
               properties: {
                 homepage_suggestions: { type: "array", items: { type: "string" } },
-                blog_topics: { type: "array", items: { type: "string" } },
-                social_media_ideas: { type: "array", items: { type: "string" } },
-                landing_page_headlines: { type: "array", items: { type: "string" } },
-                target_audience: { type: "string" }
-              },
-              required: ["homepage_suggestions", "blog_topics", "social_media_ideas", "landing_page_headlines", "target_audience"]
+                blog_topics: { type: "array", items: { type: "string" } }
+              }
             }
-          },
-          required: ["quick_wins", "recommended_package", "recommendation_reason", "alternative_plans", "value_proposition", "content_strategy"]
+          }
         }
       });
 
-      // Store intake ID for later
-      sessionStorage.setItem('intake_id', createdIntake.id);
+      // Store intake ID if created
+      if (createdIntake) {
+        sessionStorage.setItem('intake_id', createdIntake.id);
+      }
 
-      console.log('Analysis result:', analysisResult);
       setAnalysis(analysisResult);
       setShowAnalysis(true);
       toast.success('Analysis complete!');
