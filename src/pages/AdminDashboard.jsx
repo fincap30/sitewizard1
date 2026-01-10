@@ -11,6 +11,9 @@ import AdminSEOTools from "../components/admin/AdminSEOTools";
 import AIAutomationTools from "../components/admin/AIAutomationTools";
 import AIContentReviewer from "../components/admin/AIContentReviewer";
 import AIOnboardingFlow from "../components/admin/AIOnboardingFlow";
+import PredictiveAnalytics from "../components/analytics/PredictiveAnalytics";
+import AIPersonalizationEngine from "../components/personalization/AIPersonalizationEngine";
+import AIProductManager from "../components/ecommerce/AIProductManager";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
@@ -138,11 +141,14 @@ export default function AdminDashboard() {
 
         {/* Tabs for different views */}
         <Tabs defaultValue="websites" className="space-y-4">
-          <TabsList>
+          <TabsList className="flex-wrap h-auto">
             <TabsTrigger value="websites">Websites ({websites.length})</TabsTrigger>
             <TabsTrigger value="onboarding">Client Onboarding</TabsTrigger>
             <TabsTrigger value="revisions">Revisions ({modifications.length})</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="predictive">Predictive Analytics</TabsTrigger>
+            <TabsTrigger value="personalization">Personalization</TabsTrigger>
+            <TabsTrigger value="ecommerce">E-commerce</TabsTrigger>
             <TabsTrigger value="seo">SEO Tools</TabsTrigger>
             <TabsTrigger value="ai-automation">AI Automation</TabsTrigger>
             <TabsTrigger value="content-review">Content Review</TabsTrigger>
@@ -164,6 +170,18 @@ export default function AdminDashboard() {
 
           <TabsContent value="analytics">
             <AdminAnalyticsDashboard />
+          </TabsContent>
+
+          <TabsContent value="predictive">
+            {websites[0] && <PredictiveAnalytics websiteIntakeId={websites[0].id} isAdmin />}
+          </TabsContent>
+
+          <TabsContent value="personalization">
+            {websites[0] && <AIPersonalizationEngine websiteIntakeId={websites[0].id} />}
+          </TabsContent>
+
+          <TabsContent value="ecommerce">
+            {websites[0] && <AIProductManager websiteIntakeId={websites[0].id} />}
           </TabsContent>
 
           <TabsContent value="seo">
