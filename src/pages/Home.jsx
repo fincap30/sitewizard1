@@ -179,7 +179,7 @@ export default function Home() {
                   </label>
                   <select
                     required
-                    className="w-full border border-slate-300 rounded-md px-3 py-2"
+                    className="w-full border border-slate-300 rounded-md px-3 py-2 bg-white text-slate-900"
                     value={formData.website_type}
                     onChange={(e) => setFormData({...formData, website_type: e.target.value})}
                   >
