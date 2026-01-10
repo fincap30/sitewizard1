@@ -16,6 +16,7 @@ import TemplateSelector from "../components/builder/TemplateSelector";
 import TemplateLibrary from "../components/builder/TemplateLibrary";
 import AIWebsiteBuilder from "../components/builder/AIWebsiteBuilder";
 import AdvancedWebsiteEditor from "../components/builder/AdvancedWebsiteEditor";
+import AIContentGenerator from "../components/content/AIContentGenerator";
 import ProjectRoadmap from "../components/onboarding/ProjectRoadmap";
 import AutomatedSetup from "../components/onboarding/AutomatedSetup";
 import ProgressTracker from "../components/onboarding/ProgressTracker";
@@ -359,10 +360,34 @@ Return JSON:
     return (
       <div className="min-h-screen bg-transparent py-12 px-4">
         <div className="container mx-auto max-w-6xl space-y-6">
-          <AdvancedWebsiteEditor
-            websiteIntake={websiteIntake}
-            websiteData={generatedWebsite}
-          />
+          <Tabs defaultValue="editor">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="editor">Content Editor</TabsTrigger>
+              <TabsTrigger value="content">AI Content</TabsTrigger>
+              <TabsTrigger value="design">Design</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="editor">
+              <AdvancedWebsiteEditor
+                websiteIntake={websiteIntake}
+                websiteData={generatedWebsite}
+              />
+            </TabsContent>
+
+            <TabsContent value="content">
+              <AIContentGenerator
+                websiteIntake={websiteIntake}
+                template={customizedTemplate}
+              />
+            </TabsContent>
+
+            <TabsContent value="design">
+              <div className="text-center py-12">
+                <p className="text-slate-400">Design settings in Content Editor tab</p>
+              </div>
+            </TabsContent>
+          </Tabs>
+
           <Button
             onClick={() => setStep('roadmap')}
             className="w-full bg-blue-600 hover:bg-blue-700"
