@@ -130,7 +130,7 @@ export default function Home() {
         facebookContent = `\n\nFACEBOOK PAGE - Visit and analyze: ${formData.facebook_page}`;
       }
 
-      const analysisPrompt = `You are an expert business consultant and website strategist. Provide a comprehensive, actionable analysis.
+      const analysisPrompt = `Analyze this business and provide website strategy. Business: ${formData.business_name}. Type: ${formData.website_type}. Requirements: ${formData.requirements || 'standard'}.
 
 Business Details:
 - Business Name: ${formData.business_name}
@@ -174,7 +174,7 @@ YOU MUST RETURN EVERY SECTION BELOW WITH REAL, SPECIFIC CONTENT:
    - social_media_ideas: [4 post ideas to drive engagement]
    - landing_page_headlines: [3 compelling headlines for ${formData.business_name}]
 
-Return as valid JSON with every field above. Do NOT skip any section.`;
+Return as JSON only.`;
 
       const analysisResult = await base44.integrations.Core.InvokeLLM({
         prompt: analysisPrompt,
