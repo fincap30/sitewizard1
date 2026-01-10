@@ -14,6 +14,7 @@ import RevisionRequestForm from "../components/dashboard/RevisionRequestForm";
 import RevisionRequestList from "../components/dashboard/RevisionRequestList";
 import ClientAnalytics from "../components/dashboard/ClientAnalytics";
 import ProjectMilestones from "../components/collaboration/ProjectMilestones";
+import AIChatbot from "../components/shared/AIChatbot";
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
@@ -298,6 +299,8 @@ export default function ClientDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+
+      <AIChatbot websiteIntake={websiteIntake} context="dashboard" />
     </div>
   );
 }

@@ -11,6 +11,9 @@ import MediaLibrary from "../components/editor/MediaLibrary";
 import VisualEditor from "../components/editor/VisualEditor";
 import CustomCodeEditor from "../components/editor/CustomCodeEditor";
 import CommentingSystem from "../components/collaboration/CommentingSystem";
+import VersionHistory from "../components/editor/VersionHistory";
+import AIFeedbackAnalyzer from "../components/collaboration/AIFeedbackAnalyzer";
+import AIChatbot from "../components/shared/AIChatbot";
 
 export default function WebsiteEditor() {
   const [user, setUser] = useState(null);
@@ -64,13 +67,15 @@ export default function WebsiteEditor() {
         <p className="text-slate-300 mb-8">Edit your website content, add images, and generate AI content</p>
 
         <Tabs defaultValue="editor" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 lg:w-auto">
+          <TabsList className="grid w-full grid-cols-9 lg:w-auto">
             <TabsTrigger value="editor">Visual Editor</TabsTrigger>
             <TabsTrigger value="ai-customize">AI Customize</TabsTrigger>
             <TabsTrigger value="ai-content">AI Content</TabsTrigger>
             <TabsTrigger value="marketing">Marketing</TabsTrigger>
             <TabsTrigger value="media">Media</TabsTrigger>
             <TabsTrigger value="feedback">Feedback</TabsTrigger>
+            <TabsTrigger value="versions">Versions</TabsTrigger>
+            <TabsTrigger value="ai-analysis">AI Analysis</TabsTrigger>
             <TabsTrigger value="code">Custom Code</TabsTrigger>
           </TabsList>
 
@@ -123,6 +128,20 @@ export default function WebsiteEditor() {
             />
           </TabsContent>
 
+          <TabsContent value="versions">
+            <VersionHistory
+              websiteIntakeId={websiteIntake.id}
+              currentStructure={websiteStructure}
+              onRestore={(restoredStructure) => {
+                setWebsiteStructure(restoredStructure);
+              }}
+            />
+          </TabsContent>
+
+          <TabsContent value="ai-analysis">
+            <AIFeedbackAnalyzer websiteIntakeId={websiteIntake.id} />
+          </TabsContent>
+
           <TabsContent value="code">
             <CustomCodeEditor
               websiteIntakeId={websiteIntake.id}
@@ -131,6 +150,8 @@ export default function WebsiteEditor() {
           </TabsContent>
         </Tabs>
       </div>
+
+      <AIChatbot websiteIntake={websiteIntake} context="editor" />
     </div>
   );
 }
