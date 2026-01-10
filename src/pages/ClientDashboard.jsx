@@ -25,6 +25,9 @@ import EmailMarketingTool from "../components/marketing/EmailMarketingTool";
 import PerformanceTracker from "../components/marketing/PerformanceTracker";
 import ProductManager from "../components/ecommerce/ProductManager";
 import ShoppingCart from "../components/ecommerce/ShoppingCart";
+import SupportChat from "../components/dashboard/SupportChat";
+import LeadTracker from "../components/dashboard/LeadTracker";
+import ContentManager from "../components/dashboard/ContentManager";
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
@@ -205,17 +208,19 @@ export default function ClientDashboard() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 md:grid-cols-10 lg:w-auto">
+          <TabsList className="grid w-full grid-cols-6 md:grid-cols-12 lg:w-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="website">Website</TabsTrigger>
+            <TabsTrigger value="content">Content</TabsTrigger>
+            <TabsTrigger value="leads">Leads</TabsTrigger>
             <TabsTrigger value="ecommerce">E-Commerce</TabsTrigger>
             <TabsTrigger value="collaboration">Collaboration</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="marketing">Marketing</TabsTrigger>
             <TabsTrigger value="predictive">Forecasts</TabsTrigger>
-            <TabsTrigger value="audit">Website Audit</TabsTrigger>
-            <TabsTrigger value="revisions">Revisions</TabsTrigger>
-            <TabsTrigger value="subscription">Subscription</TabsTrigger>
+            <TabsTrigger value="audit">Audit</TabsTrigger>
+            <TabsTrigger value="revisions">Updates</TabsTrigger>
+            <TabsTrigger value="support">Support</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -279,6 +284,32 @@ export default function ClientDashboard() {
               packageData={packageData}
               expanded
             />
+          </TabsContent>
+
+          {/* Content Tab */}
+          <TabsContent value="content">
+            {websiteIntake ? (
+              <ContentManager websiteIntakeId={websiteIntake.id} />
+            ) : (
+              <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+                <CardContent className="py-12 text-center">
+                  <p className="text-slate-300">Content management will be available once your website is set up</p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          {/* Leads Tab */}
+          <TabsContent value="leads">
+            {websiteIntake?.website_status === 'live' ? (
+              <LeadTracker websiteIntakeId={websiteIntake.id} />
+            ) : (
+              <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+                <CardContent className="py-12 text-center">
+                  <p className="text-slate-300">Lead tracking available once your website goes live</p>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           {/* E-Commerce Tab */}
@@ -395,7 +426,38 @@ export default function ClientDashboard() {
               expanded
             />
           </TabsContent>
-        </Tabs>
+
+          {/* Support Chat Tab */}
+          <TabsContent value="support">
+            <div className="grid lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <SupportChat 
+                  websiteIntakeId={websiteIntake?.id}
+                  userEmail={user.email}
+                />
+              </div>
+              <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm h-fit">
+                <CardHeader>
+                  <CardTitle>Support Resources</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="text-sm space-y-2">
+                    <p className="font-medium text-white">Email Support</p>
+                    <p className="text-slate-300">hello@sitewizard.pro</p>
+                  </div>
+                  <div className="text-sm space-y-2">
+                    <p className="font-medium text-white">Response Time</p>
+                    <p className="text-slate-300">Within 24 hours</p>
+                  </div>
+                  <div className="text-sm space-y-2">
+                    <p className="font-medium text-white">Available</p>
+                    <p className="text-slate-300">Monday - Friday, 9am - 6pm</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+          </Tabs>
       </div>
 
       <AIChatbot websiteIntake={websiteIntake} context="dashboard" />
