@@ -15,6 +15,9 @@ import PredictiveAnalytics from "../components/analytics/PredictiveAnalytics";
 import AIPersonalizationEngine from "../components/personalization/AIPersonalizationEngine";
 import AIProductManager from "../components/ecommerce/AIProductManager";
 import DynamicPricingEngine from "../components/ecommerce/DynamicPricingEngine";
+import InventoryManagement from "../components/ecommerce/InventoryManagement";
+import FraudDetection from "../components/ecommerce/FraudDetection";
+import PersonalizedSupport from "../components/ecommerce/PersonalizedSupport";
 import AIMarketingAutomation from "../components/marketing/AIMarketingAutomation";
 import AIWorkflowAutomation from "../components/admin/AIWorkflowAutomation";
 import AdvancedSEOStrategy from "../components/seo/AdvancedSEOStrategy";
@@ -187,9 +190,33 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="ecommerce">
-            <div className="space-y-6">
-              {websites[0] && <AIProductManager websiteIntakeId={websites[0].id} />}
-            </div>
+            <Tabs defaultValue="products">
+              <TabsList>
+                <TabsTrigger value="products">Products</TabsTrigger>
+                <TabsTrigger value="inventory">Inventory</TabsTrigger>
+                <TabsTrigger value="fraud">Fraud Detection</TabsTrigger>
+                <TabsTrigger value="support">AI Support</TabsTrigger>
+              </TabsList>
+              <div className="mt-4">
+                <TabsContent value="products">
+                  {websites[0] && <AIProductManager websiteIntakeId={websites[0].id} />}
+                </TabsContent>
+                <TabsContent value="inventory">
+                  {websites[0] && <InventoryManagement websiteIntakeId={websites[0].id} />}
+                </TabsContent>
+                <TabsContent value="fraud">
+                  {websites[0] && <FraudDetection websiteIntakeId={websites[0].id} />}
+                </TabsContent>
+                <TabsContent value="support">
+                  {websites[0] && (
+                    <PersonalizedSupport 
+                      customerEmail={websites[0].client_email}
+                      websiteIntakeId={websites[0].id}
+                    />
+                  )}
+                </TabsContent>
+              </div>
+            </Tabs>
           </TabsContent>
 
           <TabsContent value="marketing">
