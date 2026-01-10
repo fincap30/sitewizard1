@@ -10,6 +10,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { GripVertical, Edit2, Save, Plus, Trash2, Eye, Palette, Type } from "lucide-react";
 import { toast } from "sonner";
+import AICopywritingAssistant from './AICopywritingAssistant';
 
 export default function AdvancedWebsiteEditor({ websiteIntake, websiteData }) {
   const [editingSection, setEditingSection] = useState(null);
@@ -108,8 +109,9 @@ export default function AdvancedWebsiteEditor({ websiteIntake, websiteData }) {
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="content">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="content">Content Editor</TabsTrigger>
+            <TabsTrigger value="copywriting">✨ Copywriter</TabsTrigger>
             <TabsTrigger value="design">Design Settings</TabsTrigger>
             <TabsTrigger value="seo">SEO Optimizer</TabsTrigger>
           </TabsList>
@@ -193,6 +195,15 @@ export default function AdvancedWebsiteEditor({ websiteIntake, websiteData }) {
                 </CardContent>
               </Card>
             ))}
+          </TabsContent>
+
+          <TabsContent value="copywriting" className="space-y-4">
+            <AICopywritingAssistant 
+              websiteIntake={websiteIntake}
+              onCopySelected={(copy) => {
+                toast.success('Copy ready to use!');
+              }}
+            />
           </TabsContent>
 
           <TabsContent value="design" className="space-y-4">
