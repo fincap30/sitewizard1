@@ -15,6 +15,7 @@ import RevisionRequestList from "../components/dashboard/RevisionRequestList";
 import ClientAnalytics from "../components/dashboard/ClientAnalytics";
 import ProjectMilestones from "../components/collaboration/ProjectMilestones";
 import WebsiteAudit from "../components/dashboard/WebsiteAudit";
+import ProjectInsights from "../components/dashboard/ProjectInsights";
 import AIChatbot from "../components/shared/AIChatbot";
 
 export default function ClientDashboard() {
@@ -214,6 +215,8 @@ export default function ClientDashboard() {
             />
             
             <div className="space-y-6">
+              <ProjectInsights websiteIntakeId={websiteIntake?.id} />
+
               <ProjectMilestones websiteIntakeId={websiteIntake?.id} />
 
               <div className="grid lg:grid-cols-2 gap-6">

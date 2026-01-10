@@ -7,7 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Loader2, Copy, Check } from "lucide-react";
+import { Sparkles, Loader2, Copy, Check, Search } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
 
 export default function AIContentGenerator({ websiteIntake, onContentGenerated }) {
@@ -87,6 +88,88 @@ Include:
     onSuccess: (content) => {
       setGeneratedContent(content);
       toast.success('Content generated successfully!');
+    },
+  });
+
+  const generateVariationsMutation = useMutation({
+    mutationFn: async () => {
+      const prompt = `Generate ${formData.variationCount} variations of this content with different angles and CTAs.
+
+Original Content:
+${generatedContent}
+
+Business: ${websiteIntake.company_name}
+Goals: ${websiteIntake.business_goals?.join(', ')}
+
+Create variations that:
+- Use different persuasive angles
+- Have unique calls-to-action
+- Maintain the same core message
+- Appeal to different audience segments
+
+Return as JSON array of variations.`;
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            variations: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  angle: { type: "string" },
+                  content: { type: "string" },
+                  cta: { type: "string" }
+                }
+              }
+            }
+          }
+        }
+      });
+
+      return response.variations;
+    },
+    onSuccess: (data) => {
+      setVariations(data);
+      toast.success('Variations generated!');
+    },
+  });
+
+  const analyzeMutation = useMutation({
+    mutationFn: async () => {
+      const prompt = `Analyze existing page content and suggest improvements.
+
+Current Content:
+${generatedContent}
+
+Business: ${websiteIntake.company_name}
+Goals: ${websiteIntake.business_goals?.join(', ')}
+
+Suggest:
+1. New sections to add (for engagement)
+2. Blog post ideas (for SEO and audience engagement)
+3. Content gaps to fill
+4. SEO optimization opportunities
+
+Return as JSON with actionable suggestions.`;
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        add_context_from_internet: true,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            new_sections: { type: "array", items: { type: "string" } },
+            blog_ideas: { type: "array", items: { type: "string" } },
+            content_gaps: { type: "array", items: { type: "string" } },
+            seo_opportunities: { type: "array", items: { type: "string" } }
+          }
+        }
+      });
+
+      return response;
     },
   });
 
