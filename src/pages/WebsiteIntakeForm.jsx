@@ -40,10 +40,15 @@ export default function WebsiteIntakeForm() {
     other_platforms: '',
     logo_url: '',
     brand_colors: '',
+    branding_guidelines: '',
+    color_palette: 'modern',
     style_preference: 'modern',
     business_goals: [],
     goal_description: '',
-    competitor_urls: ['', '', '']
+    competitor_urls: ['', '', ''],
+    product_count: '',
+    payment_gateways: [],
+    shipping_options: []
   });
   const [uploadingLogo, setUploadingLogo] = useState(false);
 
@@ -612,12 +617,38 @@ Return JSON:
                   )}
                 </div>
               </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-slate-300 mb-1 block">Brand Colors (Hex codes)</label>
+                  <Input
+                    value={formData.brand_colors}
+                    onChange={(e) => setFormData({...formData, brand_colors: e.target.value})}
+                    placeholder="#0066FF, #FF6B00"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-300 mb-1 block">Color Palette Style</label>
+                  <select
+                    className="w-full border border-slate-300 rounded-md px-3 py-2 bg-white text-slate-900"
+                    value={formData.color_palette}
+                    onChange={(e) => setFormData({...formData, color_palette: e.target.value})}
+                  >
+                    <option value="modern">Modern & Bright</option>
+                    <option value="professional">Professional & Corporate</option>
+                    <option value="minimalist">Minimalist & Clean</option>
+                    <option value="bold">Bold & Vibrant</option>
+                    <option value="earthy">Earthy & Warm</option>
+                    <option value="luxury">Luxury & Elegant</option>
+                  </select>
+                </div>
+              </div>
               <div>
-                <label className="text-sm font-medium text-slate-300 mb-1 block">Brand Colors</label>
-                <Input
-                  value={formData.brand_colors}
-                  onChange={(e) => setFormData({...formData, brand_colors: e.target.value})}
-                  placeholder="#0066FF, #FF6B00 (comma separated)"
+                <label className="text-sm font-medium text-slate-300 mb-1 block">Branding Guidelines & References</label>
+                <Textarea
+                  value={formData.branding_guidelines}
+                  onChange={(e) => setFormData({...formData, branding_guidelines: e.target.value})}
+                  placeholder="Share any brand guidelines, style preferences, fonts you like, or design references..."
+                  rows={3}
                 />
               </div>
               <div>
@@ -671,6 +702,74 @@ Return JSON:
               </div>
             </CardContent>
           </Card>
+
+          {/* E-Commerce Fields */}
+          {formData.website_type === 'ecommerce' && (
+            <Card className="border-2 border-green-500/30 bg-green-600/10 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-green-300">E-Commerce Setup</CardTitle>
+                <CardDescription>Configure your online store</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-slate-300 mb-1 block">Approximate Number of Products</label>
+                  <Input
+                    type="number"
+                    value={formData.product_count}
+                    onChange={(e) => setFormData({...formData, product_count: e.target.value})}
+                    placeholder="e.g., 50"
+                    min="1"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-slate-300 mb-2 block">Payment Gateway Preferences</label>
+                  <div className="space-y-2">
+                    {['Stripe', 'PayPal', 'Square', 'Apple Pay', 'Google Pay'].map(gateway => (
+                      <div key={gateway} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id={gateway}
+                          checked={formData.payment_gateways.includes(gateway)}
+                          onChange={(e) => {
+                            const gateways = e.target.checked
+                              ? [...formData.payment_gateways, gateway]
+                              : formData.payment_gateways.filter(g => g !== gateway);
+                            setFormData({...formData, payment_gateways: gateways});
+                          }}
+                          className="rounded"
+                        />
+                        <label htmlFor={gateway} className="ml-2 text-sm text-slate-300 cursor-pointer">{gateway}</label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-slate-300 mb-2 block">Shipping Options Needed</label>
+                  <div className="space-y-2">
+                    {['Standard Shipping', 'Express Shipping', 'International Shipping', 'Local Pickup'].map(option => (
+                      <div key={option} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id={option}
+                          checked={formData.shipping_options.includes(option)}
+                          onChange={(e) => {
+                            const options = e.target.checked
+                              ? [...formData.shipping_options, option]
+                              : formData.shipping_options.filter(o => o !== option);
+                            setFormData({...formData, shipping_options: options});
+                          }}
+                          className="rounded"
+                        />
+                        <label htmlFor={option} className="ml-2 text-sm text-slate-300 cursor-pointer">{option}</label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Competitors */}
           <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
