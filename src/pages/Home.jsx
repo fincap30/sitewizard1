@@ -155,18 +155,16 @@ Provide comprehensive analysis:
    - List 3-4 immediate actions they can implement right now to improve their online presence
    - Examples: "Add customer testimonials to homepage", "Optimize page speed", "Set up Google My Business"
    
-6. Package Recommendation (REQUIRED):
-   - recommended_package: MUST be exactly "Growth" (unless extremely compelling reason for Starter or Premium)
-   - recommendation_reason: Explain in 2-3 sentences why Growth plan is best for them
-   - alternative_plans: Mention "Starter plan available at lower cost, Premium for advanced features"
+6. Package Recommendation (ABSOLUTELY REQUIRED - NEVER SKIP):
+   - recommended_package: MUST be "Growth" (default for most businesses)
+   - recommendation_reason: 2-3 sentences explaining why
+   - alternative_plans: "Also available: Starter (budget option) and Premium (advanced features)"
    
-7. Value Proposition (ALL FIELDS REQUIRED):
-   - whats_included: List 5-6 specific features (e.g., "14-day free trial", "AI-powered design", "Mobile-responsive website", "Basic SEO optimization", "Hosting included", "SSL certificate")
-   - ai_benefits: List 3-4 AI advantages (e.g., "Website delivered 10x faster than traditional agencies", "AI generates SEO-optimized content automatically", "Predictive analytics forecast traffic growth")
-   - market_comparison: Compare costs (e.g., "Traditional web agencies charge $3,000-$10,000 upfront. We start at $0 with 14-day trial.")
-   - why_choose_us: One compelling sentence about AI specialization
-
-REMEMBER: Include ALL fields with real content. No empty fields allowed.`;
+7. Value Proposition (ABSOLUTELY REQUIRED - NEVER SKIP):
+   - whats_included: 5-6 items like "14-day free trial", "AI design", "Mobile responsive", "Hosting", "SSL"
+   - ai_benefits: 3-4 items like "10x faster delivery", "Auto SEO content", "Predictive analytics"  
+   - market_comparison: "Traditional agencies: $3,000-$10,000. We start at $0."
+   - why_choose_us: One sentence about AI advantage`;
 
       const analysisResult = await base44.integrations.Core.InvokeLLM({
         prompt: analysisPrompt,
