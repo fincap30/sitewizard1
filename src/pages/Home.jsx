@@ -297,8 +297,8 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
       console.error('Analysis error:', error);
       setIsSubmitting(false);
       toast.error('Analysis failed. Please try again.');
-      // Fallback: proceed with default analysis
-      setAnalysis({
+      // Use fallback with complete analysis data
+      const fallbackAnalysis = {
         lighthouse_metrics: {
           performance_score: 85,
           accessibility_score: 90,
@@ -319,6 +319,20 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
               'Use content delivery network (CDN)',
               'Enable browser caching'
             ]
+          },
+          accessibility_details: {
+            specific_actions: [
+              'Ensure color contrast meets WCAG standards',
+              'Add alt text to all images',
+              'Make forms keyboard navigable'
+            ]
+          },
+          best_practices_details: {
+            specific_actions: [
+              'Use HTTPS on all pages',
+              'Implement proper security headers',
+              'Keep dependencies updated'
+            ]
           }
         },
         competitor_analysis: {
@@ -327,43 +341,65 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
         },
         competitive_ranking: { 
           current_level: 'Developing',
-          ranking_summary: `${formData.business_name} is building their online presence.`,
-          main_weaknesses: ['Limited online visibility', 'No professional website', 'Low SEO presence'],
-          competitive_strengths: ['Starting from scratch with modern approach'],
-          competitive_gaps: ['Need professional web presence', 'SEO optimization needed']
+          ranking_summary: `${formData.business_name} is starting their online journey. A professional website will immediately elevate market position.`,
+          main_weaknesses: ['Limited online visibility', 'No professional website presence', 'Low SEO search rankings', 'Missed lead generation opportunities'],
+          competitive_strengths: ['Opportunity to start fresh with modern approach', 'Can implement latest technology from day one', 'No legacy systems to migrate from'],
+          competitive_gaps: ['Professional web presence', 'SEO optimization and keyword strategy', 'Lead capture and CRM systems', 'Mobile-first design']
         },
         opportunities: [
-          'Build professional website to establish credibility',
-          'Implement SEO strategy to capture local searches',
-          'Set up lead capture forms for customer inquiries',
-          'Create content marketing strategy',
-          'Establish social media presence',
-          'Implement email marketing system'
+          'Launch professional website to establish instant credibility and trust',
+          'Rank for high-value local and industry keywords with SEO optimization',
+          'Capture leads 24/7 with smart contact forms and email automation',
+          'Build content authority with blogging and thought leadership',
+          'Grow social presence and amplify reach across platforms',
+          'Set up email marketing campaigns to nurture and convert leads'
         ],
         quick_wins: [
-          'Establish credibility with professional design',
-          'Capture leads 24/7 with contact forms',
-          'Rank higher on Google with SEO optimization',
-          'Look great on mobile devices',
-          'Fast load times for better user experience'
+          'Establish credibility instantly with professional design and branding',
+          'Capture leads automatically with optimized forms and CTAs',
+          'Rank on Google within 90 days with proper SEO foundation',
+          'Perfect mobile experience for 60% of your traffic',
+          'Load pages in under 2 seconds for better conversions'
         ],
         recommended_package: 'Growth',
-        recommendation_reason: `The Growth plan is perfect for ${formData.business_name} to establish a strong online presence with all essential features for business success.`,
-        alternative_plans: 'We also offer Starter for basic needs and Premium for advanced features.',
+        recommendation_reason: `The Growth plan is ideal for ${formData.business_name}. You get AI-powered design, SEO tools, up to 10 pages, lead capture, email campaigns, and analytics—everything needed to compete and grow.`,
+        alternative_plans: 'Start with Starter ($99/month) for basics, upgrade to Premium ($299/month) for e-commerce and priority support.',
         value_proposition: {
-          whats_included: ['14-day free trial', 'AI-powered design', 'Mobile responsive', 'Hosting included', 'SSL certificate', 'Basic SEO setup'],
-          ai_benefits: ['10x faster delivery', 'Auto-generated SEO content', 'Intelligent layout suggestions', 'Conversion optimization'],
-          market_comparison: 'Traditional agencies: $3,000-$10,000. SiteWizard starts at $0.',
-          why_choose_us: 'Our AI delivers professional websites in days, not months.'
+          whats_included: ['14-day free trial with full features', 'AI-powered website design', 'Mobile-responsive on all devices', 'Hosting included (99.9% uptime)', 'SSL security certificate', 'Basic SEO optimization', 'Unlimited revisions in trial'],
+          ai_benefits: ['Get online 10x faster than traditional agencies', 'Auto-generated SEO-optimized content', 'Intelligent layout and design suggestions', 'Built-in conversion optimization', 'Smart form and lead tracking'],
+          market_comparison: 'Traditional web agencies charge $3,000-$10,000+ upfront. SiteWizard costs $0 to start, then $99-$399/month.',
+          why_choose_us: 'SiteWizard combines AI speed with professional quality—websites that normally take 3 months are built in 7-10 days.'
         },
         content_strategy: {
-          target_audience: `Small to medium businesses in ${formData.website_type} industry seeking professional online presence`,
-          homepage_suggestions: ['Hero section with clear value proposition', 'Features/services overview', 'Testimonials section', 'Call-to-action'],
-          blog_topics: ['Industry trends and insights', 'How-to guides for customers', 'Case studies and success stories', 'Best practices', 'Product updates', 'Customer stories'],
-          social_media_ideas: ['Behind-the-scenes content', 'Customer testimonials', 'Industry tips and tricks', 'Special offers and announcements'],
-          landing_page_headlines: [`Welcome to ${formData.business_name}`, 'Transform Your Business Today', 'Professional Solutions for Your Success']
+          target_audience: `Customers seeking ${formData.website_type}—looking for quality, reliability, and professional service from trusted local businesses`,
+          homepage_suggestions: [
+            'Hero section showcasing your value proposition and differentiator',
+            'Services/products overview with benefits and features',
+            'Social proof section with testimonials and case studies',
+            'Clear call-to-action for leads or conversions'
+          ],
+          blog_topics: [
+            'Industry trends and what\'s happening in your space',
+            'How-to guides that solve customer problems',
+            'Case studies showing customer results and success',
+            'Best practices and tips from your expertise',
+            'Company updates, news, and behind-the-scenes',
+            'Customer spotlights and success stories'
+          ],
+          social_media_ideas: [
+            'Behind-the-scenes content showing company culture',
+            'Customer testimonials and success transformations',
+            'Industry tips, tricks, and quick advice',
+            'Limited-time offers, promotions, and announcements'
+          ],
+          landing_page_headlines: [
+            `Grow Your Business with ${formData.business_name}`,
+            'Professional Solutions That Deliver Real Results',
+            `Transform Your Success Starting Today`
+          ]
         }
-      });
+      };
+      setAnalysis(fallbackAnalysis);
       setShowAnalysis(true);
     } finally {
       setIsSubmitting(false);
