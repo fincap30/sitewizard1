@@ -298,6 +298,32 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
       toast.error('Analysis failed. Please try again.');
       // Fallback: proceed with default analysis
       setAnalysis({
+        lighthouse_metrics: {
+          performance_score: 85,
+          accessibility_score: 90,
+          seo_score: 88,
+          best_practices_score: 92,
+          seo_details: {
+            specific_actions: [
+              'Implement proper heading hierarchy (H1, H2, H3)',
+              'Add meta descriptions to all pages',
+              'Create XML sitemap for search engines',
+              'Optimize images for web performance'
+            ]
+          },
+          performance_details: {
+            specific_actions: [
+              'Minimize CSS and JavaScript files',
+              'Implement lazy loading for images',
+              'Use content delivery network (CDN)',
+              'Enable browser caching'
+            ]
+          }
+        },
+        competitor_analysis: {
+          competitor_details: [],
+          market_opportunity: 'Strong opportunity to establish your brand as a modern, fast, and user-friendly alternative in your market.'
+        },
         competitive_ranking: { 
           current_level: 'Developing',
           ranking_summary: `${formData.business_name} is building their online presence.`,
