@@ -310,8 +310,8 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
   if (showAnalysis && analysis) {
     return (
       <div className="min-h-screen bg-transparent py-12 px-4">
-        <div className="container mx-auto max-w-4xl">
-          <Card className="border-2 border-blue-500/50 bg-slate-800/50 backdrop-blur-sm mb-6">
+        <div className="container mx-auto max-w-4xl space-y-6">
+          <Card className="border-2 border-blue-500/50 bg-slate-800/50 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="text-2xl flex items-center gap-2">
                 <Zap className="w-6 h-6 text-blue-400" />
@@ -596,12 +596,36 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
                 Continue to Build My Website
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
+              </CardContent>
+              </Card>
+              </div>
+              </div>
+              );
+              }
+
+              if (isSubmitting) {
+              return (
+              <div className="min-h-screen flex items-center justify-center bg-transparent">
+              <Card className="max-w-md border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+              <CardContent className="pt-6 text-center space-y-4">
+              <div className="flex justify-center">
+              <div className="relative">
+                <Zap className="w-16 h-16 text-blue-400 animate-pulse" />
+                <div className="absolute inset-0 bg-blue-400/20 blur-xl animate-pulse" />
+              </div>
+              </div>
+              <h3 className="text-2xl font-bold text-white">Analyzing Your Business...</h3>
+              <p className="text-slate-300">Our AI is reviewing your information and creating recommendations.</p>
+              <div className="space-y-2 text-sm text-slate-400">
+              <p>✓ Scanning competitive landscape</p>
+              <p>✓ Identifying growth opportunities</p>
+              <p>✓ Generating recommendations</p>
+              </div>
+              </CardContent>
+              </Card>
+              </div>
+              );
+              }
 
   return (
     <div className="min-h-screen bg-transparent">
