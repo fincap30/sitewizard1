@@ -60,6 +60,11 @@ export default function Pricing() {
                   <span className="text-4xl font-bold text-white">${pkg.price}</span>
                   <span className="text-slate-400">/month</span>
                 </div>
+                {pkg.setup_cost > 0 && (
+                  <p className="text-sm text-slate-400">
+                    + ${pkg.setup_cost} setup fee
+                  </p>
+                )}
                 <CardDescription className="text-slate-300">
                   14-day free trial included
                 </CardDescription>
@@ -72,6 +77,12 @@ export default function Pricing() {
                       <span>{feature}</span>
                     </li>
                   ))}
+                  {pkg.products_limit && (
+                    <li className="flex items-start gap-2 text-sm text-slate-300">
+                      <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span>Up to {pkg.products_limit} products</span>
+                    </li>
+                  )}
                 </ul>
                 <Link to={`/StartFreeTrial?package=${pkg.id}`}>
                   <Button className="w-full bg-blue-600 hover:bg-blue-700">
@@ -85,9 +96,9 @@ export default function Pricing() {
 
         {/* Trust Section */}
         <div className="text-center mt-16 text-slate-400 text-sm">
-          <p>✓ No credit card required for trial</p>
-          <p className="mt-2">✓ Cancel anytime before day 14</p>
-          <p className="mt-2">✓ Full refund if not satisfied</p>
+          <p>✓ 14-day free trial included</p>
+          <p className="mt-2">✓ Setup fee charged after trial ends</p>
+          <p className="mt-2">✓ Cancel anytime during trial</p>
         </div>
       </div>
     </div>
