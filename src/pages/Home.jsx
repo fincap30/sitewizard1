@@ -95,16 +95,20 @@ export default function Home() {
 
     try {
         // Create lead
-        await base44.entities.Lead.create({
-          name: formData.client_name,
-          email: formData.client_email,
-          phone: formData.phone,
-          business_name: formData.business_name,
-          website_type: formData.website_type,
-          requirements: formData.requirements,
-          source: 'website',
-          status: 'new'
-        });
+        try {
+          await base44.entities.Lead.create({
+            name: formData.client_name,
+            email: formData.client_email,
+            phone: formData.phone,
+            business_name: formData.business_name,
+            website_type: formData.website_type,
+            requirements: formData.requirements,
+            source: 'website',
+            status: 'new'
+          });
+        } catch (leadError) {
+          console.log('Lead creation failed, continuing...', leadError);
+        }
 
         // Create initial WebsiteIntake with basic info
         const intakeData = {
@@ -119,6 +123,7 @@ export default function Home() {
         };
 
         const createdIntake = await base44.entities.WebsiteIntake.create(intakeData);
+        console.log('Intake created:', createdIntake);
 
       // Perform AI analysis with actual web fetching
       let websiteContent = '';
@@ -197,6 +202,7 @@ export default function Home() {
       - Landing page copy: 2-3 compelling headline options and value propositions
       - Target audience: Define their ideal customer profile`;
 
+      console.log('Starting AI analysis...');
       const analysisResult = await base44.integrations.Core.InvokeLLM({
         prompt: analysisPrompt,
         add_context_from_internet: true,
@@ -269,15 +275,16 @@ export default function Home() {
       // Store intake ID for later
       sessionStorage.setItem('intake_id', createdIntake.id);
 
+      console.log('Analysis result:', analysisResult);
       setAnalysis(analysisResult);
       setShowAnalysis(true);
       toast.success('Analysis complete!');
-      } catch (error) {
-      toast.error('Something went wrong. Please try again.');
-      console.error(error);
-      } finally {
+    } catch (error) {
+      console.error('Analysis error:', error);
+      toast.error(`Error: ${error.message || 'Something went wrong. Please try again.'}`);
+    } finally {
       setIsSubmitting(false);
-      }
+    }
       };
 
   const handleContinueToIntake = () => {
