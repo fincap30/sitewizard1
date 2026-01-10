@@ -444,6 +444,100 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
                 </div>
               )}
 
+              {/* Lighthouse Performance Metrics */}
+              {analysis.lighthouse_metrics && (
+                <div className="bg-indigo-600/10 border border-indigo-500/30 rounded-lg p-4">
+                  <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-indigo-400" />
+                    Performance Metrics (Lighthouse)
+                  </h3>
+                  <div className="grid md:grid-cols-4 gap-4">
+                    {[
+                      { label: 'Performance', key: 'performance_score', color: 'blue' },
+                      { label: 'Accessibility', key: 'accessibility_score', color: 'green' },
+                      { label: 'SEO', key: 'seo_score', color: 'orange' },
+                      { label: 'Best Practices', key: 'best_practices_score', color: 'purple' }
+                    ].map((metric) => (
+                      <div key={metric.key} className="bg-slate-700/30 rounded-lg p-3 text-center">
+                        <p className="text-xs text-slate-400 mb-2">{metric.label}</p>
+                        <p className={`text-3xl font-bold text-${metric.color}-400 mb-2`}>
+                          {analysis.lighthouse_metrics[metric.key]}
+                        </p>
+                        <div className="w-full bg-slate-600 h-1 rounded-full overflow-hidden">
+                          <div 
+                            className={`bg-${metric.color}-500 h-full`}
+                            style={{width: `${analysis.lighthouse_metrics[metric.key]}%`}}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 space-y-3">
+                    {analysis.lighthouse_metrics.seo_details && (
+                      <div className="bg-slate-800/50 rounded p-3">
+                        <p className="text-sm font-medium text-white mb-2">📊 SEO Improvements</p>
+                        <ul className="text-xs text-slate-300 space-y-1">
+                          {analysis.lighthouse_metrics.seo_details.specific_actions?.map((action, idx) => (
+                            <li key={idx} className="flex gap-2">✓ {action}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {analysis.lighthouse_metrics.performance_details && (
+                      <div className="bg-slate-800/50 rounded p-3">
+                        <p className="text-sm font-medium text-white mb-2">⚡ Speed Optimizations</p>
+                        <ul className="text-xs text-slate-300 space-y-1">
+                          {analysis.lighthouse_metrics.performance_details.specific_actions?.map((action, idx) => (
+                            <li key={idx} className="flex gap-2">⚡ {action}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Competitor Comparative Analysis */}
+              {analysis.competitor_analysis?.competitor_details?.length > 0 && (
+                <div className="bg-cyan-600/10 border border-cyan-500/30 rounded-lg p-4">
+                  <h3 className="font-semibold text-white mb-4">Competitive Landscape Analysis</h3>
+                  {analysis.competitor_analysis.competitor_details.map((comp, idx) => (
+                    <div key={idx} className="bg-slate-800/50 rounded-lg p-4 mb-3 last:mb-0">
+                      <p className="text-sm font-medium text-cyan-300 mb-3">Competitor: {comp.competitor_url}</p>
+                      <div className="grid md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="text-green-300 font-medium mb-2">💪 Their Strengths:</p>
+                          <ul className="text-slate-300 space-y-1">
+                            {comp.their_strengths?.map((str, i) => (
+                              <li key={i} className="flex gap-2">• {str}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="text-red-300 font-medium mb-2">⚠️ Their Weaknesses:</p>
+                          <ul className="text-slate-300 space-y-1">
+                            {comp.their_weaknesses?.map((weak, i) => (
+                              <li key={i} className="flex gap-2">• {weak}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                      {comp.design_comparison && (
+                        <p className="text-slate-300 text-xs mt-3 p-2 bg-slate-700/30 rounded">
+                          <strong>Design Gap:</strong> {comp.design_comparison}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                  {analysis.competitor_analysis.market_opportunity && (
+                    <div className="bg-green-600/20 border border-green-500/30 rounded-lg p-3 mt-4">
+                      <p className="text-sm font-medium text-green-300 mb-2">🎯 Market Opportunity</p>
+                      <p className="text-sm text-slate-300">{analysis.competitor_analysis.market_opportunity}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Competitive Ranking */}
               <div className="bg-orange-600/10 border border-orange-500/30 rounded-lg p-4">
                 <h3 className="font-semibold text-white mb-3">Your Competitive Ranking</h3>
