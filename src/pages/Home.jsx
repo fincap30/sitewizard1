@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Zap, CheckCircle, Clock, Star, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 
 export default function Home() {
+  const [user, setUser] = useState(null);
+  const [existingProject, setExistingProject] = useState(null);
+  const [projectChoice, setProjectChoice] = useState(null); // 'existing' or 'new'
   const [formData, setFormData] = useState({
     client_name: '',
     client_email: '',
@@ -18,6 +22,37 @@ export default function Home() {
     website_type: 'business'
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    base44.auth.me().then(async (userData) => {
+      if (userData) {
+        setUser(userData);
+        // Pre-fill with user data
+        setFormData(prev => ({
+          ...prev,
+          client_name: userData.full_name || '',
+          client_email: userData.email || ''
+        }));
+
+        // Check for existing project
+        const intakes = await base44.entities.WebsiteIntake.filter({ client_email: userData.email });
+        if (intakes.length > 0) {
+          const latest = intakes.sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0];
+          setExistingProject(latest);
+        }
+      }
+    }).catch(() => {
+      // Not logged in, that's fine
+    });
+  }, []);
+
+  const handleContinueExisting = () => {
+    window.location.href = '/ClientDashboard';
+  };
+
+  const handleStartNew = () => {
+    setProjectChoice('new');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -123,6 +158,34 @@ export default function Home() {
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {/* Existing Project Choice */}
+              {user && existingProject && !projectChoice && (
+                <div className="space-y-4">
+                  <div className="text-center mb-4">
+                    <p className="text-slate-300 mb-2">Welcome back, {user.full_name}!</p>
+                    <p className="text-sm text-slate-400">We found your existing project:</p>
+                    <Badge className="mt-2 bg-blue-600">{existingProject.company_name}</Badge>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button
+                      onClick={handleContinueExisting}
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      Continue Existing Project
+                    </Button>
+                    <Button
+                      onClick={handleStartNew}
+                      variant="outline"
+                      className="border-slate-600 hover:border-blue-500"
+                    >
+                      Start New Project
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Show form if: no user, no existing project, or chose 'new' */}
+              {(!user || !existingProject || projectChoice === 'new') && (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="text-sm font-medium text-slate-300 mb-1 block">
@@ -223,6 +286,7 @@ export default function Home() {
                   By submitting, you agree to receive communications about your project.
                 </p>
               </form>
+              )}
             </CardContent>
           </Card>
         </div>
