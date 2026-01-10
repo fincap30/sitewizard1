@@ -339,8 +339,8 @@ Be specific, detailed, and provide REAL analysis, not generic responses.`;
                   {analysis.recommended_package} Plan
                 </Badge>
                 <p className="text-slate-300 mb-3">{analysis.recommendation_reason}</p>
-                {analysis.recommendation?.alternative_plans && (
-                  <p className="text-sm text-slate-400 italic">{analysis.recommendation.alternative_plans}</p>
+                {analysis.alternative_plans && (
+                  <p className="text-sm text-slate-400 italic">{analysis.alternative_plans}</p>
                 )}
               </div>
 
