@@ -230,7 +230,50 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
       toast.success('Analysis complete!');
     } catch (error) {
       console.error('Analysis error:', error);
-      toast.error(`Error: ${error.message || 'Something went wrong. Please try again.'}`);
+      setIsSubmitting(false);
+      toast.error('Analysis failed. Please try again.');
+      // Fallback: proceed with default analysis
+      setAnalysis({
+        competitive_ranking: { 
+          current_level: 'Developing',
+          ranking_summary: `${formData.business_name} is building their online presence.`,
+          main_weaknesses: ['Limited online visibility', 'No professional website', 'Low SEO presence'],
+          competitive_strengths: ['Starting from scratch with modern approach'],
+          competitive_gaps: ['Need professional web presence', 'SEO optimization needed']
+        },
+        opportunities: [
+          'Build professional website to establish credibility',
+          'Implement SEO strategy to capture local searches',
+          'Set up lead capture forms for customer inquiries',
+          'Create content marketing strategy',
+          'Establish social media presence',
+          'Implement email marketing system'
+        ],
+        quick_wins: [
+          'Establish credibility with professional design',
+          'Capture leads 24/7 with contact forms',
+          'Rank higher on Google with SEO optimization',
+          'Look great on mobile devices',
+          'Fast load times for better user experience'
+        ],
+        recommended_package: 'Growth',
+        recommendation_reason: `The Growth plan is perfect for ${formData.business_name} to establish a strong online presence with all essential features for business success.`,
+        alternative_plans: 'We also offer Starter for basic needs and Premium for advanced features.',
+        value_proposition: {
+          whats_included: ['14-day free trial', 'AI-powered design', 'Mobile responsive', 'Hosting included', 'SSL certificate', 'Basic SEO setup'],
+          ai_benefits: ['10x faster delivery', 'Auto-generated SEO content', 'Intelligent layout suggestions', 'Conversion optimization'],
+          market_comparison: 'Traditional agencies: $3,000-$10,000. SiteWizard starts at $0.',
+          why_choose_us: 'Our AI delivers professional websites in days, not months.'
+        },
+        content_strategy: {
+          target_audience: `Small to medium businesses in ${formData.website_type} industry seeking professional online presence`,
+          homepage_suggestions: ['Hero section with clear value proposition', 'Features/services overview', 'Testimonials section', 'Call-to-action'],
+          blog_topics: ['Industry trends and insights', 'How-to guides for customers', 'Case studies and success stories', 'Best practices', 'Product updates', 'Customer stories'],
+          social_media_ideas: ['Behind-the-scenes content', 'Customer testimonials', 'Industry tips and tricks', 'Special offers and announcements'],
+          landing_page_headlines: [`Welcome to ${formData.business_name}`, 'Transform Your Business Today', 'Professional Solutions for Your Success']
+        }
+      });
+      setShowAnalysis(true);
     } finally {
       setIsSubmitting(false);
     }
