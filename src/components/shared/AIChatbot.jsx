@@ -11,9 +11,10 @@ import { toast } from "sonner";
 export default function AIChatbot({ websiteIntake, context = 'dashboard' }) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Hi! I\'m your AI assistant. I can help you with website features, content generation, and guide you through editing. What would you like to know?' }
+    { role: 'assistant', content: 'Hi! I\'m your AI support assistant. I can help you with:\n• Website building & editing\n• SEO optimization\n• E-commerce features\n• Project status updates\n• Analytics insights\n\nWhat would you like to know?' }
   ]);
   const [input, setInput] = useState('');
+  const [showEscalation, setShowEscalation] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -22,7 +23,8 @@ export default function AIChatbot({ websiteIntake, context = 'dashboard' }) {
 
   const chatMutation = useMutation({
     mutationFn: async (userMessage) => {
-      const contextInfo = `
+      const contextInfo = `You are an AI support assistant for SiteWizard.pro, an AI-powered website builder platform.
+
 Context: ${context}
 Website: ${websiteIntake?.company_name || 'New website'}
 Industry: ${websiteIntake?.style_preference || 'General'}
@@ -34,7 +36,20 @@ ${messages.slice(-4).map(m => `${m.role}: ${m.content}`).join('\n')}
 
 User Question: ${userMessage}
 
-Provide a helpful, concise response. If they ask about features, explain them clearly. If they need help with content, offer suggestions. If they're stuck, guide them step by step.`;
+You can answer questions about:
+- Website building, editing, and customization
+- SEO optimization and content strategy
+- E-commerce features (products, pricing, recommendations)
+- Project status and timelines
+- Analytics and performance
+- Subscription and billing
+
+If the question is:
+- A simple FAQ: Answer directly and helpfully
+- Complex/technical/billing issue: Respond with "ESCALATE:" prefix followed by brief explanation
+- Outside your scope: Suggest escalation to human support
+
+Provide clear, actionable responses. Be friendly and professional.`;
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: contextInfo,
@@ -44,7 +59,35 @@ Provide a helpful, concise response. If they ask about features, explain them cl
       return response;
     },
     onSuccess: (response) => {
-      setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+      if (response.startsWith('ESCALATE:')) {
+        setShowEscalation(true);
+        setMessages(prev => [...prev, { 
+          role: 'assistant', 
+          content: response.replace('ESCALATE:', '').trim() + '\n\nWould you like me to escalate this to our support team?' 
+        }]);
+      } else {
+        setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+      }
+    },
+  });
+
+  const escalateMutation = useMutation({
+    mutationFn: async () => {
+      await base44.entities.SupportEscalation.create({
+        client_email: websiteIntake?.client_email,
+        website_intake_id: websiteIntake?.id,
+        query: messages[messages.length - 2]?.content,
+        conversation_context: messages.slice(-6),
+        escalation_reason: 'Complex query - AI recommended human support'
+      });
+    },
+    onSuccess: () => {
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: 'Your request has been escalated to our support team. They\'ll reach out to you via email within 24 hours. Is there anything else I can help you with?' 
+      }]);
+      setShowEscalation(false);
+      toast.success('Escalated to support team!');
     },
   });
 
@@ -59,10 +102,11 @@ Provide a helpful, concise response. If they ask about features, explain them cl
   };
 
   const quickActions = [
-    { label: 'How do I edit my website?', action: 'How do I edit my website content?' },
-    { label: 'Generate content ideas', action: 'Can you help me generate content ideas for my website?' },
-    { label: 'Explain features', action: 'What features are available in my package?' },
-    { label: 'SEO tips', action: 'Give me SEO optimization tips for my website' }
+    { label: 'Edit website', action: 'How do I edit my website content?' },
+    { label: 'SEO tips', action: 'Give me SEO optimization tips' },
+    { label: 'E-commerce setup', action: 'How do I set up e-commerce on my site?' },
+    { label: 'Project status', action: 'What is my current project status?' },
+    { label: 'Analytics help', action: 'Explain my website analytics' }
   ];
 
   if (!isOpen) {
@@ -132,9 +176,20 @@ Provide a helpful, concise response. If they ask about features, explain them cl
               placeholder="Ask me anything..."
               className="flex-1"
             />
-            <Button type="submit" size="icon" disabled={chatMutation.isPending}>
-              <Send className="w-4 h-4" />
-            </Button>
+            {showEscalation ? (
+              <Button 
+                type="button" 
+                onClick={() => escalateMutation.mutate()}
+                disabled={escalateMutation.isPending}
+                className="bg-orange-600 hover:bg-orange-700"
+              >
+                {escalateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Escalate'}
+              </Button>
+            ) : (
+              <Button type="submit" size="icon" disabled={chatMutation.isPending}>
+                <Send className="w-4 h-4" />
+              </Button>
+            )}
           </form>
         </div>
       </CardContent>
