@@ -98,26 +98,25 @@ export default function AnalysisDisplay({ analysis, formData }) {
 
       {/* Opportunities */}
       <div className="bg-green-600/10 border border-green-500/30 rounded-lg p-4">
-        <h3 className="font-semibold text-white mb-3">Growth Opportunities</h3>
-        {analysis.opportunities && analysis.opportunities.length > 0 ? (
-            <ul className="space-y-2 text-sm text-slate-300">
-              {analysis.opportunities.map((opp, idx) => (
-                <li key={idx} className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-400 mt-0.5" />
-                  <span>{opp}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="space-y-2 text-sm text-slate-300">
-              <p>✓ Launch professional website to establish instant credibility</p>
-              <p>✓ Rank for high-value keywords with SEO optimization</p>
-              <p>✓ Capture leads 24/7 with smart contact forms</p>
-              <p>✓ Build authority with content and blogging</p>
-              <p>✓ Grow social presence across platforms</p>
-              <p>✓ Setup automated email marketing campaigns</p>
-            </div>
-          )}
+      <h3 className="font-semibold text-white mb-3">Growth Opportunities</h3>
+      <ul className="space-y-2 text-sm text-slate-300">
+        {(analysis.opportunities && analysis.opportunities.length > 0 
+          ? analysis.opportunities 
+          : [
+              'Launch professional website to establish instant credibility',
+              'Rank for high-value keywords with SEO optimization',
+              'Capture leads 24/7 with smart contact forms',
+              'Build authority with content and blogging',
+              'Grow social presence across platforms',
+              'Setup automated email marketing campaigns'
+            ]
+        ).map((opp, idx) => (
+          <li key={idx} className="flex items-start gap-2">
+            <CheckCircle className="w-4 h-4 text-green-400 mt-0.5" />
+            <span>{opp}</span>
+          </li>
+        ))}
+      </ul>
       </div>
 
       {/* Quick Wins */}
