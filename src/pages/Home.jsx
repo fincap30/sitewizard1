@@ -210,9 +210,11 @@ Provide comprehensive analysis:
                 ai_benefits: { type: "array", items: { type: "string" } },
                 market_comparison: { type: "string" },
                 why_choose_us: { type: "string" }
-              }
+              },
+              required: ["whats_included", "ai_benefits", "market_comparison", "why_choose_us"]
             }
-          }
+          },
+          required: ["quick_wins", "recommended_package", "recommendation_reason", "alternative_plans", "value_proposition"]
         }
       });
 
