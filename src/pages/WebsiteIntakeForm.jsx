@@ -9,13 +9,21 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Upload, Sparkles, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import AIQuestionsFlow from "../components/intake/AIQuestionsFlow";
 import WebsitePreview from "../components/intake/WebsitePreview";
+import TemplateSelector from "../components/builder/TemplateSelector";
+import AIWebsitePreview from "../components/builder/AIWebsitePreview";
+import ProjectRoadmap from "../components/onboarding/ProjectRoadmap";
+import AutomatedSetup from "../components/onboarding/AutomatedSetup";
+import ProgressTracker from "../components/onboarding/ProgressTracker";
 
 export default function WebsiteIntakeForm() {
   const [user, setUser] = useState(null);
-  const [step, setStep] = useState('form'); // form, questions, generating, preview
+  const [step, setStep] = useState('form'); // form, questions, generating, preview, template, builder, roadmap
   const [intakeId, setIntakeId] = useState(null);
+  const [websiteIntake, setWebsiteIntake] = useState(null);
+  const [customizedTemplate, setCustomizedTemplate] = useState(null);
   const [formData, setFormData] = useState({
     company_name: '',
     contact_person: '',
@@ -134,7 +142,8 @@ Return your response as JSON with this structure:
       });
 
       if (response.has_enough_info) {
-        generateWebsite(intake, []);
+        setWebsiteIntake(intake);
+        setStep('template');
       } else {
         setStep('questions');
       }
@@ -259,9 +268,78 @@ Return JSON:
         intakeId={intakeId}
         onComplete={(answers) => {
           base44.entities.WebsiteIntake.filter({ id: intakeId })
-            .then(intakes => generateWebsite(intakes[0], answers));
+            .then(intakes => {
+              setWebsiteIntake(intakes[0]);
+              setStep('template');
+            });
         }}
       />
+    );
+  }
+
+  if (step === 'template' && websiteIntake) {
+    return (
+      <div className="min-h-screen bg-transparent py-12 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <TemplateSelector
+            websiteIntake={websiteIntake}
+            onTemplateSelected={(data) => {
+              setCustomizedTemplate(data);
+              setStep('builder');
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (step === 'builder' && customizedTemplate) {
+    return (
+      <div className="min-h-screen bg-transparent py-12 px-4">
+        <div className="container mx-auto max-w-6xl space-y-6">
+          <AIWebsitePreview
+            websiteIntake={websiteIntake}
+            customizedTemplate={customizedTemplate}
+          />
+          <Button
+            onClick={() => setStep('roadmap')}
+            className="w-full bg-blue-600 hover:bg-blue-700"
+          >
+            Continue to Project Roadmap
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (step === 'roadmap') {
+    return (
+      <div className="min-h-screen bg-transparent py-12 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <Tabs defaultValue="roadmap">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="roadmap">Roadmap</TabsTrigger>
+              <TabsTrigger value="setup">Automated Setup</TabsTrigger>
+              <TabsTrigger value="progress">Progress</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="roadmap">
+              <ProjectRoadmap websiteIntake={websiteIntake} />
+            </TabsContent>
+
+            <TabsContent value="setup">
+              <AutomatedSetup
+                websiteIntakeId={websiteIntake.id}
+                websiteIntake={websiteIntake}
+              />
+            </TabsContent>
+
+            <TabsContent value="progress">
+              <ProgressTracker websiteIntakeId={websiteIntake.id} />
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
     );
   }
 
