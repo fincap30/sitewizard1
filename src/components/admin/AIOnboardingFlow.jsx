@@ -28,7 +28,7 @@ export default function AIOnboardingFlow() {
 
   const generateSuggestionsMutation = useMutation({
     mutationFn: async () => {
-      const prompt = `Create comprehensive website recommendations for new client.
+      const prompt = `Analyze client business and create personalized onboarding plan.
 
 Business: ${formData.businessName}
 Industry: ${formData.industry}
@@ -39,15 +39,17 @@ Competitors: ${formData.competitors}
 Brand Colors: ${formData.brandColors}
 Style: ${formData.stylePreference}
 
-Generate:
-1. Recommended website structure (pages and hierarchy)
-2. Page layouts for each page type
-3. Content themes and sections for each page
-4. Design recommendations (colors, fonts, imagery)
-5. Key messaging and brand positioning
-6. SEO keywords to target
+Generate comprehensive recommendations:
+1. Website structure (pages and hierarchy)
+2. Content themes for each page
+3. Design recommendations (colors, typography, imagery)
+4. Key messaging and positioning
+5. SEO keywords to target
+6. Recommended package tier
+7. Automated setup tasks to perform
+8. Industry-specific features to enable
 
-Return as JSON with detailed, actionable recommendations.`;
+Return detailed, actionable recommendations as JSON.`;
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt,
@@ -75,7 +77,10 @@ Return as JSON with detailed, actionable recommendations.`;
             },
             key_messaging: { type: "string" },
             content_themes: { type: "array", items: { type: "string" } },
-            seo_keywords: { type: "array", items: { type: "string" } }
+            seo_keywords: { type: "array", items: { type: "string" } },
+            recommended_package: { type: "string" },
+            automated_tasks: { type: "array", items: { type: "string" } },
+            features_to_enable: { type: "array", items: { type: "string" } }
           }
         }
       });
@@ -308,6 +313,35 @@ Return as JSON with detailed, actionable recommendations.`;
                 <div className="flex flex-wrap gap-1 mt-2">
                   {aiSuggestions.seo_keywords?.map((keyword, idx) => (
                     <Badge key={idx} className="bg-yellow-600">{keyword}</Badge>
+                  ))}
+                </div>
+              </AlertDescription>
+            </Alert>
+
+            <Alert className="bg-indigo-600/10 border-indigo-500/30">
+              <AlertDescription className="text-indigo-300">
+                <strong className="text-indigo-200">Recommended Package:</strong>
+                <p className="mt-1 text-sm font-semibold">{aiSuggestions.recommended_package}</p>
+              </AlertDescription>
+            </Alert>
+
+            <Alert className="bg-cyan-600/10 border-cyan-500/30">
+              <AlertDescription className="text-cyan-300">
+                <strong className="text-cyan-200">Automated Setup Tasks:</strong>
+                <ul className="list-disc list-inside mt-1 text-sm">
+                  {aiSuggestions.automated_tasks?.map((task, idx) => (
+                    <li key={idx}>{task}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+
+            <Alert className="bg-orange-600/10 border-orange-500/30">
+              <AlertDescription className="text-orange-300">
+                <strong className="text-orange-200">Features to Enable:</strong>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {aiSuggestions.features_to_enable?.map((feature, idx) => (
+                    <Badge key={idx} variant="outline">{feature}</Badge>
                   ))}
                 </div>
               </AlertDescription>

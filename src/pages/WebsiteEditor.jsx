@@ -5,6 +5,9 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import AIContentGenerator from "../components/editor/AIContentGenerator";
+import AIWebsiteCopyGenerator from "../components/content/AIWebsiteCopyGenerator";
+import AIBlogGenerator from "../components/content/AIBlogGenerator";
+import AIProductDescriptionGenerator from "../components/content/AIProductDescriptionGenerator";
 import AICustomizer from "../components/editor/AICustomizer";
 import AIMarketingTools from "../components/marketing/AIMarketingTools";
 import MediaLibrary from "../components/editor/MediaLibrary";
@@ -72,6 +75,9 @@ export default function WebsiteEditor() {
             <TabsTrigger value="editor">Visual Editor</TabsTrigger>
             <TabsTrigger value="ai-customize">AI Customize</TabsTrigger>
             <TabsTrigger value="ai-content">AI Content</TabsTrigger>
+            <TabsTrigger value="copy">Website Copy</TabsTrigger>
+            <TabsTrigger value="blog">Blog Posts</TabsTrigger>
+            <TabsTrigger value="products">Product Descriptions</TabsTrigger>
             <TabsTrigger value="marketing">Marketing</TabsTrigger>
             <TabsTrigger value="media">Media</TabsTrigger>
             <TabsTrigger value="feedback">Feedback</TabsTrigger>
@@ -107,6 +113,18 @@ export default function WebsiteEditor() {
 
           <TabsContent value="ai-content">
             <AIContentGenerator websiteIntake={websiteIntake} />
+          </TabsContent>
+
+          <TabsContent value="copy">
+            <AIWebsiteCopyGenerator websiteIntake={websiteIntake} />
+          </TabsContent>
+
+          <TabsContent value="blog">
+            <AIBlogGenerator websiteIntake={websiteIntake} />
+          </TabsContent>
+
+          <TabsContent value="products">
+            <AIProductDescriptionGenerator websiteIntakeId={websiteIntake?.id} />
           </TabsContent>
 
           <TabsContent value="marketing">
