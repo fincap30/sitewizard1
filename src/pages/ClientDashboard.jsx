@@ -19,6 +19,7 @@ import ProjectInsights from "../components/dashboard/ProjectInsights";
 import PredictiveAnalytics from "../components/analytics/PredictiveAnalytics";
 import CollaborationHub from "../components/collaboration/CollaborationHub";
 import AIChatbot from "../components/shared/AIChatbot";
+import MarketingDashboard from "../components/marketing/MarketingDashboard";
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
@@ -199,11 +200,12 @@ export default function ClientDashboard() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 md:grid-cols-8 lg:w-auto">
+          <TabsList className="grid w-full grid-cols-4 md:grid-cols-9 lg:w-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="website">Website</TabsTrigger>
             <TabsTrigger value="collaboration">Collaboration</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="marketing">Marketing</TabsTrigger>
             <TabsTrigger value="predictive">Forecasts</TabsTrigger>
             <TabsTrigger value="audit">Website Audit</TabsTrigger>
             <TabsTrigger value="revisions">Revisions</TabsTrigger>
@@ -289,6 +291,19 @@ export default function ClientDashboard() {
               <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
                 <CardContent className="py-12 text-center">
                   <p className="text-slate-300 mb-2">Analytics will be available once your website is live</p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          {/* Marketing Tab */}
+          <TabsContent value="marketing">
+            {websiteIntake ? (
+              <MarketingDashboard websiteIntakeId={websiteIntake.id} />
+            ) : (
+              <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+                <CardContent className="py-12 text-center">
+                  <p className="text-slate-300 mb-2">Marketing tools will be available once your website is set up</p>
                 </CardContent>
               </Card>
             )}
