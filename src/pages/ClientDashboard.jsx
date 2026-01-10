@@ -43,7 +43,7 @@ export default function ClientDashboard() {
     queryKey: ['my-subscription', user?.email],
     queryFn: async () => {
       const subs = await base44.entities.ClientSubscription.filter({ client_email: user.email });
-      return subs.sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0];
+      return subs.sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0] || null;
     },
     enabled: !!user,
   });
