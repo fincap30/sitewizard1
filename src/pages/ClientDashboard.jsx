@@ -17,6 +17,7 @@ import ProjectMilestones from "../components/collaboration/ProjectMilestones";
 import WebsiteAudit from "../components/dashboard/WebsiteAudit";
 import ProjectInsights from "../components/dashboard/ProjectInsights";
 import PredictiveAnalytics from "../components/analytics/PredictiveAnalytics";
+import CollaborationHub from "../components/collaboration/CollaborationHub";
 import AIChatbot from "../components/shared/AIChatbot";
 
 export default function ClientDashboard() {
@@ -198,9 +199,10 @@ export default function ClientDashboard() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-7 lg:w-auto">
+          <TabsList className="grid w-full grid-cols-4 md:grid-cols-8 lg:w-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="website">Website</TabsTrigger>
+            <TabsTrigger value="collaboration">Collaboration</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="predictive">Forecasts</TabsTrigger>
             <TabsTrigger value="audit">Website Audit</TabsTrigger>
@@ -268,6 +270,14 @@ export default function ClientDashboard() {
               subscription={subscription}
               packageData={packageData}
               expanded
+            />
+          </TabsContent>
+
+          {/* Collaboration Tab */}
+          <TabsContent value="collaboration">
+            <CollaborationHub 
+              websiteIntakeId={websiteIntake?.id}
+              userEmail={user.email}
             />
           </TabsContent>
 

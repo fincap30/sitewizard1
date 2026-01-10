@@ -21,6 +21,10 @@ import PersonalizedSupport from "../components/ecommerce/PersonalizedSupport";
 import AIMarketingAutomation from "../components/marketing/AIMarketingAutomation";
 import AIWorkflowAutomation from "../components/admin/AIWorkflowAutomation";
 import AdvancedSEOStrategy from "../components/seo/AdvancedSEOStrategy";
+import BacklinkAnalyzer from "../components/seo/BacklinkAnalyzer";
+import KeywordTracker from "../components/seo/KeywordTracker";
+import SEOAuditReport from "../components/seo/SEOAuditReport";
+import ContentOptimizer from "../components/seo/ContentOptimizer";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
@@ -228,10 +232,32 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="seo">
-            <div className="space-y-6">
-              {websites[0] && <AdvancedSEOStrategy websiteIntakeId={websites[0].id} />}
-              <AdminSEOTools />
-            </div>
+            <Tabs defaultValue="strategy">
+              <TabsList>
+                <TabsTrigger value="strategy">Strategy</TabsTrigger>
+                <TabsTrigger value="backlinks">Backlinks</TabsTrigger>
+                <TabsTrigger value="keywords">Keywords</TabsTrigger>
+                <TabsTrigger value="optimizer">Optimizer</TabsTrigger>
+                <TabsTrigger value="audit">Audit</TabsTrigger>
+              </TabsList>
+              <div className="mt-4 space-y-6">
+                <TabsContent value="strategy">
+                  {websites[0] && <AdvancedSEOStrategy websiteIntakeId={websites[0].id} />}
+                </TabsContent>
+                <TabsContent value="backlinks">
+                  {websites[0] && <BacklinkAnalyzer websiteIntakeId={websites[0].id} />}
+                </TabsContent>
+                <TabsContent value="keywords">
+                  {websites[0] && <KeywordTracker websiteIntakeId={websites[0].id} />}
+                </TabsContent>
+                <TabsContent value="optimizer">
+                  <ContentOptimizer targetKeywords="website design, SEO" />
+                </TabsContent>
+                <TabsContent value="audit">
+                  {websites[0] && <SEOAuditReport websiteIntake={websites[0]} />}
+                </TabsContent>
+              </div>
+            </Tabs>
           </TabsContent>
 
           <TabsContent value="ai-automation">
