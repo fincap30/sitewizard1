@@ -181,6 +181,47 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
         response_json_schema: {
           type: "object",
           properties: {
+            lighthouse_metrics: {
+              type: "object",
+              properties: {
+                performance_score: { type: "number" },
+                accessibility_score: { type: "number" },
+                seo_score: { type: "number" },
+                best_practices_score: { type: "number" },
+                performance_details: {
+                  type: "object",
+                  properties: {
+                    current_assessment: { type: "string" },
+                    target_improvement: { type: "string" },
+                    specific_actions: { type: "array", items: { type: "string" } }
+                  }
+                },
+                accessibility_details: {
+                  type: "object",
+                  properties: {
+                    current_assessment: { type: "string" },
+                    target_improvement: { type: "string" },
+                    specific_actions: { type: "array", items: { type: "string" } }
+                  }
+                },
+                seo_details: {
+                  type: "object",
+                  properties: {
+                    current_assessment: { type: "string" },
+                    target_improvement: { type: "string" },
+                    specific_actions: { type: "array", items: { type: "string" } }
+                  }
+                },
+                best_practices_details: {
+                  type: "object",
+                  properties: {
+                    current_assessment: { type: "string" },
+                    target_improvement: { type: "string" },
+                    specific_actions: { type: "array", items: { type: "string" } }
+                  }
+                }
+              }
+            },
             competitive_ranking: {
               type: "object",
               properties: {
@@ -188,7 +229,30 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
                 ranking_summary: { type: "string" },
                 main_weaknesses: { type: "array", items: { type: "string" } },
                 competitive_strengths: { type: "array", items: { type: "string" } },
-                competitive_gaps: { type: "array", items: { type: "string" } }
+                competitive_gaps: { type: "array", items: { type: "string" } },
+                market_position_analysis: { type: "string" }
+              }
+            },
+            competitor_analysis: {
+              type: "object",
+              properties: {
+                competitors_analyzed: { type: "array", items: { type: "string" } },
+                competitor_details: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      competitor_url: { type: "string" },
+                      their_strengths: { type: "array", items: { type: "string" } },
+                      their_weaknesses: { type: "array", items: { type: "string" } },
+                      seo_advantage: { type: "string" },
+                      design_comparison: { type: "string" },
+                      feature_gap: { type: "array", items: { type: "string" } }
+                    }
+                  }
+                },
+                market_opportunity: { type: "string" },
+                competitive_advantage_strategy: { type: "string" }
               }
             },
             opportunities: { type: "array", items: { type: "string" } },
@@ -216,7 +280,7 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
               }
             }
           },
-          required: ["competitive_ranking", "opportunities", "quick_wins", "recommended_package", "value_proposition", "content_strategy"]
+          required: ["lighthouse_metrics", "competitive_ranking", "opportunities", "quick_wins", "recommended_package", "value_proposition", "content_strategy"]
         }
       });
 
