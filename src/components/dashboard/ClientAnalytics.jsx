@@ -1,14 +1,77 @@
-import React from 'react';
-import { useQuery } from "@tanstack/react-query";
+import React, { useState } from 'react';
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { TrendingUp, Users, Eye, Clock, MousePointer } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { TrendingUp, Users, Eye, Clock, MousePointer, Sparkles, Loader2, Activity } from "lucide-react";
+import { toast } from "sonner";
 
 export default function ClientAnalytics({ websiteIntakeId }) {
+  const [aiInsights, setAiInsights] = useState(null);
+
   const { data: analytics = [] } = useQuery({
     queryKey: ['my-analytics', websiteIntakeId],
     queryFn: () => base44.entities.WebsiteAnalytics.filter({ website_intake_id: websiteIntakeId }),
     enabled: !!websiteIntakeId,
+  });
+
+  const { data: websiteIntake } = useQuery({
+    queryKey: ['website-intake-analytics', websiteIntakeId],
+    queryFn: () => base44.entities.WebsiteIntake.filter({ id: websiteIntakeId }).then(w => w[0]),
+    enabled: !!websiteIntakeId,
+  });
+
+  const generateInsightsMutation = useMutation({
+    mutationFn: async () => {
+      const stats = getLast30DaysStats();
+
+      const prompt = `Analyze website performance and provide actionable insights.
+
+Website: ${websiteIntake?.company_name}
+Business Goals: ${websiteIntake?.business_goals?.join(', ')}
+
+Performance (30 days):
+- Page Views: ${stats.totalPageViews}
+- Visitors: ${stats.totalVisitors}
+- Bounce Rate: ${stats.avgBounceRate}%
+- Avg Session: ${stats.avgSessionDuration}s
+
+Traffic Sources:
+${Object.entries(stats.trafficSources).map(([k, v]) => `- ${k}: ${v}`).join('\n')}
+
+Top Pages:
+${stats.topPages.map(p => `- ${p.page}: ${p.views} views`).join('\n')}
+
+Provide:
+1. What's driving performance (key success factors)
+2. Areas for improvement (specific recommendations)
+3. Traffic source optimization tips
+4. Content performance insights
+5. Actionable next steps
+
+Return as JSON.`;
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            performance_drivers: { type: "array", items: { type: "string" } },
+            improvement_areas: { type: "array", items: { type: "string" } },
+            traffic_tips: { type: "array", items: { type: "string" } },
+            content_insights: { type: "array", items: { type: "string" } },
+            next_steps: { type: "array", items: { type: "string" } }
+          }
+        }
+      });
+
+      return response;
+    },
+    onSuccess: (data) => {
+      setAiInsights(data);
+      toast.success('AI insights generated!');
+    },
   });
 
   // Get last 30 days stats
@@ -83,6 +146,77 @@ export default function ClientAnalytics({ websiteIntakeId }) {
 
   return (
     <div className="space-y-6">
+      {/* AI Insights */}
+      <Card className="border-2 border-purple-500/50 bg-slate-800/50 backdrop-blur-sm">
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-purple-400" />
+                AI Performance Insights
+              </CardTitle>
+              <CardDescription>Get personalized recommendations for your website</CardDescription>
+            </div>
+            <Button
+              onClick={() => generateInsightsMutation.mutate()}
+              disabled={generateInsightsMutation.isPending || analytics.length === 0}
+              size="sm"
+              className="bg-purple-600 hover:bg-purple-700"
+            >
+              {generateInsightsMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Sparkles className="w-4 h-4 mr-2" />}
+              Generate Insights
+            </Button>
+          </div>
+        </CardHeader>
+        {aiInsights && (
+          <CardContent className="space-y-3">
+            <Alert className="bg-green-600/10 border-green-500/30">
+              <AlertDescription className="text-green-300">
+                <strong className="text-green-200">What's Driving Performance:</strong>
+                <ul className="list-disc list-inside mt-2 space-y-1">
+                  {aiInsights.performance_drivers?.map((driver, idx) => (
+                    <li key={idx}>{driver}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+
+            <Alert className="bg-yellow-600/10 border-yellow-500/30">
+              <AlertDescription className="text-yellow-300">
+                <strong className="text-yellow-200">Areas for Improvement:</strong>
+                <ul className="list-disc list-inside mt-2 space-y-1">
+                  {aiInsights.improvement_areas?.map((area, idx) => (
+                    <li key={idx}>{area}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+
+            <Alert className="bg-blue-600/10 border-blue-500/30">
+              <AlertDescription className="text-blue-300">
+                <strong className="text-blue-200">Traffic Optimization Tips:</strong>
+                <ul className="list-disc list-inside mt-2 space-y-1">
+                  {aiInsights.traffic_tips?.map((tip, idx) => (
+                    <li key={idx}>{tip}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+
+            <Alert className="bg-purple-600/10 border-purple-500/30">
+              <AlertDescription className="text-purple-300">
+                <strong className="text-purple-200">Next Steps:</strong>
+                <ul className="list-disc list-inside mt-2 space-y-1">
+                  {aiInsights.next_steps?.map((step, idx) => (
+                    <li key={idx}>{step}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+          </CardContent>
+        )}
+      </Card>
+
       {/* Key Metrics */}
       <div className="grid md:grid-cols-4 gap-4">
         <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">

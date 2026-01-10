@@ -9,6 +9,7 @@ import AdminWebsiteManager from "../components/admin/AdminWebsiteManager";
 import AdminAnalyticsDashboard from "../components/admin/AdminAnalyticsDashboard";
 import AdminSEOTools from "../components/admin/AdminSEOTools";
 import AIAutomationTools from "../components/admin/AIAutomationTools";
+import AIContentReviewer from "../components/admin/AIContentReviewer";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
@@ -142,6 +143,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="seo">SEO Tools</TabsTrigger>
             <TabsTrigger value="ai-automation">AI Automation</TabsTrigger>
+            <TabsTrigger value="content-review">Content Review</TabsTrigger>
             <TabsTrigger value="projects">Projects ({projects.length})</TabsTrigger>
             <TabsTrigger value="leads">Leads ({leads.length})</TabsTrigger>
           </TabsList>
@@ -164,6 +166,10 @@ export default function AdminDashboard() {
 
           <TabsContent value="ai-automation">
             <AIAutomationTools />
+          </TabsContent>
+
+          <TabsContent value="content-review">
+            <AIContentReviewer />
           </TabsContent>
 
           <TabsContent value="projects">
