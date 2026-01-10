@@ -8,6 +8,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Loader2, Plus, Edit, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import ProductVariationManager from './ProductVariationManager';
+import InventoryManager from './InventoryManager';
+import ProductBulkImport from './ProductBulkImport';
+import ProductCategoryManager from './ProductCategoryManager';
 
 export default function ProductManager({ websiteIntakeId }) {
   const [showForm, setShowForm] = useState(false);
@@ -19,6 +24,7 @@ export default function ProductManager({ websiteIntakeId }) {
     category: '',
     stock_quantity: ''
   });
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: products = [] } = useQuery({
@@ -110,11 +116,11 @@ Make it persuasive and conversion-focused.`;
   return (
     <Card className="border-2 border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-green-400" />
-            Product Manager
-          </span>
+         <CardTitle className="flex items-center justify-between">
+           <span className="flex items-center gap-2">
+             <ShoppingBag className="w-5 h-5 text-green-400" />
+             E-Commerce Product Management
+           </span>
           <Button
             onClick={() => {
               setShowForm(true);
@@ -127,9 +133,19 @@ Make it persuasive and conversion-focused.`;
             Add Product
           </Button>
         </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {showForm ? (
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="products" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="products">Products</TabsTrigger>
+              <TabsTrigger value="categories">Categories</TabsTrigger>
+              <TabsTrigger value="bulk">Bulk Import</TabsTrigger>
+              <TabsTrigger value="details">Details</TabsTrigger>
+              <TabsTrigger value="inventory">Inventory</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="products">
+              {showForm ? (
           <Card className="bg-slate-700/30 mb-4">
             <CardContent className="pt-4 space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
@@ -235,6 +251,7 @@ Make it persuasive and conversion-focused.`;
                     size="sm"
                     variant="ghost"
                     onClick={() => {
+                      setSelectedProduct(product);
                       setEditingProduct(product);
                       setFormData({
                         name: product.name,
@@ -268,13 +285,82 @@ Make it persuasive and conversion-focused.`;
         </div>
 
         {products.length === 0 && !showForm && (
-          <div className="text-center py-12">
-            <ShoppingBag className="w-16 h-16 mx-auto mb-4 text-slate-400" />
-            <p className="text-slate-300 mb-2">No products yet</p>
-            <p className="text-sm text-slate-400">Add your first product to start selling</p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
+            <div className="text-center py-12">
+              <ShoppingBag className="w-16 h-16 mx-auto mb-4 text-slate-400" />
+              <p className="text-slate-300 mb-2">No products yet</p>
+              <p className="text-sm text-slate-400">Add your first product to start selling</p>
+            </div>
+          )}
+        </TabsContent>
+
+        {/* Categories Tab */}
+        <TabsContent value="categories">
+          <ProductCategoryManager
+            products={products}
+            onCategoryChange={(cats) => {
+              // Update categories
+            }}
+          />
+        </TabsContent>
+
+        {/* Bulk Import Tab */}
+        <TabsContent value="bulk">
+          <ProductBulkImport
+            websiteIntakeId={websiteIntakeId}
+            onImportSuccess={() => {
+              queryClient.invalidateQueries({ queryKey: ['products'] });
+            }}
+          />
+        </TabsContent>
+
+        {/* Details Tab */}
+        <TabsContent value="details" className="space-y-4">
+          {selectedProduct && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-white">{selectedProduct.name}</h3>
+                <Button
+                  onClick={() => setSelectedProduct(null)}
+                  variant="ghost"
+                  className="text-slate-400"
+                >
+                  ✕
+                </Button>
+              </div>
+
+              <ProductVariationManager
+                product={selectedProduct}
+                onVariationsChange={(variations) => {
+                  // Handle variation changes
+                }}
+              />
+            </div>
+          )}
+          {!selectedProduct && (
+            <p className="text-slate-400 text-center py-8">
+              Select a product to edit variations
+            </p>
+          )}
+        </TabsContent>
+
+        {/* Inventory Tab */}
+        <TabsContent value="inventory" className="space-y-4">
+          {selectedProduct && (
+            <InventoryManager
+              product={selectedProduct}
+              onInventoryChange={(inventory) => {
+                // Handle inventory changes
+              }}
+            />
+          )}
+          {!selectedProduct && (
+            <p className="text-slate-400 text-center py-8">
+              Select a product to manage inventory
+            </p>
+          )}
+        </TabsContent>
+        </Tabs>
+        </CardContent>
+        </Card>
+        );
+        }
