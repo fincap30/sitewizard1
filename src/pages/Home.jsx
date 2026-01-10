@@ -312,36 +312,37 @@ Provide comprehensive analysis:
               </div>
 
               {/* Quick Wins */}
-              <div className="bg-blue-600/10 border border-blue-500/30 rounded-lg p-4">
-                <h3 className="font-semibold text-white mb-3">Quick Wins You Can Achieve</h3>
-                <ul className="space-y-2 text-sm text-slate-300">
-                  {analysis.quick_wins?.map((win, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <Star className="w-4 h-4 text-yellow-400 mt-0.5" />
-                      <span>{win}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {analysis.quick_wins && analysis.quick_wins.length > 0 && (
+                <div className="bg-blue-600/10 border border-blue-500/30 rounded-lg p-4">
+                  <h3 className="font-semibold text-white mb-3">Quick Wins You Can Achieve</h3>
+                  <ul className="space-y-2 text-sm text-slate-300">
+                    {analysis.quick_wins.map((win, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <Star className="w-4 h-4 text-yellow-400 mt-0.5" />
+                        <span>{win}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               {/* Recommendation */}
-              <div className="bg-purple-600/10 border border-purple-500/30 rounded-lg p-4">
-                <h3 className="font-semibold text-white mb-3">Our Recommendation</h3>
-                {analysis.recommended_package && (
-                  <Badge className="mb-3 bg-purple-600 text-lg px-4 py-1">
-                    {analysis.recommended_package}
-                  </Badge>
-                )}
-                {analysis.recommendation_reason && (
-                  <p className="text-slate-300 mb-3">{analysis.recommendation_reason}</p>
-                )}
-                {analysis.alternative_plans && (
-                  <p className="text-sm text-slate-400 italic">{analysis.alternative_plans}</p>
-                )}
-                {!analysis.recommended_package && !analysis.recommendation_reason && (
-                  <p className="text-slate-400">Loading recommendation...</p>
-                )}
-              </div>
+              {(analysis.recommended_package || analysis.recommendation_reason) && (
+                <div className="bg-purple-600/10 border border-purple-500/30 rounded-lg p-4">
+                  <h3 className="font-semibold text-white mb-3">Our Recommendation</h3>
+                  {analysis.recommended_package && (
+                    <Badge className="mb-3 bg-purple-600 text-lg px-4 py-1">
+                      {analysis.recommended_package}
+                    </Badge>
+                  )}
+                  {analysis.recommendation_reason && (
+                    <p className="text-slate-300 mb-3">{analysis.recommendation_reason}</p>
+                  )}
+                  {analysis.alternative_plans && (
+                    <p className="text-sm text-slate-400 italic">{analysis.alternative_plans}</p>
+                  )}
+                </div>
+              )}
 
               {/* Value Proposition */}
               {analysis.value_proposition && (
