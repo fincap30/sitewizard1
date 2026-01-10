@@ -13,7 +13,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import AIQuestionsFlow from "../components/intake/AIQuestionsFlow";
 import WebsitePreview from "../components/intake/WebsitePreview";
 import TemplateSelector from "../components/builder/TemplateSelector";
-import AIWebsitePreview from "../components/builder/AIWebsitePreview";
+import AIWebsiteBuilder from "../components/builder/AIWebsiteBuilder";
 import ProjectRoadmap from "../components/onboarding/ProjectRoadmap";
 import AutomatedSetup from "../components/onboarding/AutomatedSetup";
 import ProgressTracker from "../components/onboarding/ProgressTracker";
@@ -340,16 +340,12 @@ Return JSON:
     return (
       <div className="min-h-screen bg-transparent py-12 px-4">
         <div className="container mx-auto max-w-6xl space-y-6">
-          <AIWebsitePreview
+          <AIWebsiteBuilder
             websiteIntake={websiteIntake}
-            customizedTemplate={customizedTemplate}
+            onComplete={(website) => {
+              setStep('roadmap');
+            }}
           />
-          <Button
-            onClick={() => setStep('roadmap')}
-            className="w-full bg-blue-600 hover:bg-blue-700"
-          >
-            Continue to Project Roadmap
-          </Button>
         </div>
       </div>
     );
