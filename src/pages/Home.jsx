@@ -129,66 +129,51 @@ export default function Home() {
         facebookContent = `\n\nFACEBOOK PAGE - Visit and analyze: ${formData.facebook_page}`;
       }
 
-      const analysisPrompt = `You are a professional website analyst. Analyze this business's online presence and provide detailed, specific recommendations.
+      const analysisPrompt = `You are an expert business consultant and website strategist. Provide a comprehensive, actionable analysis.
 
-      Business Name: ${formData.business_name}
-      Business Type: ${formData.website_type}
-      Requirements: ${formData.requirements || 'Not specified'}
-      ${websiteContent}
-      ${facebookContent}
+Business Details:
+- Business Name: ${formData.business_name}
+- Type: ${formData.website_type}
+- Requirements: ${formData.requirements || 'Standard business website'}
+- Location: ${formData.country || 'International'}
 
-      CRITICAL REQUIREMENTS:
-      - Package recommendation and value proposition fields are REQUIRED
-      - Only analyze website/social media if URLs are provided
-      - Be specific and detailed in your analysis
+YOU MUST RETURN EVERY SECTION BELOW WITH REAL, SPECIFIC CONTENT:
 
-      Provide comprehensive analysis:
+1. **COMPETITIVE RANKING** (REQUIRED - ALWAYS INCLUDE):
+   - Assess their current competitive position (Beginner/Developing/Average/Strong/Leading)
+   - 2-3 sentence summary of where they stand vs competitors
+   - List 3 specific weaknesses holding them back
+   - List 3 competitive strengths they possess
+   - List 3 gaps vs competitors
 
-      1. Current Website Assessment (${formData.current_website ? 'REQUIRED' : 'SKIP THIS - return has_website: false'}):
-      ${formData.current_website ? `ANALYZE THE ACTUAL WEBSITE:
-      - Design & UX: Rate visual appeal, navigation clarity, call-to-action placement (provide 2-3 concrete improvement examples)
-      - Mobile responsiveness: Check layout, touch targets, readability
-      - Loading speed: Assess performance
-      - SEO breakdown:
-      * On-page: Title tags, meta descriptions, headers, keyword usage, content quality
-      * Off-page: Backlink profile, domain authority, social signals
-      - Content analysis: Evaluate homepage messaging, clarity of value proposition, content types used` : ''}
+2. **GROWTH OPPORTUNITIES** (REQUIRED - ALWAYS INCLUDE):
+   - Provide 6 specific, actionable growth opportunities with brief implementation suggestions
+   - Each opportunity should be 15-30 words and actionable
 
-      2. Social Media Analysis (${formData.facebook_page ? 'REQUIRED' : 'SKIP THIS - return empty object'}):
-      ${formData.facebook_page ? 'ANALYZE THE ACTUAL FACEBOOK PAGE - check branding consistency, post frequency, content variety, engagement rates, visual quality' : ''}
+3. **QUICK WINS** (REQUIRED - ALWAYS INCLUDE):
+   - List 5 specific benefits a professional website will deliver to THIS business
+   - Format: "Action/Benefit description" - be concrete and relevant to ${formData.business_name}
+   - Examples: "Establish credibility in ${formData.website_type}", "Generate qualified leads automatically", "Rank on Google for local searches"
 
-      3. Competitive Ranking:
-      - Current level: Beginner/Developing/Average/Strong/Leading
-      - Detailed ranking summary (2-3 sentences)
-      - 3 main weaknesses holding them back
-      - Competitive strengths: What they're doing better than competitors
-      - Competitive gaps: What competitors have that they lack
+4. **RECOMMENDATION** (REQUIRED - ALWAYS INCLUDE):
+   - recommended_package: "Growth" 
+   - recommendation_reason: Write 2-3 sentences specifically for ${formData.business_name} explaining why Growth plan fits
+   - alternative_plans: Mention Starter for basic needs, Premium for advanced features
 
-      4. Growth Opportunities:
-      - List 5-6 specific, actionable opportunities with implementation details
+5. **VALUE PROPOSITION** (REQUIRED - ALWAYS INCLUDE):
+   - whats_included: [6 specific features for ${formData.website_type}]
+   - ai_benefits: [4 AI advantages relevant to ${formData.website_type}]
+   - market_comparison: "Traditional agencies charge $3,000-$10,000. SiteWizard starts at $0."
+   - why_choose_us: One compelling sentence about our AI advantage
 
-      5. Quick Wins (ABSOLUTELY REQUIRED - ALWAYS PROVIDE):
-      - List 4-5 benefits/improvements a NEW professional website will bring them
-      - Examples: "Increase credibility with professional design", "Capture leads 24/7 with contact forms", "Rank higher on Google with SEO optimization", "Look great on mobile devices"
-      - Focus on what OUR website will do for THEM
+6. **CONTENT STRATEGY** (REQUIRED - ALWAYS INCLUDE):
+   - target_audience: Define ideal customer for ${formData.business_name}
+   - homepage_suggestions: [4 specific content sections for this business type]
+   - blog_topics: [6 blog post ideas relevant to ${formData.business_type}]
+   - social_media_ideas: [4 post ideas to drive engagement]
+   - landing_page_headlines: [3 compelling headlines for ${formData.business_name}]
 
-      6. Package Recommendation (ABSOLUTELY REQUIRED - ALWAYS PROVIDE):
-      - recommended_package: MUST ALWAYS be "Growth" (this is the default recommendation)
-      - recommendation_reason: "The Growth plan offers the perfect balance of features and affordability for businesses looking to establish a strong online presence. It includes everything you need to succeed without overwhelming complexity."
-      - alternative_plans: "We also offer a Starter plan for basic needs and a Premium plan for advanced features and priority support."
-
-      7. Value Proposition (ABSOLUTELY REQUIRED - NEVER SKIP):
-      - whats_included: 5-6 items like "14-day free trial", "AI design", "Mobile responsive", "Hosting", "SSL"
-      - ai_benefits: 3-4 items like "10x faster delivery", "Auto SEO content", "Predictive analytics"  
-      - market_comparison: "Traditional agencies: $3,000-$10,000. We start at $0."
-      - why_choose_us: One sentence about AI advantage
-
-      8. Content Strategy (ABSOLUTELY REQUIRED - ALWAYS PROVIDE):
-      - Homepage content suggestions: 3-4 specific content types (hero section, trust signals, features grid, testimonials, FAQ)
-      - Blog post ideas: 5-7 relevant topics for their business type
-      - Social media content: 4-5 post ideas to boost engagement
-      - Landing page copy: 2-3 compelling headline options and value propositions
-      - Target audience: Define their ideal customer profile`;
+Return as valid JSON with every field above. Do NOT skip any section.`;
 
       const analysisResult = await base44.integrations.Core.InvokeLLM({
         prompt: analysisPrompt,
@@ -196,9 +181,21 @@ export default function Home() {
         response_json_schema: {
           type: "object",
           properties: {
+            competitive_ranking: {
+              type: "object",
+              properties: {
+                current_level: { type: "string" },
+                ranking_summary: { type: "string" },
+                main_weaknesses: { type: "array", items: { type: "string" } },
+                competitive_strengths: { type: "array", items: { type: "string" } },
+                competitive_gaps: { type: "array", items: { type: "string" } }
+              }
+            },
+            opportunities: { type: "array", items: { type: "string" } },
             quick_wins: { type: "array", items: { type: "string" } },
             recommended_package: { type: "string" },
             recommendation_reason: { type: "string" },
+            alternative_plans: { type: "string" },
             value_proposition: {
               type: "object",
               properties: {
@@ -211,11 +208,15 @@ export default function Home() {
             content_strategy: {
               type: "object",
               properties: {
+                target_audience: { type: "string" },
                 homepage_suggestions: { type: "array", items: { type: "string" } },
-                blog_topics: { type: "array", items: { type: "string" } }
+                blog_topics: { type: "array", items: { type: "string" } },
+                social_media_ideas: { type: "array", items: { type: "string" } },
+                landing_page_headlines: { type: "array", items: { type: "string" } }
               }
             }
-          }
+          },
+          required: ["competitive_ranking", "opportunities", "quick_wins", "recommended_package", "value_proposition", "content_strategy"]
         }
       });
 
@@ -235,8 +236,32 @@ export default function Home() {
     }
       };
 
-  const handleContinueToIntake = () => {
-    window.location.href = '/WebsiteIntakeForm';
+  const handleContinueToIntake = async () => {
+    if (formData.business_name && formData.client_email) {
+      try {
+        const intakeData = {
+          client_email: formData.client_email,
+          company_name: formData.business_name,
+          contact_person: formData.client_name,
+          phone: formData.phone,
+          country: formData.country || '',
+          current_website: formData.current_website || '',
+          facebook_page: formData.facebook_page || '',
+          goal_description: formData.requirements || '',
+          website_status: 'pending',
+          analysis_data: JSON.stringify(analysis)
+        };
+        
+        const intake = await base44.entities.WebsiteIntake.create(intakeData);
+        sessionStorage.setItem('intake_id', intake.id);
+        window.location.href = '/WebsiteIntakeForm';
+      } catch (error) {
+        console.log('Intake creation skipped, proceeding to form...', error);
+        window.location.href = '/WebsiteIntakeForm';
+      }
+    } else {
+      window.location.href = '/WebsiteIntakeForm';
+    }
   };
 
   if (showAnalysis && analysis) {
