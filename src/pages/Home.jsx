@@ -208,7 +208,17 @@ Be specific, detailed, and provide REAL analysis, not generic responses.`;
             opportunities: { type: "array", items: { type: "string" } },
             quick_wins: { type: "array", items: { type: "string" } },
             recommended_package: { type: "string" },
-            recommendation_reason: { type: "string" }
+            recommendation_reason: { type: "string" },
+            alternative_plans: { type: "string" },
+            value_proposition: {
+              type: "object",
+              properties: {
+                whats_included: { type: "array", items: { type: "string" } },
+                ai_benefits: { type: "array", items: { type: "string" } },
+                market_comparison: { type: "string" },
+                why_choose_us: { type: "string" }
+              }
+            }
           }
         }
       });
