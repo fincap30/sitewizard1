@@ -267,16 +267,19 @@ export default function Home() {
         }
       });
 
+      // Store intake ID for later
+      sessionStorage.setItem('intake_id', createdIntake.id);
+
       setAnalysis(analysisResult);
       setShowAnalysis(true);
       toast.success('Analysis complete!');
-    } catch (error) {
+      } catch (error) {
       toast.error('Something went wrong. Please try again.');
       console.error(error);
-    } finally {
+      } finally {
       setIsSubmitting(false);
-    }
-  };
+      }
+      };
 
   const handleContinueToIntake = () => {
     window.location.href = '/WebsiteIntakeForm';
