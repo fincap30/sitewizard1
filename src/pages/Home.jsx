@@ -644,10 +644,16 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
               {/* Competitive Ranking */}
               <div className="bg-orange-600/10 border border-orange-500/30 rounded-lg p-4">
                 <h3 className="font-semibold text-white mb-3">Your Competitive Ranking</h3>
-                <Badge className="mb-3 bg-orange-600">
-                  {analysis.competitive_ranking?.current_level}
-                </Badge>
-                <p className="text-slate-300 mb-3">{analysis.competitive_ranking?.ranking_summary}</p>
+                {analysis.competitive_ranking ? (
+                  <>
+                    <Badge className="mb-3 bg-orange-600">
+                      {analysis.competitive_ranking.current_level || 'Assessment pending'}
+                    </Badge>
+                    <p className="text-slate-300 mb-3">{analysis.competitive_ranking.ranking_summary || 'Analysis in progress...'}</p>
+                  </>
+                ) : (
+                  <p className="text-slate-400">Analyzing competitive position...</p>
+                )}
 
                 <div className="space-y-3">
                   {analysis.competitive_ranking?.competitive_strengths && (
@@ -688,14 +694,18 @@ Return as valid JSON with every field above. Do NOT skip any section.`;
               {/* Opportunities */}
               <div className="bg-green-600/10 border border-green-500/30 rounded-lg p-4">
                 <h3 className="font-semibold text-white mb-3">Growth Opportunities</h3>
-                <ul className="space-y-2 text-sm text-slate-300">
-                  {analysis.opportunities?.map((opp, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-400 mt-0.5" />
-                      <span>{opp}</span>
-                    </li>
-                  ))}
-                </ul>
+                {analysis.opportunities && analysis.opportunities.length > 0 ? (
+                  <ul className="space-y-2 text-sm text-slate-300">
+                    {analysis.opportunities.map((opp, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-400 mt-0.5" />
+                        <span>{opp}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-slate-400">No opportunities found</p>
+                )}
               </div>
 
               {/* Quick Wins */}
