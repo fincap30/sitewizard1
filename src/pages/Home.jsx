@@ -94,17 +94,32 @@ export default function Home() {
     setIsSubmitting(true);
 
     try {
-      // Create lead
-      await base44.entities.Lead.create({
-        name: formData.client_name,
-        email: formData.client_email,
-        phone: formData.phone,
-        business_name: formData.business_name,
-        website_type: formData.website_type,
-        requirements: formData.requirements,
-        source: 'website',
-        status: 'new'
-      });
+        // Create lead
+        await base44.entities.Lead.create({
+          name: formData.client_name,
+          email: formData.client_email,
+          phone: formData.phone,
+          business_name: formData.business_name,
+          website_type: formData.website_type,
+          requirements: formData.requirements,
+          source: 'website',
+          status: 'new'
+        });
+
+        // Create initial WebsiteIntake with basic info
+        const intakeData = {
+          client_email: formData.client_email,
+          company_name: formData.business_name,
+          contact_person: formData.client_name,
+          phone: formData.phone,
+          current_website: formData.current_website || '',
+          facebook_page: formData.facebook_page || '',
+          goal_description: formData.requirements || '',
+          website_status: 'pending',
+          subscription_id: subscription?.id || ''
+        };
+
+        const createdIntake = await base44.entities.WebsiteIntake.create(intakeData);
 
       // Perform AI analysis with actual web fetching
       let websiteContent = '';
