@@ -158,95 +158,60 @@ export default function WebsiteIntakeForm() {
     });
 
   const checkIfQuestionsNeeded = async (intake) => {
-    setStep('analyzing');
-    
-    try {
-      const analysisPrompt = `You are analyzing a website intake form for a business website project.
-      
-Package: ${packageData?.name} (${packageData?.price}/month)
-Company: ${intake.company_name}
-Goals: ${intake.business_goals?.join(', ')}
-Style: ${intake.style_preference}
-Description: ${intake.goal_description || 'Not provided'}
-Current Website: ${intake.current_website || 'None'}
-Social Media: FB: ${intake.facebook_page || 'None'}, IG: ${intake.instagram_page || 'None'}
-Competitors: ${intake.competitor_urls?.join(', ') || 'None provided'}
-
-Analyze if you have enough information to build a great website. If you need more details, ask up to 5 clarifying questions.
-Return your response as JSON with this structure:
-{
-  "has_enough_info": true/false,
-  "questions": ["question 1", "question 2", ...] (max 5, only if has_enough_info is false)
-}`;
-
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: analysisPrompt,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            has_enough_info: { type: "boolean" },
-            questions: { 
-              type: "array",
-              items: { type: "string" }
-            }
-          }
-        }
-      });
-
-      if (response.has_enough_info) {
-        setWebsiteIntake(intake);
-        setStep('template');
-      } else {
-        setStep('questions');
-      }
-    } catch (error) {
-      toast.error('Analysis failed. Proceeding with generation...');
-      generateWebsite(intake, []);
-    }
+    // Skip all the complex analysis - just build the website
+    generateWebsite(intake, []);
   };
 
   const generateWebsite = async (intake, additionalAnswers = []) => {
     setStep('generating');
 
     try {
-      const generationPrompt = `You are a professional website designer. Generate a complete website structure for this business.
+      const generationPrompt = `Create a complete, professional website for ${intake.company_name}.
 
-Package: ${packageData?.name} - ${packageData?.pages_limit} pages max
-Company: ${intake.company_name}
-Industry: Based on the company name and description
 Style: ${intake.style_preference}
 Goals: ${intake.business_goals?.join(', ')}
-Additional Info: ${intake.goal_description}
-${additionalAnswers.length > 0 ? `\nClient Answers:\n${additionalAnswers.join('\n')}` : ''}
+Details: ${intake.goal_description}
 
-Create a website structure with:
-1. List of pages (titles only, respect package limit)
-2. For EACH page: sections with headings and content outline (2-3 sentences per section)
-3. Suggested color scheme (primary, secondary, accent colors as hex codes)
-4. Key features to implement
+Generate a FULL WEBSITE with real content (not placeholders):
+
+1. Create 3-5 pages with REAL copy for each section (50-100 words per section)
+2. Each page should have 3-5 sections with compelling headlines and body text
+3. Include specific calls-to-action relevant to ${intake.company_name}
 
 Return JSON:
 {
   "pages": [
     {
       "title": "Home",
+      "url": "/",
       "sections": [
         {
-          "heading": "Hero Section",
-          "content_outline": "Description of what goes here"
+          "type": "hero",
+          "headline": "Actual compelling headline here",
+          "subheadline": "Supporting text that sells",
+          "cta_text": "Get Started",
+          "content": "Full paragraph of real content..."
+        },
+        {
+          "type": "features",
+          "headline": "Why Choose Us",
+          "items": [
+            {"title": "Feature 1", "description": "Real description..."},
+            {"title": "Feature 2", "description": "Real description..."}
+          ]
         }
       ]
     }
   ],
-  "color_scheme": {
-    "primary": "#hex",
-    "secondary": "#hex", 
-    "accent": "#hex"
+  "colors": {
+    "primary": "#2563eb",
+    "secondary": "#1e40af",
+    "accent": "#fbbf24"
   },
-  "key_features": ["feature 1", "feature 2"]
+  "preview_url": "https://preview.sitewizard.pro/${intake.id}"
 }`;
 
-      const websiteStructure = await base44.integrations.Core.InvokeLLM({
+      const websiteData = await base44.integrations.Core.InvokeLLM({
         prompt: generationPrompt,
         add_context_from_internet: true,
         response_json_schema: {
@@ -258,20 +223,34 @@ Return JSON:
                 type: "object",
                 properties: {
                   title: { type: "string" },
+                  url: { type: "string" },
                   sections: {
                     type: "array",
                     items: {
                       type: "object",
                       properties: {
-                        heading: { type: "string" },
-                        content_outline: { type: "string" }
+                        type: { type: "string" },
+                        headline: { type: "string" },
+                        subheadline: { type: "string" },
+                        cta_text: { type: "string" },
+                        content: { type: "string" },
+                        items: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              title: { type: "string" },
+                              description: { type: "string" }
+                            }
+                          }
+                        }
                       }
                     }
                   }
                 }
               }
             },
-            color_scheme: {
+            colors: {
               type: "object",
               properties: {
                 primary: { type: "string" },
@@ -279,24 +258,26 @@ Return JSON:
                 accent: { type: "string" }
               }
             },
-            key_features: {
-              type: "array",
-              items: { type: "string" }
-            }
+            preview_url: { type: "string" }
           }
         }
       });
 
+      // Store the actual generated website
       await base44.entities.WebsiteIntake.update(intake.id, {
         website_status: 'review',
-        preview_url: JSON.stringify(websiteStructure)
+        preview_url: JSON.stringify(websiteData),
+        website_structure: JSON.stringify(websiteData)
       });
 
+      setGeneratedWebsite(websiteData);
+      setWebsiteIntake(intake);
       queryClient.invalidateQueries({ queryKey: ['website-intake'] });
       setStep('preview');
-      toast.success('Website generated! Review your new site.');
+      toast.success('✅ Your FREE website is ready! No payment needed.');
     } catch (error) {
-      toast.error('Generation failed. Please try again.');
+      console.error('Generation error:', error);
+      toast.error('Failed to generate website. Please try again.');
       setStep('form');
     }
   };
@@ -461,8 +442,95 @@ Return JSON:
     );
   }
 
-  if (step === 'preview') {
-    return <WebsitePreview intakeId={intakeId} />;
+  if (step === 'preview' && generatedWebsite) {
+    return (
+      <div className="min-h-screen bg-transparent py-12 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <Card className="border-2 border-green-500/50 bg-slate-800/50 backdrop-blur-sm mb-6">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-2xl text-white flex items-center gap-2">
+                    <CheckCircle className="w-6 h-6 text-green-400" />
+                    Your FREE Website is Ready!
+                  </CardTitle>
+                  <CardDescription>No payment required - review your site below</CardDescription>
+                </div>
+                <Badge className="bg-green-600 text-white text-lg px-4 py-2">100% FREE</Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Alert className="bg-green-600/10 border-green-500/30 mb-4">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                <AlertDescription className="text-green-300">
+                  ✅ Website built with {generatedWebsite.pages?.length || 3} pages • Colors selected • Content written • Ready to go live
+                </AlertDescription>
+              </Alert>
+              
+              {/* Website Preview */}
+              <div className="bg-white rounded-lg p-8 mb-6">
+                {generatedWebsite.pages?.map((page, idx) => (
+                  <div key={idx} className="mb-12">
+                    <h2 className="text-3xl font-bold mb-6 text-slate-900">{page.title}</h2>
+                    {page.sections?.map((section, sIdx) => (
+                      <div key={sIdx} className="mb-8">
+                        <h3 className="text-2xl font-semibold mb-3" style={{color: generatedWebsite.colors?.primary}}>
+                          {section.headline}
+                        </h3>
+                        {section.subheadline && (
+                          <p className="text-lg text-slate-600 mb-3">{section.subheadline}</p>
+                        )}
+                        {section.content && (
+                          <p className="text-slate-700 leading-relaxed mb-4">{section.content}</p>
+                        )}
+                        {section.items && (
+                          <div className="grid md:grid-cols-2 gap-4">
+                            {section.items.map((item, iIdx) => (
+                              <div key={iIdx} className="border border-slate-200 rounded-lg p-4">
+                                <h4 className="font-semibold text-slate-900 mb-2">{item.title}</h4>
+                                <p className="text-sm text-slate-600">{item.description}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {section.cta_text && (
+                          <Button 
+                            className="mt-4" 
+                            style={{backgroundColor: generatedWebsite.colors?.primary}}
+                          >
+                            {section.cta_text}
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <Button
+                  onClick={() => {
+                    toast.success('Website approved! Proceeding to dashboard...');
+                    setTimeout(() => window.location.href = '/ClientDashboard', 1500);
+                  }}
+                  className="bg-green-600 hover:bg-green-700 text-lg py-6"
+                >
+                  <CheckCircle className="w-5 h-5 mr-2" />
+                  Approve & Go Live
+                </Button>
+                <Button
+                  onClick={() => setStep('form')}
+                  variant="outline"
+                  className="text-lg py-6"
+                >
+                  Request Changes
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   const goalOptions = [
