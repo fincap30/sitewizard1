@@ -130,39 +130,44 @@ export default function Home() {
         facebookContent = `\n\nFACEBOOK PAGE - Visit and analyze: ${formData.facebook_page}`;
       }
 
-      const analysisPrompt = `You are an expert SEO analyst. Analyze ${formData.business_name} (${formData.website_type} business).
-${formData.current_website ? `VISIT AND ANALYZE THIS WEBSITE: ${formData.current_website} - Provide REAL data from the actual site` : 'No website exists yet'}
+      const analysisPrompt = `SEO ANALYSIS FOR: ${formData.business_name} (${formData.website_type})
+${formData.current_website ? `\n\nIMPORTANT: Visit and analyze this website: ${formData.current_website}\nLook at the actual content, structure, and SEO elements.` : '\n\nNo current website - starting from zero.'}
 
-CRITICAL INSTRUCTIONS:
-- If they have a website, analyze it and give REAL scores (usually 35-65 for existing sites)
-- If no website, assume seo_score: 15-25 (typical for business with no web presence)
-- Generate REAL, SPECIFIC keywords for ${formData.website_type} in ${formData.business_name}'s industry
-- Research actual competitors in this industry online
+PROVIDE REAL SEO DATA:
 
-1. SEO CURRENT STATE:
-   - current_ranking: ${formData.current_website ? '"Page 3-5" or "Not ranking" for their industry' : '"Not ranked - no online presence"'}
-   - seo_score: ${formData.current_website ? '35-65 (realistic score for existing site)' : '15-25 (no website penalty)'}
-   - top_keywords: List 5 SPECIFIC, REAL keywords for ${formData.website_type} (e.g., "[city] [service]", "[industry] near me", "[specific service]")
-   - missing_keywords: List 3 high-value LOCAL keywords competitors rank for (include city/region if applicable)
-   - technical_issues: ${formData.current_website ? 'List 3 actual problems from the site' : '["No website to analyze", "Missing from Google search", "Zero online visibility"]'}
+1. CURRENT SEO STATUS:
+${formData.current_website ? `
+   - Analyze the actual website at ${formData.current_website}
+   - Check their title tags, meta descriptions, headings
+   - Review page speed, mobile-friendliness
+   - seo_score: Give realistic score 30-70 based on what you see
+   - current_ranking: "Not ranking well" or "Page 2-3 for [keyword]"
+` : `
+   - seo_score: 20 (no website = poor SEO)
+   - current_ranking: "Not ranked - no website"
+`}
+   - top_keywords: List 5 SPECIFIC keywords for ${formData.website_type} with search volume
+     Examples: "plumber miami" (2,400/mo), "emergency plumbing" (1,800/mo)
+   - missing_keywords: 3 keywords they should target
+   - technical_issues: ${formData.current_website ? 'List real issues from the site' : '["No website", "Not on Google", "No online presence"]'}
 
-2. COMPETITOR KEYWORDS (RESEARCH REAL COMPETITORS):
-   - Find 3 REAL competitor websites in ${formData.website_type} industry
-   - For each: their_url (real URL), keywords_they_rank_for [5 actual keywords], estimated_monthly_traffic (realistic number like "1,200-2,500/month")
-   - keyword_opportunities: 5 specific keywords ${formData.business_name} can realistically rank for (include search volume estimates)
+2. COMPETITOR RESEARCH:
+   - Research 3 real competitors for ${formData.website_type} business
+   - For each: URL, 5 keywords they rank for, traffic estimate
+   - keyword_opportunities: 5 keywords with search volume they can win
 
-3. QUICK WINS (SPECIFIC TO ${formData.website_type}):
-   - 5 concrete, measurable SEO actions with timeframes
-   - Example: "Rank for '${formData.business_name.toLowerCase()} [city]' within 30 days (50 monthly searches)"
-   - Example: "Capture 300+ monthly visitors from '[specific service] near me' keyword"
-   - Include local SEO wins if applicable
+3. QUICK WINS (BE SPECIFIC):
+   - "Rank #1 for '[business name] + [city]' within 30 days - 120 searches/month"
+   - "Capture 500+ visitors from '[service] near me' searches in 90 days"
+   - Include LOCAL keywords and search volumes
+   - Focus on realistic, achievable SEO wins
 
-4. WHY CHOOSE US:
-   - free_website_value: "Your ${formData.website_type} website built FREE—see it before paying anything"
-   - risk_free: "Zero upfront cost. No credit card. Only pay if you love it."
-   - quick_results: "Live website in 7-10 days with SEO foundation ready to rank"
+4. VALUE PROPOSITION:
+   - free_website_value: "See your complete ${formData.website_type} website FREE before paying $1"
+   - risk_free: "No payment until you approve your website. Zero risk."
+   - quick_results: "Website live in 7 days. Start ranking in 30 days."
 
-Return JSON with realistic, researched data. NO ZEROS. NO GENERIC OUTPUT.`;
+RESEARCH ONLINE. USE REAL DATA. NO GENERIC RESPONSES.`;
 
       const analysisResult = await base44.integrations.Core.InvokeLLM({
         prompt: analysisPrompt,

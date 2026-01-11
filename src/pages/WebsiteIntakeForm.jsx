@@ -162,58 +162,31 @@ export default function WebsiteIntakeForm() {
     generateWebsite(intake, []);
   };
 
-  const generateWebsite = async (intake, additionalAnswers = []) => {
+  const generateWebsite = async (intake) => {
     setStep('generating');
 
     try {
-      const generationPrompt = `Create a complete, professional website for ${intake.company_name}.
+      // Simplified prompt for reliable generation
+      const prompt = `Build a complete website for ${intake.company_name}.
 
-Style: ${intake.style_preference}
-Goals: ${intake.business_goals?.join(', ')}
-Details: ${intake.goal_description}
+Business type: ${intake.business_goals?.join(', ') || 'General business'}
+Style: ${intake.style_preference || 'modern'}
 
-Generate a FULL WEBSITE with real content (not placeholders):
+Create 3 pages (Home, About, Contact) with actual content.
+Each page: 3 sections with real headlines and copy (30-50 words each).
 
-1. Create 3-5 pages with REAL copy for each section (50-100 words per section)
-2. Each page should have 3-5 sections with compelling headlines and body text
-3. Include specific calls-to-action relevant to ${intake.company_name}
-
-Return JSON:
+Return JSON with this EXACT structure:
 {
   "pages": [
-    {
-      "title": "Home",
-      "url": "/",
-      "sections": [
-        {
-          "type": "hero",
-          "headline": "Actual compelling headline here",
-          "subheadline": "Supporting text that sells",
-          "cta_text": "Get Started",
-          "content": "Full paragraph of real content..."
-        },
-        {
-          "type": "features",
-          "headline": "Why Choose Us",
-          "items": [
-            {"title": "Feature 1", "description": "Real description..."},
-            {"title": "Feature 2", "description": "Real description..."}
-          ]
-        }
-      ]
-    }
+    {"title": "Home", "content": "Homepage content here..."},
+    {"title": "About", "content": "About page content..."},
+    {"title": "Contact", "content": "Contact details..."}
   ],
-  "colors": {
-    "primary": "#2563eb",
-    "secondary": "#1e40af",
-    "accent": "#fbbf24"
-  },
-  "preview_url": "https://preview.sitewizard.pro/${intake.id}"
+  "primary_color": "#0066FF"
 }`;
 
-      const websiteData = await base44.integrations.Core.InvokeLLM({
-        prompt: generationPrompt,
-        add_context_from_internet: true,
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: prompt,
         response_json_schema: {
           type: "object",
           properties: {
@@ -223,61 +196,27 @@ Return JSON:
                 type: "object",
                 properties: {
                   title: { type: "string" },
-                  url: { type: "string" },
-                  sections: {
-                    type: "array",
-                    items: {
-                      type: "object",
-                      properties: {
-                        type: { type: "string" },
-                        headline: { type: "string" },
-                        subheadline: { type: "string" },
-                        cta_text: { type: "string" },
-                        content: { type: "string" },
-                        items: {
-                          type: "array",
-                          items: {
-                            type: "object",
-                            properties: {
-                              title: { type: "string" },
-                              description: { type: "string" }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
+                  content: { type: "string" }
                 }
               }
             },
-            colors: {
-              type: "object",
-              properties: {
-                primary: { type: "string" },
-                secondary: { type: "string" },
-                accent: { type: "string" }
-              }
-            },
-            preview_url: { type: "string" }
+            primary_color: { type: "string" }
           }
         }
       });
 
-      // Store the actual generated website
       await base44.entities.WebsiteIntake.update(intake.id, {
         website_status: 'review',
-        preview_url: JSON.stringify(websiteData),
-        website_structure: JSON.stringify(websiteData)
+        website_structure: JSON.stringify(result)
       });
 
-      setGeneratedWebsite(websiteData);
+      setGeneratedWebsite(result);
       setWebsiteIntake(intake);
-      queryClient.invalidateQueries({ queryKey: ['website-intake'] });
       setStep('preview');
-      toast.success('✅ Your FREE website is ready! No payment needed.');
+      toast.success('✅ Your FREE website is built!');
     } catch (error) {
-      console.error('Generation error:', error);
-      toast.error('Failed to generate website. Please try again.');
+      console.error('Error:', error);
+      toast.error(error.message || 'Generation failed');
       setStep('form');
     }
   };
@@ -470,39 +409,15 @@ Return JSON:
               {/* Website Preview */}
               <div className="bg-white rounded-lg p-8 mb-6">
                 {generatedWebsite.pages?.map((page, idx) => (
-                  <div key={idx} className="mb-12">
-                    <h2 className="text-3xl font-bold mb-6 text-slate-900">{page.title}</h2>
-                    {page.sections?.map((section, sIdx) => (
-                      <div key={sIdx} className="mb-8">
-                        <h3 className="text-2xl font-semibold mb-3" style={{color: generatedWebsite.colors?.primary}}>
-                          {section.headline}
-                        </h3>
-                        {section.subheadline && (
-                          <p className="text-lg text-slate-600 mb-3">{section.subheadline}</p>
-                        )}
-                        {section.content && (
-                          <p className="text-slate-700 leading-relaxed mb-4">{section.content}</p>
-                        )}
-                        {section.items && (
-                          <div className="grid md:grid-cols-2 gap-4">
-                            {section.items.map((item, iIdx) => (
-                              <div key={iIdx} className="border border-slate-200 rounded-lg p-4">
-                                <h4 className="font-semibold text-slate-900 mb-2">{item.title}</h4>
-                                <p className="text-sm text-slate-600">{item.description}</p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        {section.cta_text && (
-                          <Button 
-                            className="mt-4" 
-                            style={{backgroundColor: generatedWebsite.colors?.primary}}
-                          >
-                            {section.cta_text}
-                          </Button>
-                        )}
-                      </div>
-                    ))}
+                  <div key={idx} className="mb-8 pb-8 border-b border-slate-200 last:border-0">
+                    <h2 className="text-3xl font-bold mb-4 text-slate-900" style={{color: generatedWebsite.primary_color}}>
+                      {page.title}
+                    </h2>
+                    <div className="prose prose-slate max-w-none">
+                      <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">
+                        {page.content}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
