@@ -95,26 +95,17 @@ export default function Home() {
     setIsSubmitting(true);
 
     try {
-        let createdIntake = null;
-        
-        // Try to create intake
-        try {
-          const intakeData = {
-            client_email: formData.client_email,
-            company_name: formData.business_name,
-            contact_person: formData.client_name,
-            phone: formData.phone || '',
-            current_website: formData.current_website || '',
-            facebook_page: formData.facebook_page || '',
-            goal_description: formData.requirements || '',
-            website_status: 'pending',
-            website_type: formData.website_type || 'business'
-          };
-          createdIntake = await base44.entities.WebsiteIntake.create(intakeData);
-          console.log('Intake created:', createdIntake.id);
-        } catch (intakeError) {
-          console.error('Intake creation failed:', intakeError);
-        }
+        // Store form data in sessionStorage for later use
+        sessionStorage.setItem('intake_form_data', JSON.stringify({
+          client_email: formData.client_email,
+          company_name: formData.business_name,
+          contact_person: formData.client_name,
+          phone: formData.phone || '',
+          current_website: formData.current_website || '',
+          facebook_page: formData.facebook_page || '',
+          goal_description: formData.requirements || '',
+          website_type: formData.website_type || 'business'
+        }));
 
       // Perform AI analysis with actual web fetching
       let websiteContent = '';
@@ -217,11 +208,6 @@ RESEARCH ONLINE. USE REAL DATA. NO GENERIC RESPONSES.`;
           required: ["seo_current_state", "competitor_keywords", "quick_wins", "why_choose_us"]
         }
       });
-
-      // Store intake ID if created
-      if (createdIntake) {
-        sessionStorage.setItem('intake_id', createdIntake.id);
-      }
 
       setAnalysis(analysisResult);
       setShowAnalysis(true);
@@ -339,12 +325,9 @@ RESEARCH ONLINE. USE REAL DATA. NO GENERIC RESPONSES.`;
     }
       };
 
-  const handleContinueToIntake = async () => {
-    if (formData.business_name && formData.client_email) {
-      window.location.href = '/WebsiteIntakeForm';
-    } else {
-      toast.error('Please fill in business name and email');
-    }
+  const handleContinueToIntake = () => {
+    // Data already stored in sessionStorage, just redirect
+    window.location.href = '/WebsiteIntakeForm';
   };
 
   if (showAnalysis && analysis) {

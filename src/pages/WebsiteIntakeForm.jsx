@@ -59,33 +59,21 @@ export default function WebsiteIntakeForm() {
         .then(async (userData) => {
           setUser(userData);
 
-          // Check if there's a pre-created intake from Home page
-          const savedIntakeId = sessionStorage.getItem('intake_id');
-          if (savedIntakeId) {
-            const intakes = await base44.entities.WebsiteIntake.filter({ id: savedIntakeId });
-            if (intakes[0]) {
-              const intake = intakes[0];
-              // Pre-fill form with existing data
-              setFormData({
-                company_name: intake.company_name || '',
-                contact_person: intake.contact_person || '',
-                phone: intake.phone || '',
-                country: intake.country || '',
-                city: intake.city || '',
-                current_website: intake.current_website || '',
-                facebook_page: intake.facebook_page || '',
-                instagram_page: intake.instagram_page || '',
-                other_platforms: intake.other_platforms || '',
-                logo_url: intake.logo_url || '',
-                brand_colors: intake.brand_colors || '',
-                style_preference: intake.style_preference || 'modern',
-                business_goals: intake.business_goals || [],
-                goal_description: intake.goal_description || '',
-                competitor_urls: intake.competitor_urls || ['', '', '']
-              });
-              setIntakeId(savedIntakeId);
-            }
-            sessionStorage.removeItem('intake_id');
+          // Check if there's saved form data from Home page
+          const savedFormData = sessionStorage.getItem('intake_form_data');
+          if (savedFormData) {
+            const parsed = JSON.parse(savedFormData);
+            setFormData(prev => ({
+              ...prev,
+              company_name: parsed.company_name || '',
+              contact_person: parsed.contact_person || '',
+              phone: parsed.phone || '',
+              current_website: parsed.current_website || '',
+              facebook_page: parsed.facebook_page || '',
+              goal_description: parsed.goal_description || '',
+              website_type: parsed.website_type || 'business'
+            }));
+            sessionStorage.removeItem('intake_form_data');
           }
         })
         .catch(() => base44.auth.redirectToLogin());
@@ -131,36 +119,21 @@ export default function WebsiteIntakeForm() {
 
   const submitIntakeMutation = useMutation({
       mutationFn: async (data) => {
-        // If we already have an intake ID, update it instead of creating new
-        if (intakeId) {
-          await base44.entities.WebsiteIntake.update(intakeId, {
-            ...data,
-            subscription_id: subscription.id,
-            website_status: 'pending',
-            competitor_urls: data.competitor_urls.filter(u => u.trim())
-          });
-          const updated = await base44.entities.WebsiteIntake.filter({ id: intakeId });
-          return updated[0];
-        } else {
-          return await base44.entities.WebsiteIntake.create({
-            ...data,
-            subscription_id: subscription.id,
-            client_email: user.email,
-            website_status: 'pending',
-            competitor_urls: data.competitor_urls.filter(u => u.trim())
-          });
-        }
+        return await base44.entities.WebsiteIntake.create({
+          ...data,
+          subscription_id: subscription.id,
+          client_email: user.email,
+          website_status: 'pending',
+          competitor_urls: data.competitor_urls.filter(u => u.trim())
+        });
       },
       onSuccess: (intake) => {
         setIntakeId(intake.id);
-        checkIfQuestionsNeeded(intake);
+        generateWebsite(intake);
       },
     });
 
-  const checkIfQuestionsNeeded = async (intake) => {
-    // Skip all the complex analysis - just build the website
-    generateWebsite(intake, []);
-  };
+
 
   const generateWebsite = async (intake) => {
     setStep('generating');
