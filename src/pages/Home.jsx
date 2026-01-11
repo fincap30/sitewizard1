@@ -94,273 +94,183 @@ export default function Home() {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Store form data
+    const websiteData = {
+      client_email: formData.client_email,
+      company_name: formData.business_name,
+      contact_person: formData.client_name,
+      phone: formData.phone || '',
+      current_website: formData.current_website || '',
+      facebook_page: formData.facebook_page || '',
+      goal_description: formData.requirements || '',
+      website_type: formData.website_type || 'business'
+    };
+    sessionStorage.setItem('website_data', JSON.stringify(websiteData));
+
     try {
-        // Store form data in sessionStorage for later use
-        sessionStorage.setItem('intake_form_data', JSON.stringify({
-          client_email: formData.client_email,
-          company_name: formData.business_name,
-          contact_person: formData.client_name,
-          phone: formData.phone || '',
-          current_website: formData.current_website || '',
-          facebook_page: formData.facebook_page || '',
-          goal_description: formData.requirements || '',
-          website_type: formData.website_type || 'business'
-        }));
+      // Build the website immediately with AI
+      const buildPrompt = `Build a professional ${formData.website_type} website for ${formData.business_name}.
 
-      // Perform AI analysis with actual web fetching
-      let websiteContent = '';
-      let facebookContent = '';
+  ${formData.current_website ? `Research their current site: ${formData.current_website}` : 'Starting from scratch - no existing website'}
+  ${formData.facebook_page ? `Check their Facebook: ${formData.facebook_page}` : ''}
+  Business goals: ${formData.requirements || 'General business website'}
 
-      if (formData.current_website) {
-        try {
-          websiteContent = `\n\nACTUAL WEBSITE ANALYSIS - Visit and analyze: ${formData.current_website}`;
-        } catch (e) {
-          websiteContent = '\n\nWebsite URL provided but could not be accessed.';
-        }
-      }
+  Create a complete 3-page website with REAL content:
 
-      if (formData.facebook_page) {
-        facebookContent = `\n\nFACEBOOK PAGE - Visit and analyze: ${formData.facebook_page}`;
-      }
+  1. HOME PAGE (4 sections):
+  - Hero: Compelling headline + 50-word intro about what they do
+  - Services/Products: 3 offerings with 30-word descriptions each
+  - Why Choose Us: 3 benefits with 20-word explanations
+  - Call-to-Action: Strong closing message
 
-      const analysisPrompt = `SEO ANALYSIS FOR: ${formData.business_name} (${formData.website_type})
-${formData.current_website ? `\n\nIMPORTANT: Visit and analyze this website: ${formData.current_website}\nLook at the actual content, structure, and SEO elements.` : '\n\nNo current website - starting from zero.'}
+  2. ABOUT PAGE (3 sections):
+  - Company story (60 words)
+  - Mission & values (40 words)
+  - Team intro (30 words)
 
-PROVIDE REAL SEO DATA:
+  3. CONTACT PAGE:
+  - Contact info and form details
 
-1. CURRENT SEO STATUS:
-${formData.current_website ? `
-   - Analyze the actual website at ${formData.current_website}
-   - Check their title tags, meta descriptions, headings
-   - Review page speed, mobile-friendliness
-   - seo_score: Give realistic score 30-70 based on what you see
-   - current_ranking: "Not ranking well" or "Page 2-3 for [keyword]"
-` : `
-   - seo_score: 20 (no website = poor SEO)
-   - current_ranking: "Not ranked - no website"
-`}
-   - top_keywords: List 5 SPECIFIC keywords for ${formData.website_type} with search volume
-     Examples: "plumber miami" (2,400/mo), "emergency plumbing" (1,800/mo)
-   - missing_keywords: 3 keywords they should target
-   - technical_issues: ${formData.current_website ? 'List real issues from the site' : '["No website", "Not on Google", "No online presence"]'}
+  IMPORTANT: Write actual copy, not placeholders. Make it professional and compelling.
 
-2. COMPETITOR RESEARCH:
-   - Research 3 real competitors for ${formData.website_type} business
-   - For each: URL, 5 keywords they rank for, traffic estimate
-   - keyword_opportunities: 5 keywords with search volume they can win
+  Return this EXACT JSON structure:
+  {
+  "pages": [
+  {"name": "Home", "content": "Full multi-paragraph content here..."},
+  {"name": "About", "content": "Full about content here..."},
+  {"name": "Contact", "content": "Contact details here..."}
+  ],
+  "seo_analysis": {
+  "current_score": 25,
+  "target_keywords": ["keyword 1 (volume)", "keyword 2 (volume)"],
+  "competitors": ["competitor1.com", "competitor2.com"],
+  "quick_wins": ["Win 1 with timeline", "Win 2 with results"]
+  },
+  "primary_color": "#0066FF"
+  }`;
 
-3. QUICK WINS (BE SPECIFIC):
-   - "Rank #1 for '[business name] + [city]' within 30 days - 120 searches/month"
-   - "Capture 500+ visitors from '[service] near me' searches in 90 days"
-   - Include LOCAL keywords and search volumes
-   - Focus on realistic, achievable SEO wins
-
-4. VALUE PROPOSITION:
-   - free_website_value: "See your complete ${formData.website_type} website FREE before paying $1"
-   - risk_free: "No payment until you approve your website. Zero risk."
-   - quick_results: "Website live in 7 days. Start ranking in 30 days."
-
-RESEARCH ONLINE. USE REAL DATA. NO GENERIC RESPONSES.`;
-
-      const analysisResult = await base44.integrations.Core.InvokeLLM({
-        prompt: analysisPrompt,
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: buildPrompt,
         add_context_from_internet: true,
         response_json_schema: {
           type: "object",
           properties: {
-            seo_current_state: {
-              type: "object",
-              properties: {
-                current_ranking: { type: "string" },
-                seo_score: { type: "number" },
-                top_keywords: { type: "array", items: { type: "string" } },
-                missing_keywords: { type: "array", items: { type: "string" } },
-                technical_issues: { type: "array", items: { type: "string" } }
+            pages: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  content: { type: "string" }
+                }
               }
             },
-            competitor_keywords: {
+            seo_analysis: {
               type: "object",
               properties: {
-                competitors: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      their_url: { type: "string" },
-                      keywords_they_rank_for: { type: "array", items: { type: "string" } },
-                      estimated_monthly_traffic: { type: "string" }
-                    }
-                  }
-                },
-                keyword_opportunities: { type: "array", items: { type: "string" } }
+                current_score: { type: "number" },
+                target_keywords: { type: "array", items: { type: "string" } },
+                competitors: { type: "array", items: { type: "string" } },
+                quick_wins: { type: "array", items: { type: "string" } }
               }
             },
-            quick_wins: { type: "array", items: { type: "string" } },
-            why_choose_us: {
-              type: "object",
-              properties: {
-                free_website_value: { type: "string" },
-                risk_free: { type: "string" },
-                quick_results: { type: "string" }
-              }
-            }
-          },
-          required: ["seo_current_state", "competitor_keywords", "quick_wins", "why_choose_us"]
+            primary_color: { type: "string" }
+          }
         }
       });
 
-      setAnalysis(analysisResult);
+      sessionStorage.setItem('generated_website', JSON.stringify(result));
+      setAnalysis(result);
       setShowAnalysis(true);
-      toast.success('Analysis complete!');
+      toast.success('✅ Your website is ready!');
     } catch (error) {
-      console.error('Analysis error:', error);
-      setIsSubmitting(false);
-      toast.error('Analysis failed. Please try again.');
-      // Use fallback with complete analysis data
-      const fallbackAnalysis = {
-        lighthouse_metrics: {
-          performance_score: 85,
-          accessibility_score: 90,
-          seo_score: 88,
-          best_practices_score: 92,
-          seo_details: {
-            specific_actions: [
-              'Implement proper heading hierarchy (H1, H2, H3)',
-              'Add meta descriptions to all pages',
-              'Create XML sitemap for search engines',
-              'Optimize images for web performance'
-            ]
-          },
-          performance_details: {
-            specific_actions: [
-              'Minimize CSS and JavaScript files',
-              'Implement lazy loading for images',
-              'Use content delivery network (CDN)',
-              'Enable browser caching'
-            ]
-          },
-          accessibility_details: {
-            specific_actions: [
-              'Ensure color contrast meets WCAG standards',
-              'Add alt text to all images',
-              'Make forms keyboard navigable'
-            ]
-          },
-          best_practices_details: {
-            specific_actions: [
-              'Use HTTPS on all pages',
-              'Implement proper security headers',
-              'Keep dependencies updated'
-            ]
-          }
-        },
-        competitor_analysis: {
-          competitor_details: [],
-          market_opportunity: 'Strong opportunity to establish your brand as a modern, fast, and user-friendly alternative in your market.'
-        },
-        competitive_ranking: { 
-          current_level: 'Developing',
-          ranking_summary: `${formData.business_name} is starting their online journey. A professional website will immediately elevate market position.`,
-          main_weaknesses: ['Limited online visibility', 'No professional website presence', 'Low SEO search rankings', 'Missed lead generation opportunities'],
-          competitive_strengths: ['Opportunity to start fresh with modern approach', 'Can implement latest technology from day one', 'No legacy systems to migrate from'],
-          competitive_gaps: ['Professional web presence', 'SEO optimization and keyword strategy', 'Lead capture and CRM systems', 'Mobile-first design']
-        },
-        opportunities: [
-          'Launch professional website to establish instant credibility and trust',
-          'Rank for high-value local and industry keywords with SEO optimization',
-          'Capture leads 24/7 with smart contact forms and email automation',
-          'Build content authority with blogging and thought leadership',
-          'Grow social presence and amplify reach across platforms',
-          'Set up email marketing campaigns to nurture and convert leads'
-        ],
-        quick_wins: [
-          'Establish credibility instantly with professional design and branding',
-          'Capture leads automatically with optimized forms and CTAs',
-          'Rank on Google within 90 days with proper SEO foundation',
-          'Perfect mobile experience for 60% of your traffic',
-          'Load pages in under 2 seconds for better conversions'
-        ],
-        recommended_package: 'Growth',
-        recommendation_reason: `The Growth plan is ideal for ${formData.business_name}. You get AI-powered design, SEO tools, up to 10 pages, lead capture, email campaigns, and analytics—everything needed to compete and grow.`,
-        alternative_plans: 'Start with Starter ($99/month) for basics, upgrade to Premium ($299/month) for e-commerce and priority support.',
-        value_proposition: {
-          whats_included: ['14-day free trial with full features', 'AI-powered website design', 'Mobile-responsive on all devices', 'Hosting included (99.9% uptime)', 'SSL security certificate', 'Basic SEO optimization', 'Unlimited revisions in trial'],
-          ai_benefits: ['Get online 10x faster than traditional agencies', 'Auto-generated SEO-optimized content', 'Intelligent layout and design suggestions', 'Built-in conversion optimization', 'Smart form and lead tracking'],
-          market_comparison: 'Traditional web agencies charge $3,000-$10,000+ upfront. SiteWizard costs $0 to start, then $99-$399/month.',
-          why_choose_us: 'SiteWizard combines AI speed with professional quality—websites that normally take 3 months are built in 7-10 days.'
-        },
-        content_strategy: {
-          target_audience: `Customers seeking ${formData.website_type}—looking for quality, reliability, and professional service from trusted local businesses`,
-          homepage_suggestions: [
-            'Hero section showcasing your value proposition and differentiator',
-            'Services/products overview with benefits and features',
-            'Social proof section with testimonials and case studies',
-            'Clear call-to-action for leads or conversions'
-          ],
-          blog_topics: [
-            'Industry trends and what\'s happening in your space',
-            'How-to guides that solve customer problems',
-            'Case studies showing customer results and success',
-            'Best practices and tips from your expertise',
-            'Company updates, news, and behind-the-scenes',
-            'Customer spotlights and success stories'
-          ],
-          social_media_ideas: [
-            'Behind-the-scenes content showing company culture',
-            'Customer testimonials and success transformations',
-            'Industry tips, tricks, and quick advice',
-            'Limited-time offers, promotions, and announcements'
-          ],
-          landing_page_headlines: [
-            `Grow Your Business with ${formData.business_name}`,
-            'Professional Solutions That Deliver Real Results',
-            `Transform Your Success Starting Today`
-          ]
-        }
-      };
-      setAnalysis(fallbackAnalysis);
-      setShowAnalysis(true);
-    } finally {
+      console.error('Error:', error);
+      toast.error('Failed to build website');
       setIsSubmitting(false);
     }
-      };
+  };
 
   const handleContinueToIntake = () => {
-    // Data already stored in sessionStorage, just redirect
     window.location.href = '/WebsiteIntakeForm';
   };
 
   if (showAnalysis && analysis) {
     return (
       <div className="min-h-screen bg-transparent py-12 px-4">
-        <div className="container mx-auto max-w-4xl space-y-6">
-          <Card className="border-2 border-blue-500/50 bg-slate-800/50 backdrop-blur-sm">
+        <div className="container mx-auto max-w-5xl">
+          <Card className="border-2 border-green-500/50 bg-slate-800/50 backdrop-blur-sm mb-6">
             <CardHeader>
-              <CardTitle className="text-2xl flex items-center gap-2">
-                <Zap className="w-6 h-6 text-blue-400" />
-                Your Free Website Analysis
+              <CardTitle className="text-3xl flex items-center gap-2">
+                <CheckCircle className="w-8 h-8 text-green-400" />
+                Your FREE Website is Built!
               </CardTitle>
-              <CardDescription>Based on {formData.business_name}</CardDescription>
+              <CardDescription>No payment required • {analysis.pages?.length || 3} pages • Ready to go live</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <SEOAnalysisDisplay analysis={analysis} formData={formData} />
-              <div className="bg-gradient-to-r from-green-600/20 to-blue-600/20 border-2 border-green-500/50 rounded-lg p-6 text-center">
-                <p className="text-2xl font-bold text-white mb-2">🎉 Ready to See Your FREE Website?</p>
-                <p className="text-slate-300 mb-4">No payment. No credit card. We build it first, you decide later.</p>
+              {/* SEO Quick Summary */}
+              {analysis.seo_analysis && (
+                <div className="bg-blue-600/10 border border-blue-500/30 rounded-lg p-6">
+                  <h3 className="text-xl font-bold text-white mb-4">📊 SEO Analysis</h3>
+                  <div className="grid md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-slate-400 mb-2">Current SEO Score:</p>
+                      <p className="text-2xl font-bold text-white">{analysis.seo_analysis.current_score}/100</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400 mb-2">Target Keywords:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {analysis.seo_analysis.target_keywords?.slice(0, 3).map((kw, i) => (
+                          <Badge key={i} className="bg-blue-600">{kw}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  {analysis.seo_analysis.quick_wins && (
+                    <div className="mt-4">
+                      <p className="text-slate-400 mb-2">Quick SEO Wins:</p>
+                      <ul className="space-y-1">
+                        {analysis.seo_analysis.quick_wins.slice(0, 3).map((win, i) => (
+                          <li key={i} className="text-slate-300 text-sm">✓ {win}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Website Preview */}
+              <div className="bg-white rounded-lg p-8">
+                <h3 className="text-2xl font-bold text-slate-900 mb-6" style={{color: analysis.primary_color}}>
+                  Your Website Preview
+                </h3>
+                {analysis.pages?.map((page, idx) => (
+                  <div key={idx} className="mb-8 pb-8 border-b border-slate-200 last:border-0">
+                    <h4 className="text-xl font-bold mb-4 text-slate-800">{page.name}</h4>
+                    <div className="prose prose-slate max-w-none">
+                      <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">{page.content}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA */}
+              <div className="bg-gradient-to-r from-green-600/20 to-blue-600/20 border-2 border-green-500/50 rounded-lg p-8 text-center">
+                <p className="text-3xl font-bold text-white mb-3">💚 Love it? Let's Launch!</p>
+                <p className="text-slate-300 mb-6 text-lg">No payment until you approve. Zero risk. Full control.</p>
                 <Button
                   onClick={handleContinueToIntake}
-                  className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white text-xl py-6 px-8"
+                  className="bg-green-600 hover:bg-green-700 text-white text-xl py-6 px-10"
                 >
-                  Build My Free Website Now
+                  Approve & Continue
                   <ArrowRight className="ml-2 w-6 h-6" />
                 </Button>
               </div>
             </CardContent>
-              </Card>
-              </div>
-              </div>
-              );
-              }
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
               if (isSubmitting) {
               return (
