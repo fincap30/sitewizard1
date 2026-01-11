@@ -131,33 +131,38 @@ export default function Home() {
       }
 
       const analysisPrompt = `You are an expert SEO analyst. Analyze ${formData.business_name} (${formData.website_type} business).
-${formData.current_website ? `Current website: ${formData.current_website}` : 'No website yet'}
+${formData.current_website ? `VISIT AND ANALYZE THIS WEBSITE: ${formData.current_website} - Provide REAL data from the actual site` : 'No website exists yet'}
 
-PROVIDE ACTUAL SEO & RANKING ANALYSIS:
+CRITICAL INSTRUCTIONS:
+- If they have a website, analyze it and give REAL scores (usually 35-65 for existing sites)
+- If no website, assume seo_score: 15-25 (typical for business with no web presence)
+- Generate REAL, SPECIFIC keywords for ${formData.website_type} in ${formData.business_name}'s industry
+- Research actual competitors in this industry online
 
 1. SEO CURRENT STATE:
-   - current_ranking: "Not ranked" or "Page X on Google for [keyword]"
-   - seo_score: 0-100 (0 if no website)
-   - top_keywords: List 5 keywords they SHOULD target for ${formData.website_type}
-   - missing_keywords: List 3 high-value keywords competitors rank for
-   - technical_issues: List 3 major SEO problems (or "None - starting fresh")
+   - current_ranking: ${formData.current_website ? '"Page 3-5" or "Not ranking" for their industry' : '"Not ranked - no online presence"'}
+   - seo_score: ${formData.current_website ? '35-65 (realistic score for existing site)' : '15-25 (no website penalty)'}
+   - top_keywords: List 5 SPECIFIC, REAL keywords for ${formData.website_type} (e.g., "[city] [service]", "[industry] near me", "[specific service]")
+   - missing_keywords: List 3 high-value LOCAL keywords competitors rank for (include city/region if applicable)
+   - technical_issues: ${formData.current_website ? 'List 3 actual problems from the site' : '["No website to analyze", "Missing from Google search", "Zero online visibility"]'}
 
-2. COMPETITOR KEYWORDS:
-   - Find 3 competitor businesses in ${formData.website_type}
-   - For each: their_url, keywords_they_rank_for [5 keywords], estimated_monthly_traffic
-   - keyword_opportunities: 5 keywords ${formData.business_name} can win
+2. COMPETITOR KEYWORDS (RESEARCH REAL COMPETITORS):
+   - Find 3 REAL competitor websites in ${formData.website_type} industry
+   - For each: their_url (real URL), keywords_they_rank_for [5 actual keywords], estimated_monthly_traffic (realistic number like "1,200-2,500/month")
+   - keyword_opportunities: 5 specific keywords ${formData.business_name} can realistically rank for (include search volume estimates)
 
-3. QUICK WINS (MUST BE SEO-FOCUSED):
-   - 5 specific actions that will improve their ranking in 30-90 days
-   - Example: "Rank #1 for '[specific keyword]' in your city within 60 days"
-   - Example: "Capture 500+ monthly visitors from Google organic search"
+3. QUICK WINS (SPECIFIC TO ${formData.website_type}):
+   - 5 concrete, measurable SEO actions with timeframes
+   - Example: "Rank for '${formData.business_name.toLowerCase()} [city]' within 30 days (50 monthly searches)"
+   - Example: "Capture 300+ monthly visitors from '[specific service] near me' keyword"
+   - Include local SEO wins if applicable
 
 4. WHY CHOOSE US:
-   - free_website_value: "See your website built first, pay NOTHING until you approve it"
-   - risk_free: "No credit card. No upfront payment. 100% free until you love it."
-   - quick_results: "Most clients see their site live in 7-10 days"
+   - free_website_value: "Your ${formData.website_type} website built FREE—see it before paying anything"
+   - risk_free: "Zero upfront cost. No credit card. Only pay if you love it."
+   - quick_results: "Live website in 7-10 days with SEO foundation ready to rank"
 
-Return JSON only.`;
+Return JSON with realistic, researched data. NO ZEROS. NO GENERIC OUTPUT.`;
 
       const analysisResult = await base44.integrations.Core.InvokeLLM({
         prompt: analysisPrompt,
