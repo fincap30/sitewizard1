@@ -103,15 +103,17 @@ export default function Home() {
             client_email: formData.client_email,
             company_name: formData.business_name,
             contact_person: formData.client_name,
-            phone: formData.phone,
+            phone: formData.phone || '',
             current_website: formData.current_website || '',
             facebook_page: formData.facebook_page || '',
             goal_description: formData.requirements || '',
-            website_status: 'pending'
+            website_status: 'pending',
+            website_type: formData.website_type || 'business'
           };
           createdIntake = await base44.entities.WebsiteIntake.create(intakeData);
+          console.log('Intake created:', createdIntake.id);
         } catch (intakeError) {
-          console.log('Intake creation skipped, continuing with analysis...', intakeError);
+          console.error('Intake creation failed:', intakeError);
         }
 
       // Perform AI analysis with actual web fetching
