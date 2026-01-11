@@ -9,7 +9,7 @@ import { Zap, CheckCircle, Clock, Star, ArrowRight, Quote, Mail, Phone, MapPin }
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
-import AnalysisDisplay from "../components/analysis/AnalysisDisplay";
+import SEOAnalysisDisplay from "../components/analysis/SEOAnalysisDisplay";
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -130,51 +130,34 @@ export default function Home() {
         facebookContent = `\n\nFACEBOOK PAGE - Visit and analyze: ${formData.facebook_page}`;
       }
 
-      const analysisPrompt = `Analyze this business and provide website strategy. Business: ${formData.business_name}. Type: ${formData.website_type}. Requirements: ${formData.requirements || 'standard'}.
+      const analysisPrompt = `You are an expert SEO analyst. Analyze ${formData.business_name} (${formData.website_type} business).
+${formData.current_website ? `Current website: ${formData.current_website}` : 'No website yet'}
 
-Business Details:
-- Business Name: ${formData.business_name}
-- Type: ${formData.website_type}
-- Requirements: ${formData.requirements || 'Standard business website'}
-- Location: ${formData.country || 'International'}
+PROVIDE ACTUAL SEO & RANKING ANALYSIS:
 
-YOU MUST RETURN EVERY SECTION BELOW WITH REAL, SPECIFIC CONTENT:
+1. SEO CURRENT STATE:
+   - current_ranking: "Not ranked" or "Page X on Google for [keyword]"
+   - seo_score: 0-100 (0 if no website)
+   - top_keywords: List 5 keywords they SHOULD target for ${formData.website_type}
+   - missing_keywords: List 3 high-value keywords competitors rank for
+   - technical_issues: List 3 major SEO problems (or "None - starting fresh")
 
-1. **COMPETITIVE RANKING** (REQUIRED - ALWAYS INCLUDE):
-   - Assess their current competitive position (Beginner/Developing/Average/Strong/Leading)
-   - 2-3 sentence summary of where they stand vs competitors
-   - List 3 specific weaknesses holding them back
-   - List 3 competitive strengths they possess
-   - List 3 gaps vs competitors
+2. COMPETITOR KEYWORDS:
+   - Find 3 competitor businesses in ${formData.website_type}
+   - For each: their_url, keywords_they_rank_for [5 keywords], estimated_monthly_traffic
+   - keyword_opportunities: 5 keywords ${formData.business_name} can win
 
-2. **GROWTH OPPORTUNITIES** (REQUIRED - ALWAYS INCLUDE):
-   - Provide 6 specific, actionable growth opportunities with brief implementation suggestions
-   - Each opportunity should be 15-30 words and actionable
+3. QUICK WINS (MUST BE SEO-FOCUSED):
+   - 5 specific actions that will improve their ranking in 30-90 days
+   - Example: "Rank #1 for '[specific keyword]' in your city within 60 days"
+   - Example: "Capture 500+ monthly visitors from Google organic search"
 
-3. **QUICK WINS** (REQUIRED - ALWAYS INCLUDE):
-   - List 5 specific benefits a professional website will deliver to THIS business
-   - Format: "Action/Benefit description" - be concrete and relevant to ${formData.business_name}
-   - Examples: "Establish credibility in ${formData.website_type}", "Generate qualified leads automatically", "Rank on Google for local searches"
+4. WHY CHOOSE US:
+   - free_website_value: "See your website built first, pay NOTHING until you approve it"
+   - risk_free: "No credit card. No upfront payment. 100% free until you love it."
+   - quick_results: "Most clients see their site live in 7-10 days"
 
-4. **RECOMMENDATION** (REQUIRED - ALWAYS INCLUDE):
-   - recommended_package: "Growth" 
-   - recommendation_reason: Write 2-3 sentences specifically for ${formData.business_name} explaining why Growth plan fits
-   - alternative_plans: Mention Starter for basic needs, Premium for advanced features
-
-5. **VALUE PROPOSITION** (REQUIRED - ALWAYS INCLUDE):
-   - whats_included: [6 specific features for ${formData.website_type}]
-   - ai_benefits: [4 AI advantages relevant to ${formData.website_type}]
-   - market_comparison: "Traditional agencies charge $3,000-$10,000. SiteWizard starts at $0."
-   - why_choose_us: One compelling sentence about our AI advantage
-
-6. **CONTENT STRATEGY** (REQUIRED - ALWAYS INCLUDE):
-   - target_audience: Define ideal customer for ${formData.business_name}
-   - homepage_suggestions: [4 specific content sections for this business type]
-   - blog_topics: [6 blog post ideas relevant to ${formData.business_type}]
-   - social_media_ideas: [4 post ideas to drive engagement]
-   - landing_page_headlines: [3 compelling headlines for ${formData.business_name}]
-
-Return as JSON only.`;
+Return JSON only.`;
 
       const analysisResult = await base44.integrations.Core.InvokeLLM({
         prompt: analysisPrompt,
@@ -182,106 +165,44 @@ Return as JSON only.`;
         response_json_schema: {
           type: "object",
           properties: {
-            lighthouse_metrics: {
+            seo_current_state: {
               type: "object",
               properties: {
-                performance_score: { type: "number" },
-                accessibility_score: { type: "number" },
+                current_ranking: { type: "string" },
                 seo_score: { type: "number" },
-                best_practices_score: { type: "number" },
-                performance_details: {
-                  type: "object",
-                  properties: {
-                    current_assessment: { type: "string" },
-                    target_improvement: { type: "string" },
-                    specific_actions: { type: "array", items: { type: "string" } }
-                  }
-                },
-                accessibility_details: {
-                  type: "object",
-                  properties: {
-                    current_assessment: { type: "string" },
-                    target_improvement: { type: "string" },
-                    specific_actions: { type: "array", items: { type: "string" } }
-                  }
-                },
-                seo_details: {
-                  type: "object",
-                  properties: {
-                    current_assessment: { type: "string" },
-                    target_improvement: { type: "string" },
-                    specific_actions: { type: "array", items: { type: "string" } }
-                  }
-                },
-                best_practices_details: {
-                  type: "object",
-                  properties: {
-                    current_assessment: { type: "string" },
-                    target_improvement: { type: "string" },
-                    specific_actions: { type: "array", items: { type: "string" } }
-                  }
-                }
+                top_keywords: { type: "array", items: { type: "string" } },
+                missing_keywords: { type: "array", items: { type: "string" } },
+                technical_issues: { type: "array", items: { type: "string" } }
               }
             },
-            competitive_ranking: {
+            competitor_keywords: {
               type: "object",
               properties: {
-                current_level: { type: "string" },
-                ranking_summary: { type: "string" },
-                main_weaknesses: { type: "array", items: { type: "string" } },
-                competitive_strengths: { type: "array", items: { type: "string" } },
-                competitive_gaps: { type: "array", items: { type: "string" } },
-                market_position_analysis: { type: "string" }
-              }
-            },
-            competitor_analysis: {
-              type: "object",
-              properties: {
-                competitors_analyzed: { type: "array", items: { type: "string" } },
-                competitor_details: {
+                competitors: {
                   type: "array",
                   items: {
                     type: "object",
                     properties: {
-                      competitor_url: { type: "string" },
-                      their_strengths: { type: "array", items: { type: "string" } },
-                      their_weaknesses: { type: "array", items: { type: "string" } },
-                      seo_advantage: { type: "string" },
-                      design_comparison: { type: "string" },
-                      feature_gap: { type: "array", items: { type: "string" } }
+                      their_url: { type: "string" },
+                      keywords_they_rank_for: { type: "array", items: { type: "string" } },
+                      estimated_monthly_traffic: { type: "string" }
                     }
                   }
                 },
-                market_opportunity: { type: "string" },
-                competitive_advantage_strategy: { type: "string" }
+                keyword_opportunities: { type: "array", items: { type: "string" } }
               }
             },
-            opportunities: { type: "array", items: { type: "string" } },
             quick_wins: { type: "array", items: { type: "string" } },
-            recommended_package: { type: "string" },
-            recommendation_reason: { type: "string" },
-            alternative_plans: { type: "string" },
-            value_proposition: {
+            why_choose_us: {
               type: "object",
               properties: {
-                whats_included: { type: "array", items: { type: "string" } },
-                ai_benefits: { type: "array", items: { type: "string" } },
-                market_comparison: { type: "string" },
-                why_choose_us: { type: "string" }
-              }
-            },
-            content_strategy: {
-              type: "object",
-              properties: {
-                target_audience: { type: "string" },
-                homepage_suggestions: { type: "array", items: { type: "string" } },
-                blog_topics: { type: "array", items: { type: "string" } },
-                social_media_ideas: { type: "array", items: { type: "string" } },
-                landing_page_headlines: { type: "array", items: { type: "string" } }
+                free_website_value: { type: "string" },
+                risk_free: { type: "string" },
+                quick_results: { type: "string" }
               }
             }
           },
-          required: ["lighthouse_metrics", "competitive_ranking", "opportunities", "quick_wins", "recommended_package", "value_proposition", "content_strategy"]
+          required: ["seo_current_state", "competitor_keywords", "quick_wins", "why_choose_us"]
         }
       });
 
@@ -427,14 +348,18 @@ Return as JSON only.`;
               <CardDescription>Based on {formData.business_name}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <AnalysisDisplay analysis={analysis} formData={formData} />
-              <Button
-                onClick={handleContinueToIntake}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-lg py-6"
-              >
-                Continue to Build My Website
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
+              <SEOAnalysisDisplay analysis={analysis} formData={formData} />
+              <div className="bg-gradient-to-r from-green-600/20 to-blue-600/20 border-2 border-green-500/50 rounded-lg p-6 text-center">
+                <p className="text-2xl font-bold text-white mb-2">🎉 Ready to See Your FREE Website?</p>
+                <p className="text-slate-300 mb-4">No payment. No credit card. We build it first, you decide later.</p>
+                <Button
+                  onClick={handleContinueToIntake}
+                  className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white text-xl py-6 px-8"
+                >
+                  Build My Free Website Now
+                  <ArrowRight className="ml-2 w-6 h-6" />
+                </Button>
+              </div>
             </CardContent>
               </Card>
               </div>
