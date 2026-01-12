@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Zap, CheckCircle, Clock, Star, ArrowRight, Quote, Mail, Phone, MapPin } from "lucide-react";
+import { Zap, CheckCircle, Clock, Star, ArrowRight, Quote, Mail, Phone, MapPin, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
@@ -29,6 +29,8 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [analysis, setAnalysis] = useState(null);
+  const [generatedWebsite, setGeneratedWebsite] = useState(null);
+  const [buildingWebsite, setBuildingWebsite] = useState(false);
 
   const faqs = [
     { q: "What's included in the free trial?", a: "You get full access to all features for 14 days, including AI website generation, hosting, and basic support." },
@@ -276,6 +278,98 @@ export default function Home() {
     }
   };
 
+  const handleBuildWebsite = async () => {
+    setBuildingWebsite(true);
+
+    try {
+      const buildPrompt = `Build a professional ${formData.website_type} website for ${formData.business_name}.
+
+  ${formData.current_website ? `Current website: ${formData.current_website} - Research it and improve upon it` : 'Starting from scratch'}
+
+  SEO INSIGHTS FROM REPORT:
+  - Target these keywords: ${analysis?.keyword_strategy?.primary_keywords?.join(', ') || 'industry keywords'}
+  - Fix these issues: ${analysis?.priority_fixes?.map(f => f.issue).join(', ') || 'basic SEO'}
+  - Quick wins to implement: ${analysis?.quick_wins?.join(', ') || 'SEO optimization'}
+
+  Build a complete 5-page website with REAL, compelling content:
+
+  1. HOME PAGE (5 sections, 300+ words total):
+  - Hero: Eye-catching headline about ${formData.business_name} + 70-word value proposition
+  - Features/Services: 3 main offerings with 40-word descriptions each
+  - Why Choose Us: 4 benefits with 25-word explanations each
+  - Social Proof: 2 testimonial quotes (make them realistic)
+  - Strong Call-to-Action
+
+  2. ABOUT PAGE (200+ words):
+  - Company story and mission (100 words)
+  - What makes them different (50 words)
+  - Team/founder intro (50 words)
+
+  3. SERVICES PAGE (250+ words):
+  - 3-5 services with detailed 50-word descriptions
+  - Benefits of each service
+  - Clear pricing indicators or "Contact for quote"
+
+  4. CONTACT PAGE:
+  - Contact form fields
+  - Business address, phone, email
+  - Operating hours
+  - Map embed mention
+
+  5. BLOG/RESOURCES PAGE:
+  - 3 blog post titles and 30-word summaries
+  - Relevant to their industry
+
+  IMPORTANT: 
+  - Write actual professional copy, no placeholders
+  - Include SEO keywords naturally in content
+  - Make it conversion-focused
+  - Use persuasive language
+
+  Return JSON with pages array and color scheme.`;
+
+      const website = await base44.integrations.Core.InvokeLLM({
+        prompt: buildPrompt,
+        add_context_from_internet: true,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            pages: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  sections: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        title: { type: "string" },
+                        content: { type: "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            primary_color: { type: "string" },
+            secondary_color: { type: "string" }
+          }
+        }
+      });
+
+      sessionStorage.setItem('generated_website', JSON.stringify(website));
+      setGeneratedWebsite(website);
+      toast.success('🎉 Your website is built!');
+    } catch (error) {
+      console.error('Build error:', error);
+      toast.error('Failed to build website');
+    } finally {
+      setBuildingWebsite(false);
+    }
+  };
+
   const handleContinueToIntake = () => {
     window.location.href = '/WebsiteIntakeForm';
   };
@@ -502,18 +596,73 @@ export default function Home() {
               </div>
 
               {/* CTA */}
-              <div className="bg-gradient-to-r from-green-600/20 to-blue-600/20 border-2 border-green-500/50 rounded-lg p-8 text-center">
-                <p className="text-3xl font-bold text-white mb-3">🚀 Ready to Get Results?</p>
-                <p className="text-slate-300 mb-6 text-lg">We'll build your SEO-optimized website with all fixes included—completely FREE to start</p>
-                <Button
-                  onClick={handleContinueToIntake}
-                  className="bg-green-600 hover:bg-green-700 text-white text-xl py-6 px-10"
-                >
-                  Build My Site For Me For FREE
-                  <ArrowRight className="ml-2 w-6 h-6" />
-                </Button>
-                <p className="text-sm text-slate-400 mt-4">No payment required • See your website before paying anything</p>
-              </div>
+              {!generatedWebsite ? (
+                <div className="bg-gradient-to-r from-green-600/20 to-blue-600/20 border-2 border-green-500/50 rounded-lg p-8 text-center">
+                  <p className="text-3xl font-bold text-white mb-3">🚀 Ready to Get Results?</p>
+                  <p className="text-slate-300 mb-6 text-lg">We'll build your SEO-optimized website with all fixes included—completely FREE to start</p>
+                  <Button
+                    onClick={handleBuildWebsite}
+                    disabled={buildingWebsite}
+                    className="bg-green-600 hover:bg-green-700 text-white text-xl py-6 px-10"
+                  >
+                    {buildingWebsite ? (
+                      <>
+                        <Loader2 className="w-6 h-6 mr-2 animate-spin" />
+                        Building Your Website...
+                      </>
+                    ) : (
+                      <>
+                        Build My Site For Me For FREE
+                        <ArrowRight className="ml-2 w-6 h-6" />
+                      </>
+                    )}
+                  </Button>
+                  <p className="text-sm text-slate-400 mt-4">No payment required • See your website before paying anything</p>
+                </div>
+              ) : (
+                <>
+                  {/* Generated Website Preview */}
+                  <div className="border-2 border-green-500/50 rounded-lg overflow-hidden">
+                    <div className="bg-green-600/20 border-b border-green-500/30 p-4">
+                      <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                        <CheckCircle className="w-6 h-6 text-green-400" />
+                        Your FREE Website is Ready!
+                      </h3>
+                      <p className="text-slate-300 mt-1">{generatedWebsite.pages?.length || 5} professional pages • SEO-optimized • Ready to launch</p>
+                    </div>
+
+                    <div className="bg-white p-8">
+                      {generatedWebsite.pages?.map((page, pidx) => (
+                        <div key={pidx} className="mb-10 pb-10 border-b border-slate-200 last:border-0">
+                          <h2 className="text-3xl font-bold mb-6" style={{color: generatedWebsite.primary_color || '#0066FF'}}>
+                            {page.name}
+                          </h2>
+                          {page.sections?.map((section, sidx) => (
+                            <div key={sidx} className="mb-6">
+                              <h3 className="text-xl font-semibold text-slate-800 mb-3">{section.title}</h3>
+                              <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">{section.content}</p>
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Final CTA */}
+                  <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-2 border-blue-500/50 rounded-lg p-8 text-center">
+                    <p className="text-3xl font-bold text-white mb-3">💙 Love Your New Website?</p>
+                    <p className="text-slate-300 mb-6 text-lg">Continue to customize and launch it—still 100% FREE to start</p>
+                    <Button
+                      onClick={handleContinueToIntake}
+                      className="bg-blue-600 hover:bg-blue-700 text-white text-xl py-6 px-10"
+                    >
+                      Continue to Launch
+                      <ArrowRight className="ml-2 w-6 h-6" />
+                    </Button>
+                    <p className="text-sm text-slate-400 mt-4">Customize • Add features • Go live</p>
+                  </div>
+                </>
+              )}
             </CardContent>
           </Card>
         </div>
