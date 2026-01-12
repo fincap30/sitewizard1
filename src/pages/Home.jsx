@@ -632,19 +632,32 @@ export default function Home() {
                     </div>
 
                     <div className="bg-white p-8">
-                      {generatedWebsite.pages?.map((page, pidx) => (
-                        <div key={pidx} className="mb-10 pb-10 border-b border-slate-200 last:border-0">
-                          <h2 className="text-3xl font-bold mb-6" style={{color: generatedWebsite.primary_color || '#0066FF'}}>
-                            {page.name}
-                          </h2>
-                          {page.sections?.map((section, sidx) => (
-                            <div key={sidx} className="mb-6">
-                              <h3 className="text-xl font-semibold text-slate-800 mb-3">{section.title}</h3>
-                              <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">{section.content}</p>
-                            </div>
-                          ))}
+                      {generatedWebsite.pages && generatedWebsite.pages.length > 0 ? (
+                        generatedWebsite.pages.map((page, pidx) => (
+                          <div key={pidx} className="mb-10 pb-10 border-b border-slate-200 last:border-0">
+                            <h2 className="text-3xl font-bold mb-6 text-slate-900" style={{color: generatedWebsite.primary_color || '#0066FF'}}>
+                              📄 {page.name}
+                            </h2>
+                            {page.sections && page.sections.length > 0 ? (
+                              page.sections.map((section, sidx) => (
+                                <div key={sidx} className="mb-6 bg-slate-50 p-4 rounded-lg">
+                                  <h3 className="text-xl font-semibold text-slate-800 mb-3">{section.title}</h3>
+                                  <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">{section.content}</p>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="bg-slate-100 p-6 rounded-lg">
+                                <p className="text-slate-700 leading-relaxed">{JSON.stringify(page, null, 2)}</p>
+                              </div>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-12">
+                          <p className="text-slate-600 text-lg mb-4">Building your website content...</p>
+                          <p className="text-slate-500 text-sm">Data: {JSON.stringify(generatedWebsite, null, 2).substring(0, 500)}</p>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
 
