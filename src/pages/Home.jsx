@@ -108,84 +108,170 @@ export default function Home() {
     sessionStorage.setItem('website_data', JSON.stringify(websiteData));
 
     try {
-      // Build the website immediately with AI
-      const buildPrompt = `Build a professional ${formData.website_type} website for ${formData.business_name}.
+      // STEP 1: Generate SEO Report
+      const seoPrompt = `You are an SEO expert. Analyze this business and create a comprehensive SEO report.
 
-  ${formData.current_website ? `Research their current site: ${formData.current_website}` : 'Starting from scratch - no existing website'}
-  ${formData.facebook_page ? `Check their Facebook: ${formData.facebook_page}` : ''}
-  Business goals: ${formData.requirements || 'General business website'}
+    BUSINESS: ${formData.business_name}
+    TYPE: ${formData.website_type}
+    ${formData.current_website ? `CURRENT WEBSITE: Visit and analyze ${formData.current_website}` : 'NO CURRENT WEBSITE - starting from scratch'}
+    ${formData.facebook_page ? `FACEBOOK: ${formData.facebook_page}` : ''}
+    GOALS: ${formData.requirements || 'Improve online presence'}
 
-  Create a complete 3-page website with REAL content:
+    Visit the current website if provided. Analyze everything: technical SEO, content, keywords, competitors.
 
-  1. HOME PAGE (4 sections):
-  - Hero: Compelling headline + 50-word intro about what they do
-  - Services/Products: 3 offerings with 30-word descriptions each
-  - Why Choose Us: 3 benefits with 20-word explanations
-  - Call-to-Action: Strong closing message
+    Generate a COMPLETE SEO REPORT with these sections:
 
-  2. ABOUT PAGE (3 sections):
-  - Company story (60 words)
-  - Mission & values (40 words)
-  - Team intro (30 words)
+    1. SITE OVERVIEW
+    - site_title: Business name
+    - summary: 2 sentences about what they do
 
-  3. CONTACT PAGE:
-  - Contact info and form details
+    2. TECHNICAL SEO
+    - crawling_indexing: Status and issues
+    - mobile_friendly: Yes/No with notes
+    - security: HTTPS status
+    - page_speed: Speed score and issues
+    - sitemap_status: Found or missing
+    - robots_txt_status: Status
 
-  IMPORTANT: Write actual copy, not placeholders. Make it professional and compelling.
+    3. ON-PAGE SEO
+    - title_tags: Quality and recommendations
+    - meta_descriptions: Current state
+    - headings: H1, H2 structure analysis
+    - content_quality: Assessment
 
-  Return this EXACT JSON structure:
-  {
-  "pages": [
-  {"name": "Home", "content": "Full multi-paragraph content here..."},
-  {"name": "About", "content": "Full about content here..."},
-  {"name": "Contact", "content": "Contact details here..."}
-  ],
-  "seo_analysis": {
-  "current_score": 25,
-  "target_keywords": ["keyword 1 (volume)", "keyword 2 (volume)"],
-  "competitors": ["competitor1.com", "competitor2.com"],
-  "quick_wins": ["Win 1 with timeline", "Win 2 with results"]
-  },
-  "primary_color": "#0066FF"
-  }`;
+    4. KEYWORD STRATEGY
+    - primary_keywords: 5 main keywords with search volume
+    - long_tail_keywords: 5 long-tail keywords
+    - keyword_gaps: Keywords they should target
+    - competitor_keywords: Keywords competitors use
 
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: buildPrompt,
+    5. CONTENT STRATEGY
+    - content_depth: Assessment
+    - recommended_pages: List of pages to create
+    - blog_topics: 5 blog post ideas
+    - internal_linking: Recommendations
+
+    6. OFF-PAGE SEO
+    - backlink_status: Current backlinks estimate
+    - domain_authority: Estimate
+    - recommended_link_sources: Where to get backlinks
+
+    7. SEO SCORE
+    - overall_score: 0-100
+    - technical_score: 0-100
+    - content_score: 0-100
+    - authority_score: 0-100
+
+    8. PRIORITY FIXES (ranked High/Medium/Low)
+    - List top 10 issues to fix
+
+    9. QUICK WINS
+    - 5 immediate actions with expected results
+
+    10. 90-DAY ROADMAP
+    - Month 1, Month 2, Month 3 action plans
+
+    Research the website, competitors, and industry. Use REAL data.`;
+
+      const seoReport = await base44.integrations.Core.InvokeLLM({
+        prompt: seoPrompt,
         add_context_from_internet: true,
         response_json_schema: {
           type: "object",
           properties: {
-            pages: {
+            site_overview: {
+              type: "object",
+              properties: {
+                site_title: { type: "string" },
+                summary: { type: "string" }
+              }
+            },
+            technical_seo: {
+              type: "object",
+              properties: {
+                crawling_indexing: { type: "string" },
+                mobile_friendly: { type: "string" },
+                security: { type: "string" },
+                page_speed: { type: "string" },
+                sitemap_status: { type: "string" },
+                robots_txt_status: { type: "string" }
+              }
+            },
+            on_page_seo: {
+              type: "object",
+              properties: {
+                title_tags: { type: "string" },
+                meta_descriptions: { type: "string" },
+                headings: { type: "string" },
+                content_quality: { type: "string" }
+              }
+            },
+            keyword_strategy: {
+              type: "object",
+              properties: {
+                primary_keywords: { type: "array", items: { type: "string" } },
+                long_tail_keywords: { type: "array", items: { type: "string" } },
+                keyword_gaps: { type: "array", items: { type: "string" } },
+                competitor_keywords: { type: "array", items: { type: "string" } }
+              }
+            },
+            content_strategy: {
+              type: "object",
+              properties: {
+                content_depth: { type: "string" },
+                recommended_pages: { type: "array", items: { type: "string" } },
+                blog_topics: { type: "array", items: { type: "string" } },
+                internal_linking: { type: "string" }
+              }
+            },
+            off_page_seo: {
+              type: "object",
+              properties: {
+                backlink_status: { type: "string" },
+                domain_authority: { type: "string" },
+                recommended_link_sources: { type: "array", items: { type: "string" } }
+              }
+            },
+            seo_scores: {
+              type: "object",
+              properties: {
+                overall_score: { type: "number" },
+                technical_score: { type: "number" },
+                content_score: { type: "number" },
+                authority_score: { type: "number" }
+              }
+            },
+            priority_fixes: {
               type: "array",
               items: {
                 type: "object",
                 properties: {
-                  name: { type: "string" },
-                  content: { type: "string" }
+                  priority: { type: "string" },
+                  issue: { type: "string" },
+                  fix: { type: "string" }
                 }
               }
             },
-            seo_analysis: {
+            quick_wins: { type: "array", items: { type: "string" } },
+            roadmap_90_days: {
               type: "object",
               properties: {
-                current_score: { type: "number" },
-                target_keywords: { type: "array", items: { type: "string" } },
-                competitors: { type: "array", items: { type: "string" } },
-                quick_wins: { type: "array", items: { type: "string" } }
+                month_1: { type: "array", items: { type: "string" } },
+                month_2: { type: "array", items: { type: "string" } },
+                month_3: { type: "array", items: { type: "string" } }
               }
-            },
-            primary_color: { type: "string" }
+            }
           }
         }
       });
 
-      sessionStorage.setItem('generated_website', JSON.stringify(result));
-      setAnalysis(result);
+      sessionStorage.setItem('seo_report', JSON.stringify(seoReport));
+      setAnalysis(seoReport);
       setShowAnalysis(true);
-      toast.success('✅ Your website is ready!');
+      toast.success('✅ SEO Report generated!');
     } catch (error) {
       console.error('Error:', error);
-      toast.error('Failed to build website');
+      toast.error('Failed to generate SEO report');
       setIsSubmitting(false);
     }
   };
@@ -197,71 +283,191 @@ export default function Home() {
   if (showAnalysis && analysis) {
     return (
       <div className="min-h-screen bg-transparent py-12 px-4">
-        <div className="container mx-auto max-w-5xl">
-          <Card className="border-2 border-green-500/50 bg-slate-800/50 backdrop-blur-sm mb-6">
+        <div className="container mx-auto max-w-6xl">
+          <Card className="border-2 border-blue-500/50 bg-slate-800/50 backdrop-blur-sm mb-6">
             <CardHeader>
-              <CardTitle className="text-3xl flex items-center gap-2">
-                <CheckCircle className="w-8 h-8 text-green-400" />
-                Your FREE Website is Built!
-              </CardTitle>
-              <CardDescription>No payment required • {analysis.pages?.length || 3} pages • Ready to go live</CardDescription>
+              <CardTitle className="text-3xl">🔍 SEO Report — {formData.business_name}</CardTitle>
+              <CardDescription>Complete analysis of your current website and SEO opportunities</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {/* SEO Quick Summary */}
-              {analysis.seo_analysis && (
-                <div className="bg-blue-600/10 border border-blue-500/30 rounded-lg p-6">
-                  <h3 className="text-xl font-bold text-white mb-4">📊 SEO Analysis</h3>
-                  <div className="grid md:grid-cols-2 gap-4 text-sm">
+            <CardContent className="space-y-8">
+              {/* Site Overview */}
+              {analysis.site_overview && (
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-3">🔍 1. Site Overview</h3>
+                  <p className="text-lg font-semibold text-blue-400">{analysis.site_overview.site_title}</p>
+                  <p className="text-slate-300 mt-2">{analysis.site_overview.summary}</p>
+                </div>
+              )}
+
+              {/* SEO Scores */}
+              {analysis.seo_scores && (
+                <div className="grid md:grid-cols-4 gap-4">
+                  <div className="bg-slate-700/30 rounded-lg p-4 text-center">
+                    <p className="text-3xl font-bold text-white">{analysis.seo_scores.overall_score}/100</p>
+                    <p className="text-sm text-slate-400 mt-1">Overall SEO</p>
+                  </div>
+                  <div className="bg-slate-700/30 rounded-lg p-4 text-center">
+                    <p className="text-3xl font-bold text-white">{analysis.seo_scores.technical_score}/100</p>
+                    <p className="text-sm text-slate-400 mt-1">Technical</p>
+                  </div>
+                  <div className="bg-slate-700/30 rounded-lg p-4 text-center">
+                    <p className="text-3xl font-bold text-white">{analysis.seo_scores.content_score}/100</p>
+                    <p className="text-sm text-slate-400 mt-1">Content</p>
+                  </div>
+                  <div className="bg-slate-700/30 rounded-lg p-4 text-center">
+                    <p className="text-3xl font-bold text-white">{analysis.seo_scores.authority_score}/100</p>
+                    <p className="text-sm text-slate-400 mt-1">Authority</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Technical SEO */}
+              {analysis.technical_seo && (
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-3">🛠️ 2. Technical SEO</h3>
+                  <div className="space-y-3 bg-slate-700/20 rounded-lg p-4">
+                    <div><span className="font-semibold text-blue-400">Crawling & Indexing:</span> <span className="text-slate-300">{analysis.technical_seo.crawling_indexing}</span></div>
+                    <div><span className="font-semibold text-blue-400">Mobile-Friendly:</span> <span className="text-slate-300">{analysis.technical_seo.mobile_friendly}</span></div>
+                    <div><span className="font-semibold text-blue-400">Security (HTTPS):</span> <span className="text-slate-300">{analysis.technical_seo.security}</span></div>
+                    <div><span className="font-semibold text-blue-400">Page Speed:</span> <span className="text-slate-300">{analysis.technical_seo.page_speed}</span></div>
+                    <div><span className="font-semibold text-blue-400">Sitemap:</span> <span className="text-slate-300">{analysis.technical_seo.sitemap_status}</span></div>
+                    <div><span className="font-semibold text-blue-400">Robots.txt:</span> <span className="text-slate-300">{analysis.technical_seo.robots_txt_status}</span></div>
+                  </div>
+                </div>
+              )}
+
+              {/* On-Page SEO */}
+              {analysis.on_page_seo && (
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-3">🧠 3. On-Page SEO</h3>
+                  <div className="space-y-3 bg-slate-700/20 rounded-lg p-4">
+                    <div><span className="font-semibold text-blue-400">Title Tags:</span> <span className="text-slate-300">{analysis.on_page_seo.title_tags}</span></div>
+                    <div><span className="font-semibold text-blue-400">Meta Descriptions:</span> <span className="text-slate-300">{analysis.on_page_seo.meta_descriptions}</span></div>
+                    <div><span className="font-semibold text-blue-400">Headings:</span> <span className="text-slate-300">{analysis.on_page_seo.headings}</span></div>
+                    <div><span className="font-semibold text-blue-400">Content Quality:</span> <span className="text-slate-300">{analysis.on_page_seo.content_quality}</span></div>
+                  </div>
+                </div>
+              )}
+
+              {/* Keyword Strategy */}
+              {analysis.keyword_strategy && (
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-3">📌 4. Keyword Strategy</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-slate-400 mb-2">Current SEO Score:</p>
-                      <p className="text-2xl font-bold text-white">{analysis.seo_analysis.current_score}/100</p>
-                    </div>
-                    <div>
-                      <p className="text-slate-400 mb-2">Target Keywords:</p>
+                      <p className="font-semibold text-blue-400 mb-2">Primary Keywords:</p>
                       <div className="flex flex-wrap gap-2">
-                        {analysis.seo_analysis.target_keywords?.slice(0, 3).map((kw, i) => (
+                        {analysis.keyword_strategy.primary_keywords?.map((kw, i) => (
                           <Badge key={i} className="bg-blue-600">{kw}</Badge>
                         ))}
                       </div>
                     </div>
-                  </div>
-                  {analysis.seo_analysis.quick_wins && (
-                    <div className="mt-4">
-                      <p className="text-slate-400 mb-2">Quick SEO Wins:</p>
-                      <ul className="space-y-1">
-                        {analysis.seo_analysis.quick_wins.slice(0, 3).map((win, i) => (
-                          <li key={i} className="text-slate-300 text-sm">✓ {win}</li>
+                    <div>
+                      <p className="font-semibold text-blue-400 mb-2">Long-Tail Keywords:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {analysis.keyword_strategy.long_tail_keywords?.map((kw, i) => (
+                          <Badge key={i} className="bg-purple-600">{kw}</Badge>
                         ))}
-                      </ul>
+                      </div>
                     </div>
-                  )}
+                    <div>
+                      <p className="font-semibold text-blue-400 mb-2">Keyword Gaps:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {analysis.keyword_strategy.keyword_gaps?.map((kw, i) => (
+                          <Badge key={i} className="bg-orange-600">{kw}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-blue-400 mb-2">Competitor Keywords:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {analysis.keyword_strategy.competitor_keywords?.map((kw, i) => (
+                          <Badge key={i} className="bg-red-600">{kw}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
-              {/* Website Preview */}
-              <div className="bg-white rounded-lg p-8">
-                <h3 className="text-2xl font-bold text-slate-900 mb-6" style={{color: analysis.primary_color}}>
-                  Your Website Preview
-                </h3>
-                {analysis.pages?.map((page, idx) => (
-                  <div key={idx} className="mb-8 pb-8 border-b border-slate-200 last:border-0">
-                    <h4 className="text-xl font-bold mb-4 text-slate-800">{page.name}</h4>
-                    <div className="prose prose-slate max-w-none">
-                      <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">{page.content}</p>
+              {/* Quick Wins */}
+              {analysis.quick_wins && (
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-3">⚡ Quick Wins</h3>
+                  <div className="space-y-2">
+                    {analysis.quick_wins.map((win, i) => (
+                      <div key={i} className="flex items-start gap-2 bg-green-600/10 border border-green-500/30 rounded-lg p-3">
+                        <CheckCircle className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
+                        <p className="text-slate-300">{win}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Priority Fixes */}
+              {analysis.priority_fixes && (
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-3">🔧 Priority Fixes</h3>
+                  <div className="space-y-2">
+                    {analysis.priority_fixes.map((fix, i) => (
+                      <div key={i} className="bg-slate-700/20 rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge className={
+                            fix.priority === 'High' ? 'bg-red-600' :
+                            fix.priority === 'Medium' ? 'bg-orange-600' : 'bg-yellow-600'
+                          }>{fix.priority}</Badge>
+                          <p className="font-semibold text-white">{fix.issue}</p>
+                        </div>
+                        <p className="text-slate-300 text-sm">{fix.fix}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 90-Day Roadmap */}
+              {analysis.roadmap_90_days && (
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-3">📅 90-Day SEO Roadmap</h3>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="bg-blue-600/10 border border-blue-500/30 rounded-lg p-4">
+                      <p className="font-bold text-white mb-2">Month 1</p>
+                      <ul className="space-y-1 text-sm text-slate-300">
+                        {analysis.roadmap_90_days.month_1?.map((item, i) => (
+                          <li key={i}>• {item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-blue-600/10 border border-blue-500/30 rounded-lg p-4">
+                      <p className="font-bold text-white mb-2">Month 2</p>
+                      <ul className="space-y-1 text-sm text-slate-300">
+                        {analysis.roadmap_90_days.month_2?.map((item, i) => (
+                          <li key={i}>• {item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-blue-600/10 border border-blue-500/30 rounded-lg p-4">
+                      <p className="font-bold text-white mb-2">Month 3</p>
+                      <ul className="space-y-1 text-sm text-slate-300">
+                        {analysis.roadmap_90_days.month_3?.map((item, i) => (
+                          <li key={i}>• {item}</li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
 
               {/* CTA */}
               <div className="bg-gradient-to-r from-green-600/20 to-blue-600/20 border-2 border-green-500/50 rounded-lg p-8 text-center">
-                <p className="text-3xl font-bold text-white mb-3">💚 Love it? Let's Launch!</p>
-                <p className="text-slate-300 mb-6 text-lg">No payment until you approve. Zero risk. Full control.</p>
+                <p className="text-3xl font-bold text-white mb-3">Ready to Fix These Issues?</p>
+                <p className="text-slate-300 mb-6 text-lg">We'll build your optimized website in 7 days with all SEO fixes included</p>
                 <Button
                   onClick={handleContinueToIntake}
                   className="bg-green-600 hover:bg-green-700 text-white text-xl py-6 px-10"
                 >
-                  Approve & Continue
+                  Build My Optimized Website
                   <ArrowRight className="ml-2 w-6 h-6" />
                 </Button>
               </div>
