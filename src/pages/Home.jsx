@@ -282,51 +282,55 @@ export default function Home() {
     setBuildingWebsite(true);
 
     try {
-      const buildPrompt = `Build a professional ${formData.website_type} website for ${formData.business_name}.
+      const buildPrompt = `Create a complete website for ${formData.business_name} - a ${formData.website_type} business.
 
-  ${formData.current_website ? `Current website: ${formData.current_website} - Research it and improve upon it` : 'Starting from scratch'}
+  BUSINESS CONTEXT:
+  - Company: ${formData.business_name}
+  - Industry: ${formData.website_type}
+  ${formData.current_website ? `- Current site: ${formData.current_website} (improve upon this)` : '- Starting from scratch'}
+  ${formData.requirements ? `- Goals: ${formData.requirements}` : ''}
 
-  SEO INSIGHTS FROM REPORT:
-  - Target these keywords: ${analysis?.keyword_strategy?.primary_keywords?.join(', ') || 'industry keywords'}
-  - Fix these issues: ${analysis?.priority_fixes?.map(f => f.issue).join(', ') || 'basic SEO'}
-  - Quick wins to implement: ${analysis?.quick_wins?.join(', ') || 'SEO optimization'}
+  SEO FOCUS (from report):
+  ${analysis?.keyword_strategy?.primary_keywords ? `- Target keywords: ${analysis.keyword_strategy.primary_keywords.slice(0, 5).join(', ')}` : ''}
+  ${analysis?.quick_wins ? `- Quick wins: ${analysis.quick_wins.slice(0, 3).join(', ')}` : ''}
 
-  Build a complete 5-page website with REAL, compelling content:
+  BUILD 5 PAGES WITH REAL CONTENT:
 
-  1. HOME PAGE (5 sections, 300+ words total):
-  - Hero: Eye-catching headline about ${formData.business_name} + 70-word value proposition
-  - Features/Services: 3 main offerings with 40-word descriptions each
-  - Why Choose Us: 4 benefits with 25-word explanations each
-  - Social Proof: 2 testimonial quotes (make them realistic)
-  - Strong Call-to-Action
+  **Home Page** - Create 4 sections:
+  1. Hero: Compelling headline + 50-word value prop
+  2. Services: 3 key services (30 words each)
+  3. Benefits: Why choose us (3 points, 20 words each)
+  4. CTA: Strong call-to-action
 
-  2. ABOUT PAGE (200+ words):
-  - Company story and mission (100 words)
-  - What makes them different (50 words)
-  - Team/founder intro (50 words)
+  **About Page** - 150 words:
+  - Company story
+  - Mission
+  - What makes them unique
 
-  3. SERVICES PAGE (250+ words):
-  - 3-5 services with detailed 50-word descriptions
-  - Benefits of each service
-  - Clear pricing indicators or "Contact for quote"
+  **Services Page** - 200 words:
+  - 3-4 main services with descriptions
 
-  4. CONTACT PAGE:
-  - Contact form fields
-  - Business address, phone, email
-  - Operating hours
-  - Map embed mention
+  **Contact Page** - Contact info:
+  - Email, phone
+  - Address
+  - Contact form mention
 
-  5. BLOG/RESOURCES PAGE:
-  - 3 blog post titles and 30-word summaries
-  - Relevant to their industry
+  **Blog/Resources** - 3 blog ideas:
+  - 3 article titles relevant to their industry
 
-  IMPORTANT: 
-  - Write actual professional copy, no placeholders
-  - Include SEO keywords naturally in content
-  - Make it conversion-focused
-  - Use persuasive language
-
-  Return JSON with pages array and color scheme.`;
+  RETURN VALID JSON:
+  {
+  "pages": [
+  {
+  "name": "Home",
+  "sections": [
+  {"title": "Hero", "content": "actual content here"},
+  {"title": "Services", "content": "actual content here"}
+  ]
+  }
+  ],
+  "primary_color": "#0066FF"
+  }`;
 
       const website = await base44.integrations.Core.InvokeLLM({
         prompt: buildPrompt,
@@ -353,8 +357,7 @@ export default function Home() {
                 }
               }
             },
-            primary_color: { type: "string" },
-            secondary_color: { type: "string" }
+            primary_color: { type: "string" }
           }
         }
       });
