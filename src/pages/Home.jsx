@@ -459,17 +459,60 @@ export default function Home() {
                 </div>
               )}
 
+              {/* Why New Website */}
+              <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-2 border-purple-500/50 rounded-lg p-8">
+                <h3 className="text-2xl font-bold text-white mb-4">💡 Why We Recommend a New Website</h3>
+                <div className="space-y-4 text-slate-300">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-6 h-6 text-green-400 mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-white">Built-in SEO from Day 1</p>
+                      <p className="text-sm">Your new website will have proper title tags, meta descriptions, structured data, and optimized code—all the technical fixes already implemented.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-6 h-6 text-green-400 mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-white">Mobile-First & Lightning Fast</p>
+                      <p className="text-sm">Modern architecture means your site loads in under 2 seconds on mobile, dramatically improving your Google rankings and conversions.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-6 h-6 text-green-400 mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-white">Keyword-Optimized Content</p>
+                      <p className="text-sm">Every page is written with your target keywords in mind, helping you rank for the searches that matter most to your business.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-6 h-6 text-green-400 mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-white">Professional Design = Trust</p>
+                      <p className="text-sm">A modern, professional website builds instant credibility with visitors, leading to more conversions and better business results.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-6 h-6 text-green-400 mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-white">All Quick Wins Implemented</p>
+                      <p className="text-sm">The quick wins identified in your SEO report will be built into your new site from the start—no waiting for fixes.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* CTA */}
               <div className="bg-gradient-to-r from-green-600/20 to-blue-600/20 border-2 border-green-500/50 rounded-lg p-8 text-center">
-                <p className="text-3xl font-bold text-white mb-3">Ready to Fix These Issues?</p>
-                <p className="text-slate-300 mb-6 text-lg">We'll build your optimized website in 7 days with all SEO fixes included</p>
+                <p className="text-3xl font-bold text-white mb-3">🚀 Ready to Get Results?</p>
+                <p className="text-slate-300 mb-6 text-lg">We'll build your SEO-optimized website with all fixes included—completely FREE to start</p>
                 <Button
                   onClick={handleContinueToIntake}
                   className="bg-green-600 hover:bg-green-700 text-white text-xl py-6 px-10"
                 >
-                  Build My Optimized Website
+                  Build My Site For Me For FREE
                   <ArrowRight className="ml-2 w-6 h-6" />
                 </Button>
+                <p className="text-sm text-slate-400 mt-4">No payment required • See your website before paying anything</p>
               </div>
             </CardContent>
           </Card>
