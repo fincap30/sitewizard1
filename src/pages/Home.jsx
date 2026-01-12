@@ -634,17 +634,23 @@ export default function Home() {
                     </div>
 
                     <div className="bg-white p-8 space-y-8">
-                      {generatedWebsite.pages && generatedWebsite.pages.length > 0 ? (
+                      <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-6">
+                        <p className="text-sm font-medium text-blue-800">
+                          ✅ Website generated • {generatedWebsite?.pages?.length || 0} pages • Primary color: {generatedWebsite?.primary_color || 'Not set'}
+                        </p>
+                      </div>
+
+                      {Array.isArray(generatedWebsite?.pages) && generatedWebsite.pages.length > 0 ? (
                         generatedWebsite.pages.map((page, pidx) => (
                           <div key={pidx} className="border-b-4 border-slate-200 pb-8 last:border-0">
                             <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg mb-6">
                               <h2 className="text-4xl font-bold text-slate-900 mb-2" style={{color: generatedWebsite.primary_color || '#0066FF'}}>
-                                {page.name}
+                                {page.name || 'Untitled Page'}
                               </h2>
                               <p className="text-sm text-slate-500">Page {pidx + 1} of {generatedWebsite.pages.length}</p>
                             </div>
 
-                            {page.sections && page.sections.length > 0 ? (
+                            {Array.isArray(page.sections) && page.sections.length > 0 ? (
                               <div className="space-y-6">
                                 {page.sections.map((section, sidx) => (
                                   <div key={sidx} className="bg-white border-2 border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
@@ -652,30 +658,27 @@ export default function Home() {
                                       <div className="bg-blue-100 rounded-full p-2 mt-1">
                                         <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
                                       </div>
-                                      <h3 className="text-2xl font-bold text-slate-900 flex-1">{section.title}</h3>
+                                      <h3 className="text-2xl font-bold text-slate-900 flex-1">{section.title || 'Section'}</h3>
                                     </div>
                                     <div className="ml-7">
-                                      <p className="text-slate-700 text-lg leading-relaxed whitespace-pre-wrap">{section.content}</p>
+                                      <p className="text-slate-700 text-lg leading-relaxed whitespace-pre-wrap">{section.content || 'No content'}</p>
                                     </div>
                                   </div>
                                 ))}
                               </div>
                             ) : (
-                              <div className="bg-slate-50 p-8 rounded-lg border-2 border-slate-200">
-                                <p className="text-slate-600 font-medium mb-4">Page content:</p>
-                                <pre className="text-sm text-slate-700 whitespace-pre-wrap overflow-auto">{JSON.stringify(page, null, 2)}</pre>
+                              <div className="bg-yellow-50 p-6 rounded-lg border-2 border-yellow-200">
+                                <p className="text-yellow-800 font-medium mb-3">⚠️ Page structure unexpected</p>
+                                <pre className="text-xs text-slate-700 whitespace-pre-wrap overflow-auto bg-white p-3 rounded">{JSON.stringify(page, null, 2)}</pre>
                               </div>
                             )}
                           </div>
                         ))
                       ) : (
-                        <div className="text-center py-12 bg-slate-50 rounded-lg border-2 border-slate-200">
-                          <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
-                          <p className="text-slate-600 text-lg font-semibold mb-2">Processing website content...</p>
-                          <details className="mt-6 text-left max-w-2xl mx-auto">
-                            <summary className="text-sm text-slate-500 cursor-pointer hover:text-slate-700">Show raw data</summary>
-                            <pre className="mt-4 text-xs text-slate-600 bg-white p-4 rounded border overflow-auto max-h-96">{JSON.stringify(generatedWebsite, null, 2)}</pre>
-                          </details>
+                        <div className="bg-red-50 border-2 border-red-200 rounded-lg p-8">
+                          <p className="text-red-800 font-bold text-lg mb-4">❌ Website generation failed or returned unexpected format</p>
+                          <p className="text-red-700 mb-4">Expected structure: pages array with sections, but got:</p>
+                          <pre className="text-xs text-slate-700 bg-white p-4 rounded border overflow-auto max-h-96 whitespace-pre-wrap">{JSON.stringify(generatedWebsite, null, 2)}</pre>
                         </div>
                       )}
                     </div>
