@@ -1,0 +1,77 @@
+{
+  "name": "Lead",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Lead name"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Lead email address"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Contact phone"
+    },
+    "business_name": {
+      "type": "string",
+      "description": "Business name"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "facebook",
+        "website",
+        "referral",
+        "google",
+        "other"
+      ],
+      "default": "website",
+      "description": "Lead source"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "qualified",
+        "converted",
+        "lost"
+      ],
+      "default": "new",
+      "description": "Lead status"
+    },
+    "interest_level": {
+      "type": "string",
+      "enum": [
+        "hot",
+        "warm",
+        "cold"
+      ],
+      "description": "Lead interest level"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes about the lead"
+    },
+    "converted_to_project": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether lead was converted to project"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "ID of converted project if applicable"
+    },
+    "facebook_lead_id": {
+      "type": "string",
+      "description": "Facebook lead ID if from Facebook"
+    }
+  },
+  "required": [
+    "name",
+    "email"
+  ]
+}

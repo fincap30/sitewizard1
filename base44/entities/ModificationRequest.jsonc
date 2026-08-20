@@ -1,0 +1,65 @@
+{
+  "name": "ModificationRequest",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "description": "Related project ID"
+    },
+    "client_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Client email who requested modification"
+    },
+    "request_type": {
+      "type": "string",
+      "enum": [
+        "content_change",
+        "design_change",
+        "functionality",
+        "bug_fix",
+        "other"
+      ],
+      "description": "Type of modification request"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the modification"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium",
+      "description": "Request priority"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "completed",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Request status"
+    },
+    "admin_response": {
+      "type": "string",
+      "description": "Admin response to the request"
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when completed"
+    }
+  },
+  "required": [
+    "project_id",
+    "description"
+  ]
+}

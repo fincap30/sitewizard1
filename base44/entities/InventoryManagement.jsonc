@@ -1,0 +1,48 @@
+{
+  "name": "InventoryManagement",
+  "type": "object",
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "description": "Product ID"
+    },
+    "current_stock": {
+      "type": "number",
+      "description": "Current stock level"
+    },
+    "predicted_stock": {
+      "type": "number",
+      "description": "AI predicted stock in 30 days"
+    },
+    "reorder_point": {
+      "type": "number",
+      "description": "AI suggested reorder point"
+    },
+    "optimal_reorder_quantity": {
+      "type": "number",
+      "description": "Optimal reorder quantity"
+    },
+    "stockout_risk": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "description": "Stockout risk level"
+    },
+    "daily_avg_sales": {
+      "type": "number",
+      "description": "Average daily sales"
+    },
+    "lead_time_days": {
+      "type": "number",
+      "description": "Supplier lead time in days"
+    }
+  },
+  "required": [
+    "product_id",
+    "current_stock"
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "name": "SocialMediaPost",
+  "type": "object",
+  "properties": {
+    "website_intake_id": {
+      "type": "string",
+      "description": "Related website ID"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "facebook",
+        "instagram",
+        "linkedin",
+        "twitter"
+      ],
+      "description": "Social platform"
+    },
+    "post_content": {
+      "type": "string",
+      "description": "Post text"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Post image"
+    },
+    "hashtags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Hashtags"
+    },
+    "scheduled_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When to post"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "scheduled",
+        "published"
+      ],
+      "default": "draft",
+      "description": "Post status"
+    },
+    "engagement_score": {
+      "type": "number",
+      "description": "AI-predicted engagement"
+    },
+    "optimization_tips": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "AI optimization suggestions"
+    }
+  },
+  "required": [
+    "website_intake_id",
+    "platform",
+    "post_content"
+  ]
+}

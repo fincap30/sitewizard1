@@ -1,0 +1,33 @@
+{
+  "name": "BrowsingBehavior",
+  "type": "object",
+  "properties": {
+    "customer_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Customer email"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Viewed product ID"
+    },
+    "view_count": {
+      "type": "number",
+      "default": 1,
+      "description": "How many times viewed"
+    },
+    "time_spent": {
+      "type": "number",
+      "description": "Time spent viewing (seconds)"
+    },
+    "added_to_cart": {
+      "type": "boolean",
+      "default": false,
+      "description": "Added to cart"
+    }
+  },
+  "required": [
+    "customer_email",
+    "product_id"
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "name": "MediaAsset",
+  "type": "object",
+  "properties": {
+    "client_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Owner email"
+    },
+    "website_intake_id": {
+      "type": "string",
+      "description": "Associated website"
+    },
+    "file_name": {
+      "type": "string",
+      "description": "Original file name"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "Uploaded file URL"
+    },
+    "file_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video",
+        "document",
+        "other"
+      ],
+      "description": "Type of media asset"
+    },
+    "file_size": {
+      "type": "number",
+      "description": "File size in bytes"
+    },
+    "alt_text": {
+      "type": "string",
+      "description": "Alt text for accessibility"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for organization"
+    }
+  },
+  "required": [
+    "client_email",
+    "file_name",
+    "file_url",
+    "file_type"
+  ]
+}

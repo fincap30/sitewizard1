@@ -1,0 +1,124 @@
+{
+  "name": "WebsiteIntake",
+  "type": "object",
+  "properties": {
+    "subscription_id": {
+      "type": "string",
+      "description": "Related subscription ID"
+    },
+    "client_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Client email"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "Company name"
+    },
+    "contact_person": {
+      "type": "string",
+      "description": "Contact person name"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone/WhatsApp"
+    },
+    "country": {
+      "type": "string",
+      "description": "Country"
+    },
+    "city": {
+      "type": "string",
+      "description": "City"
+    },
+    "current_website": {
+      "type": "string",
+      "description": "Current website URL"
+    },
+    "facebook_page": {
+      "type": "string",
+      "description": "Facebook page URL"
+    },
+    "instagram_page": {
+      "type": "string",
+      "description": "Instagram page URL"
+    },
+    "other_platforms": {
+      "type": "string",
+      "description": "Other social platforms"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "Uploaded logo URL"
+    },
+    "brand_colors": {
+      "type": "string",
+      "description": "Brand colors (comma separated)"
+    },
+    "style_preference": {
+      "type": "string",
+      "enum": [
+        "modern",
+        "corporate",
+        "minimal",
+        "bold"
+      ],
+      "description": "Preferred design style"
+    },
+    "business_goals": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "get_leads",
+          "sell_products",
+          "book_appointments",
+          "build_trust",
+          "automate_business"
+        ]
+      },
+      "description": "Selected business goals"
+    },
+    "goal_description": {
+      "type": "string",
+      "description": "Additional goal details"
+    },
+    "competitor_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Competitor website URLs"
+    },
+    "confirmed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Information confirmed by client"
+    },
+    "website_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "generating",
+        "review",
+        "approved",
+        "live"
+      ],
+      "default": "pending",
+      "description": "Website build status"
+    },
+    "preview_url": {
+      "type": "string",
+      "description": "Preview link for the website"
+    },
+    "live_url": {
+      "type": "string",
+      "description": "Live website URL"
+    }
+  },
+  "required": [
+    "subscription_id",
+    "client_email",
+    "company_name"
+  ]
+}

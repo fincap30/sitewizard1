@@ -1,0 +1,82 @@
+{
+  "name": "ClientSubscription",
+  "type": "object",
+  "properties": {
+    "client_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Client email address"
+    },
+    "package_id": {
+      "type": "string",
+      "description": "Selected package ID"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "trial",
+        "active",
+        "suspended",
+        "cancelled"
+      ],
+      "default": "trial",
+      "description": "Subscription status"
+    },
+    "trial_started": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When trial started"
+    },
+    "trial_ends": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When trial ends"
+    },
+    "subscription_started": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When paid subscription started"
+    },
+    "payment_method_added": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether payment method is on file"
+    },
+    "stripe_customer_id": {
+      "type": "string",
+      "description": "Stripe customer ID"
+    },
+    "stripe_subscription_id": {
+      "type": "string",
+      "description": "Stripe subscription ID"
+    },
+    "last_payment_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last successful payment"
+    },
+    "next_payment_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Next scheduled payment"
+    },
+    "payment_failed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Payment failure flag"
+    },
+    "cancellation_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When subscription was cancelled"
+    },
+    "cancellation_reason": {
+      "type": "string",
+      "description": "Reason for cancellation"
+    }
+  },
+  "required": [
+    "client_email",
+    "package_id"
+  ]
+}

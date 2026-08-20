@@ -1,0 +1,77 @@
+{
+  "name": "UserSegment",
+  "type": "object",
+  "properties": {
+    "website_intake_id": {
+      "type": "string",
+      "description": "Related website ID"
+    },
+    "segment_name": {
+      "type": "string",
+      "description": "Name of the user segment"
+    },
+    "criteria": {
+      "type": "object",
+      "description": "Segmentation criteria",
+      "properties": {
+        "referral_source": {
+          "type": "string"
+        },
+        "pages_visited": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "time_on_site": {
+          "type": "number"
+        },
+        "interactions": {
+          "type": "number"
+        },
+        "conversion_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "personalization_rules": {
+      "type": "object",
+      "description": "Content personalization rules",
+      "properties": {
+        "hero_text": {
+          "type": "string"
+        },
+        "cta_text": {
+          "type": "string"
+        },
+        "offers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "product_recommendations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "segment_size": {
+      "type": "number",
+      "description": "Number of users in segment"
+    },
+    "conversion_rate": {
+      "type": "number",
+      "description": "Conversion rate for this segment"
+    }
+  },
+  "required": [
+    "website_intake_id",
+    "segment_name"
+  ]
+}

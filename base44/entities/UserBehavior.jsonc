@@ -1,0 +1,59 @@
+{
+  "name": "UserBehavior",
+  "type": "object",
+  "properties": {
+    "website_intake_id": {
+      "type": "string",
+      "description": "Related website ID"
+    },
+    "visitor_id": {
+      "type": "string",
+      "description": "Unique visitor identifier"
+    },
+    "referral_source": {
+      "type": "string",
+      "description": "Where the user came from"
+    },
+    "pages_visited": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of pages visited"
+    },
+    "time_on_site": {
+      "type": "number",
+      "description": "Total time on site in seconds"
+    },
+    "interactions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "element": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "User interactions"
+    },
+    "conversion_action": {
+      "type": "string",
+      "description": "Conversion action taken"
+    },
+    "segment_id": {
+      "type": "string",
+      "description": "Assigned user segment"
+    }
+  },
+  "required": [
+    "website_intake_id",
+    "visitor_id"
+  ]
+}

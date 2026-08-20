@@ -1,0 +1,86 @@
+{
+  "name": "Package",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Package name"
+    },
+    "price": {
+      "type": "number",
+      "description": "Monthly price in USD"
+    },
+    "setup_cost": {
+      "type": "number",
+      "default": 0,
+      "description": "One-time setup cost in USD"
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "growth",
+        "premium"
+      ],
+      "description": "Package tier"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of features included"
+    },
+    "pages_limit": {
+      "type": "number",
+      "description": "Maximum number of pages"
+    },
+    "products_limit": {
+      "type": "number",
+      "description": "Maximum number of products for e-commerce"
+    },
+    "revisions_included": {
+      "type": "number",
+      "description": "Number of revisions included"
+    },
+    "seo_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "SEO optimization included"
+    },
+    "blog_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Blog functionality enabled"
+    },
+    "ecommerce_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "E-commerce features enabled"
+    },
+    "automation_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Advanced automation enabled"
+    },
+    "priority_support": {
+      "type": "boolean",
+      "default": false,
+      "description": "Priority support included"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Package is available for purchase"
+    },
+    "display_order": {
+      "type": "number",
+      "description": "Order for display on pricing page"
+    }
+  },
+  "required": [
+    "name",
+    "price",
+    "tier"
+  ]
+}

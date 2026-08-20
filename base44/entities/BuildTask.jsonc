@@ -1,0 +1,72 @@
+{
+  "name": "BuildTask",
+  "type": "object",
+  "properties": {
+    "website_intake_id": {
+      "type": "string",
+      "description": "Related website intake ID"
+    },
+    "task_name": {
+      "type": "string",
+      "description": "Name of the build task"
+    },
+    "task_type": {
+      "type": "string",
+      "enum": [
+        "integrate_analytics",
+        "optimize_images",
+        "setup_seo",
+        "configure_forms",
+        "test_functionality",
+        "deploy_staging",
+        "final_review",
+        "deploy_live"
+      ],
+      "description": "Type of build task"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "completed",
+        "blocked"
+      ],
+      "default": "pending",
+      "description": "Task status"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Admin email assigned to this task"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium",
+      "description": "Task priority"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Task notes or details"
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When task was completed"
+    },
+    "staging_url": {
+      "type": "string",
+      "description": "Staging environment URL"
+    }
+  },
+  "required": [
+    "website_intake_id",
+    "task_name",
+    "task_type"
+  ]
+}

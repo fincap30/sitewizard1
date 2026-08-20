@@ -1,0 +1,63 @@
+{
+  "name": "FraudDetection",
+  "type": "object",
+  "properties": {
+    "transaction_id": {
+      "type": "string",
+      "description": "Transaction ID"
+    },
+    "customer_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Customer email"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Transaction amount"
+    },
+    "fraud_score": {
+      "type": "number",
+      "description": "AI fraud score (0-100)"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "Risk level"
+    },
+    "risk_factors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Identified risk factors"
+    },
+    "recommended_action": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "review",
+        "block"
+      ],
+      "description": "Recommended action"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "blocked"
+      ],
+      "default": "pending",
+      "description": "Transaction status"
+    }
+  },
+  "required": [
+    "transaction_id",
+    "customer_email",
+    "amount"
+  ]
+}

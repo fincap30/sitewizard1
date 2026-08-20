@@ -1,0 +1,52 @@
+{
+  "name": "TeamMember",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Team member name"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email address"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "developer",
+        "designer",
+        "content_writer",
+        "project_manager",
+        "seo_specialist"
+      ],
+      "description": "Role"
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Skills and expertise"
+    },
+    "current_workload": {
+      "type": "number",
+      "description": "Current task count"
+    },
+    "availability": {
+      "type": "string",
+      "enum": [
+        "available",
+        "busy",
+        "unavailable"
+      ],
+      "default": "available",
+      "description": "Availability status"
+    }
+  },
+  "required": [
+    "name",
+    "email",
+    "role"
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "name": "SEOContentCalendar",
+  "type": "object",
+  "properties": {
+    "website_intake_id": {
+      "type": "string",
+      "description": "Related website ID"
+    },
+    "month": {
+      "type": "string",
+      "description": "Month for content (e.g., 2026-02)"
+    },
+    "topic_clusters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cluster_name": {
+            "type": "string"
+          },
+          "pillar_topic": {
+            "type": "string"
+          },
+          "supporting_topics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Topic clusters for the month"
+    },
+    "content_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "target_keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "publish_date": {
+            "type": "string"
+          },
+          "search_volume": {
+            "type": "number"
+          },
+          "difficulty_score": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Planned content items"
+    },
+    "keyword_gaps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Keywords competitors rank for but we don't"
+    },
+    "competitor_insights": {
+      "type": "object",
+      "description": "Competitor content strategy analysis"
+    }
+  },
+  "required": [
+    "website_intake_id",
+    "month"
+  ]
+}

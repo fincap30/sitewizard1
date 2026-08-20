@@ -1,0 +1,74 @@
+{
+  "name": "Product",
+  "type": "object",
+  "properties": {
+    "website_intake_id": {
+      "type": "string",
+      "description": "Related website ID"
+    },
+    "name": {
+      "type": "string",
+      "description": "Product name"
+    },
+    "description": {
+      "type": "string",
+      "description": "AI-generated product description"
+    },
+    "short_description": {
+      "type": "string",
+      "description": "Short product description"
+    },
+    "price": {
+      "type": "number",
+      "description": "Product price"
+    },
+    "category": {
+      "type": "string",
+      "description": "Product category"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Product tags"
+    },
+    "image_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Product images"
+    },
+    "cross_sell_products": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Cross-sell product IDs"
+    },
+    "upsell_products": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Upsell product IDs"
+    },
+    "stock_quantity": {
+      "type": "number",
+      "description": "Stock quantity"
+    },
+    "seo_keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "SEO keywords"
+    }
+  },
+  "required": [
+    "website_intake_id",
+    "name",
+    "price"
+  ]
+}

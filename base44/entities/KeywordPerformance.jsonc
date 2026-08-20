@@ -1,0 +1,46 @@
+{
+  "name": "KeywordPerformance",
+  "type": "object",
+  "properties": {
+    "website_intake_id": {
+      "type": "string",
+      "description": "Related website ID"
+    },
+    "keyword": {
+      "type": "string",
+      "description": "Target keyword"
+    },
+    "search_volume": {
+      "type": "number",
+      "description": "Monthly search volume"
+    },
+    "ranking_position": {
+      "type": "number",
+      "description": "Current ranking position"
+    },
+    "difficulty_score": {
+      "type": "number",
+      "description": "Keyword difficulty (0-100)"
+    },
+    "trend": {
+      "type": "string",
+      "enum": [
+        "up",
+        "down",
+        "stable"
+      ],
+      "description": "Ranking trend"
+    },
+    "opportunities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Optimization opportunities"
+    }
+  },
+  "required": [
+    "website_intake_id",
+    "keyword"
+  ]
+}

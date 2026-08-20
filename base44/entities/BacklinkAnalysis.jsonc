@@ -1,0 +1,47 @@
+{
+  "name": "BacklinkAnalysis",
+  "type": "object",
+  "properties": {
+    "website_intake_id": {
+      "type": "string",
+      "description": "Related website ID"
+    },
+    "competitor_url": {
+      "type": "string",
+      "description": "Competitor URL analyzed"
+    },
+    "total_backlinks": {
+      "type": "number",
+      "description": "Total backlinks found"
+    },
+    "high_quality_backlinks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_domain": {
+            "type": "string"
+          },
+          "authority_score": {
+            "type": "number"
+          },
+          "link_type": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "High authority backlinks"
+    },
+    "opportunities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Link building opportunities"
+    }
+  },
+  "required": [
+    "website_intake_id",
+    "competitor_url"
+  ]
+}

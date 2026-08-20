@@ -1,0 +1,32 @@
+{
+  "name": "CustomerPurchaseHistory",
+  "type": "object",
+  "properties": {
+    "customer_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Customer email"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Purchased product ID"
+    },
+    "purchase_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When purchased"
+    },
+    "quantity": {
+      "type": "number",
+      "description": "Quantity purchased"
+    },
+    "price_paid": {
+      "type": "number",
+      "description": "Price at purchase"
+    }
+  },
+  "required": [
+    "customer_email",
+    "product_id"
+  ]
+}

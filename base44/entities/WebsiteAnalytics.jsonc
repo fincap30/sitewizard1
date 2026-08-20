@@ -1,0 +1,76 @@
+{
+  "name": "WebsiteAnalytics",
+  "type": "object",
+  "properties": {
+    "website_intake_id": {
+      "type": "string",
+      "description": "Related website intake ID"
+    },
+    "client_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Client email"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Analytics date"
+    },
+    "page_views": {
+      "type": "number",
+      "default": 0,
+      "description": "Total page views"
+    },
+    "unique_visitors": {
+      "type": "number",
+      "default": 0,
+      "description": "Unique visitors"
+    },
+    "traffic_sources": {
+      "type": "object",
+      "description": "Traffic source breakdown",
+      "properties": {
+        "direct": {
+          "type": "number"
+        },
+        "search": {
+          "type": "number"
+        },
+        "social": {
+          "type": "number"
+        },
+        "referral": {
+          "type": "number"
+        }
+      }
+    },
+    "top_pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string"
+          },
+          "views": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Top visited pages"
+    },
+    "avg_session_duration": {
+      "type": "number",
+      "description": "Average session duration in seconds"
+    },
+    "bounce_rate": {
+      "type": "number",
+      "description": "Bounce rate percentage"
+    }
+  },
+  "required": [
+    "website_intake_id",
+    "client_email",
+    "date"
+  ]
+}

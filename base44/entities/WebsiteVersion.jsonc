@@ -1,0 +1,31 @@
+{
+  "name": "WebsiteVersion",
+  "type": "object",
+  "properties": {
+    "website_intake_id": {
+      "type": "string",
+      "description": "Related website intake ID"
+    },
+    "version_number": {
+      "type": "number",
+      "description": "Sequential version number"
+    },
+    "structure_data": {
+      "type": "object",
+      "description": "Complete website structure snapshot"
+    },
+    "change_description": {
+      "type": "string",
+      "description": "What changed in this version"
+    },
+    "created_by_email": {
+      "type": "string",
+      "description": "User who created this version"
+    }
+  },
+  "required": [
+    "website_intake_id",
+    "version_number",
+    "structure_data"
+  ]
+}

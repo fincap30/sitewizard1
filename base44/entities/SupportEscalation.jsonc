@@ -1,0 +1,60 @@
+{
+  "name": "SupportEscalation",
+  "type": "object",
+  "properties": {
+    "client_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Client email"
+    },
+    "website_intake_id": {
+      "type": "string",
+      "description": "Related website ID"
+    },
+    "query": {
+      "type": "string",
+      "description": "Original user query"
+    },
+    "conversation_context": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Chat conversation history"
+    },
+    "escalation_reason": {
+      "type": "string",
+      "description": "Why it was escalated"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "assigned",
+        "resolved"
+      ],
+      "default": "pending",
+      "description": "Escalation status"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Support agent email"
+    },
+    "resolution": {
+      "type": "string",
+      "description": "Resolution notes"
+    }
+  },
+  "required": [
+    "client_email",
+    "query"
+  ]
+}

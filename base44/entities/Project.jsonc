@@ -1,0 +1,111 @@
+{
+  "name": "Project",
+  "type": "object",
+  "properties": {
+    "client_name": {
+      "type": "string",
+      "description": "Name of the client"
+    },
+    "client_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Client email address"
+    },
+    "business_name": {
+      "type": "string",
+      "description": "Business or company name"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "website_type": {
+      "type": "string",
+      "enum": [
+        "business",
+        "portfolio",
+        "ecommerce",
+        "blog",
+        "landing_page",
+        "other"
+      ],
+      "description": "Type of website needed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new_lead",
+        "analysis_pending",
+        "in_progress",
+        "review",
+        "completed",
+        "cancelled"
+      ],
+      "default": "new_lead",
+      "description": "Current project status"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "facebook",
+        "website",
+        "referral",
+        "other"
+      ],
+      "default": "website",
+      "description": "Lead source"
+    },
+    "budget": {
+      "type": "string",
+      "description": "Client budget or package selected"
+    },
+    "requirements": {
+      "type": "string",
+      "description": "Client requirements and notes"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date",
+      "description": "Project deadline"
+    },
+    "analysis_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether 5-point analysis is completed"
+    },
+    "analysis_data": {
+      "type": "object",
+      "description": "5-point professional analysis results",
+      "properties": {
+        "point_1": {
+          "type": "string"
+        },
+        "point_2": {
+          "type": "string"
+        },
+        "point_3": {
+          "type": "string"
+        },
+        "point_4": {
+          "type": "string"
+        },
+        "point_5": {
+          "type": "string"
+        }
+      }
+    },
+    "delivery_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Actual delivery date"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Admin user assigned to this project"
+    }
+  },
+  "required": [
+    "client_name",
+    "client_email"
+  ]
+}

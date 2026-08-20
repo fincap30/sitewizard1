@@ -1,0 +1,52 @@
+{
+  "name": "ProjectMilestone",
+  "type": "object",
+  "properties": {
+    "website_intake_id": {
+      "type": "string",
+      "description": "Related website intake ID"
+    },
+    "milestone_name": {
+      "type": "string",
+      "description": "Name of the milestone"
+    },
+    "milestone_type": {
+      "type": "string",
+      "enum": [
+        "intake_submitted",
+        "ai_generation_complete",
+        "client_review",
+        "approved",
+        "staging_deployed",
+        "live_deployment",
+        "first_revision",
+        "analytics_setup"
+      ],
+      "description": "Type of milestone"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "completed"
+      ],
+      "default": "pending",
+      "description": "Milestone status"
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When milestone was completed"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    }
+  },
+  "required": [
+    "website_intake_id",
+    "milestone_name",
+    "milestone_type"
+  ]
+}

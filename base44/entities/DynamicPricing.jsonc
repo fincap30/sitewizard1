@@ -1,0 +1,45 @@
+{
+  "name": "DynamicPricing",
+  "type": "object",
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "description": "Product ID"
+    },
+    "base_price": {
+      "type": "number",
+      "description": "Base price"
+    },
+    "current_price": {
+      "type": "number",
+      "description": "Current dynamic price"
+    },
+    "demand_score": {
+      "type": "number",
+      "description": "Demand level (0-100)"
+    },
+    "competitor_avg_price": {
+      "type": "number",
+      "description": "Average competitor price"
+    },
+    "pricing_strategy": {
+      "type": "string",
+      "enum": [
+        "competitive",
+        "premium",
+        "value",
+        "dynamic"
+      ],
+      "description": "Pricing strategy"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last price update"
+    }
+  },
+  "required": [
+    "product_id",
+    "base_price"
+  ]
+}

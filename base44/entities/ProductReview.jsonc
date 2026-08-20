@@ -1,0 +1,56 @@
+{
+  "name": "ProductReview",
+  "type": "object",
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "description": "Related product ID"
+    },
+    "customer_name": {
+      "type": "string",
+      "description": "Customer name"
+    },
+    "customer_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Customer email"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Rating out of 5"
+    },
+    "review_text": {
+      "type": "string",
+      "description": "Review text"
+    },
+    "sentiment": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "neutral",
+        "negative"
+      ],
+      "description": "AI-analyzed sentiment"
+    },
+    "ai_response": {
+      "type": "string",
+      "description": "AI-generated response to review"
+    },
+    "verified_purchase": {
+      "type": "boolean",
+      "default": false,
+      "description": "Verified purchase"
+    },
+    "helpful_votes": {
+      "type": "number",
+      "default": 0,
+      "description": "Helpful votes"
+    }
+  },
+  "required": [
+    "product_id",
+    "customer_name",
+    "rating",
+    "review_text"
+  ]
+}
